@@ -19,8 +19,16 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 
 # Application definition
+APPS = [
+    'core.apps.accounts',
+    'core.apps.shared',
+]
 
-INSTALLED_APPS = [
+PACKAGES = [
+    'drf_yasg',
+]
+
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -28,6 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+INSTALLED_APPS = []
+INSTALLED_APPS += DJANGO_APPS
+INSTALLED_APPS += PACKAGES 
+INSTALLED_APPS += APPS
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
