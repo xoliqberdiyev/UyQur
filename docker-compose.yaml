@@ -26,7 +26,6 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.web
-    restart: always
     command: ${COMMAND:-sh ./resources/scripts/entrypoint.sh}
     environment:
       - PYTHONPYCACHEPREFIX=/var/cache/pycache
@@ -40,7 +39,6 @@ services:
     image: postgres:17
     networks:
       - uyqur
-    restart: always
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -51,6 +49,5 @@ services:
   redis:
     networks:
       - uyqur
-    restart: always
     image: redis
 

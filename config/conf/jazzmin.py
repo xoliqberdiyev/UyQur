@@ -25,7 +25,7 @@ JAZZMIN_SETTINGS = {
     "show_sidebar": True,
     "navigation_expanded": True,
     "hide_apps": [],
-    "hide_models": ["auth.Group"],
+    "hide_models": ["auth.Group"],  
     "order_with_respect_to": ["auth"],
 
     "custom_links": {
