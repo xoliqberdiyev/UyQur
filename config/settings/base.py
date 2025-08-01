@@ -26,6 +26,7 @@ APPS = [
     'core.apps.wherehouse',
     'core.apps.products',
     'core.apps.projects',
+    'core.apps.orders',
 ]
 
 PACKAGES = [
