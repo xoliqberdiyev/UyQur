@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from core.apps.products.models import Unity
 from core.apps.products.serializers import unity as serializers
 from core.apps.accounts.permissions.permissions import HasRolePermission
+from core.apps.shared.paginations.custom import CustomPageNumberPagination
 
 
 class UnityListApiView(generics.ListAPIView):
@@ -11,3 +12,4 @@ class UnityListApiView(generics.ListAPIView):
     queryset = Unity.objects.all()
     permission_classes = [HasRolePermission]
     required_permissions = []
+    pagination_class = CustomPageNumberPagination

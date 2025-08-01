@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from core.apps.projects.models.project import Project, ProjectDepartment
 from core.apps.projects.serializers import project as serializers
 from core.apps.accounts.permissions.permissions import HasRolePermission
+from core.apps.shared.paginations.custom import CustomPageNumberPagination
 
 
 class ProjectListApiView(generics.ListAPIView):
@@ -11,6 +12,7 @@ class ProjectListApiView(generics.ListAPIView):
     queryset = Project.objects.all()
     permission_classes = [HasRolePermission]
     required_permissions = []
+    pagination_class = CustomPageNumberPagination
 
 
 class ProjectDetailApiView(generics.RetrieveAPIView):

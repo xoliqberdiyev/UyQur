@@ -3,9 +3,20 @@ from django.db import transaction
 from rest_framework import serializers
 
 from core.apps.orders.models import Order, OrderApplication
+# products
 from core.apps.products.models import Product, Unity
+from core.apps.products.serializers.product import ProductListSerializer
+from core.apps.products.serializers.unity import UnityListSerializer
+# wherehouse
 from core.apps.wherehouse.models import WhereHouse
+from core.apps.wherehouse.serializers.wherehouse import WhereHouseListSerializer
+# projects
 from core.apps.projects.models import Project, ProjectDepartment
+from core.apps.projects.serializers.project import (
+    ProjectListSerializer, 
+    ProjectDepartmentListSerializer
+)
+
 
 
 class OrderCreateSerializer(serializers.Serializer):
@@ -48,28 +59,16 @@ class OrderCreateSerializer(serializers.Serializer):
         return data
     
 
-class OrderApplicationCreateSerializer(serializers.Serializer):
-    orders = serializers.ListSerializer(child=OrderCreateSerializer())
+class OrderListSerializer(serializers.ModelSerializer):
+    product = ProductListSerializer()
+    unity = UnityListSerializer()
+    project = ProjectListSerializer()
+    project_department = ProjectDepartmentListSerializer()
+    wherehouse = WhereHouseListSerializer()
 
-    def create(self, validated_data):
-        employee = self.context.get('user')
-        orders_data = validated_data.pop('orders')
-        application = OrderApplication.objects.create(
-            employee=employee, status="NEW"
-        )
-
-        order_objs = []
-        for order_data in orders_data:
-            order_objs.append(Order(
-                product=order_data['product'],
-                unity=order_data['unity'],
-                quantity=order_data['quantity'],
-                wherehouse=order_data['wherehouse'],
-                project=order_data['project'],
-                project_department=order_data.get('project_department'),
-                date=order_data['date']
-            ))
-
-        created_orders = Order.objects.bulk_create(order_objs)
-        application.orders.add(*created_orders)
-        return application
+    class Meta:
+        model = Order
+        fields = [
+            'id', 'product', 'unity', 'quantity', 'project', 'project_department',
+            'wherehouse', 'date', 'status', 'employee'
+        ]
