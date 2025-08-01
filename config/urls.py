@@ -14,6 +14,7 @@ urlpatterns = [
     path('api/v1/', include(
         [
             path('accounts/', include('core.apps.accounts.urls')),
+            path('company/', include('core.apps.company.urls')),
             path('shared/', include('core.apps.shared.urls')),
         ]
     )),

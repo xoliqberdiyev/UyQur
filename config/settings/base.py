@@ -22,6 +22,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 APPS = [
     'core.apps.accounts',
     'core.apps.shared',
+    'core.apps.company',
 ]
 
 PACKAGES = [

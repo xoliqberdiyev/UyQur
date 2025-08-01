@@ -12,7 +12,7 @@ schema_view = get_schema_view(
       contact=openapi.Contact(email="xoliqberdiyevbehru12@gmail.com"),
       license=openapi.License(name="Felix IT Solutions License"),
    ),
-   public=False,
+   public=True,
    permission_classes=(permissions.IsAuthenticated,),
 )
 
