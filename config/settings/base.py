@@ -23,6 +23,9 @@ APPS = [
     'core.apps.accounts',
     'core.apps.shared',
     'core.apps.company',
+    'core.apps.wherehouse',
+    'core.apps.products',
+    'core.apps.projects',
 ]
 
 PACKAGES = [
