@@ -1,7 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 
-from core.apps.projects.models.project import Project, ProjectDepartment, ProjectFolder
+from core.apps.projects.models.project import Project, ProjectFolder
 from core.apps.projects.serializers import project as serializers
 from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.shared.paginations.custom import CustomPageNumberPagination
@@ -17,7 +17,7 @@ class ProjectListApiView(generics.ListAPIView):
 
 class ProjectDetailApiView(generics.RetrieveAPIView):
     serializer_class = serializers.ProjectDetailSerialzier
-    queryset = Project.objects.prefetch_related('project_departments')
+    queryset = Project.objects.all()
     permission_classes = [HasRolePermission]
     required_permissions = []
     lookup_field = 'id'

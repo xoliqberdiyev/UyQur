@@ -20,6 +20,7 @@ urlpatterns = [
             path('projects/', include('core.apps.projects.urls')),
             path('products/', include('core.apps.products.urls')),
             path('orders/', include('core.apps.orders.urls')),
+            path('finance/', include('core.apps.finance.urls')),
         ]
     )),
 

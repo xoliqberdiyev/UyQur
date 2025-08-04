@@ -11,11 +11,8 @@ from core.apps.products.serializers.unity import UnityListSerializer
 from core.apps.wherehouse.models import WhereHouse
 from core.apps.wherehouse.serializers.wherehouse import WhereHouseListSerializer
 # projects
-from core.apps.projects.models import Project, ProjectDepartment
-from core.apps.projects.serializers.project import (
-    ProjectListSerializer, 
-    ProjectDepartmentListSerializer
-)
+from core.apps.projects.models import Project, ProjectFolder
+from core.apps.projects.serializers.project import ProjectListSerializer
 
 
 
@@ -24,8 +21,8 @@ class OrderCreateSerializer(serializers.Serializer):
     unity_id = serializers.UUIDField()
     quantity = serializers.IntegerField()
     wherehouse_id = serializers.UUIDField()
-    project_id = serializers.UUIDField()
-    project_department_id = serializers.UUIDField(required=False)
+    project_id = serializers.UUIDField(required=False)
+    project_folder_id = serializers.UUIDField()
     date = serializers.DateField()
 
     def validate(self, data):
@@ -33,10 +30,10 @@ class OrderCreateSerializer(serializers.Serializer):
             product = Product.objects.get(id=data['product_id'])
             unity = Unity.objects.get(id=data['unity_id'])
             wherehouse = WhereHouse.objects.get(id=data['wherehouse_id'])
-            project = Project.objects.get(id=data['project_id'])
-            if data.get('project_department_id'):
-                ProjectDepartment.objects.get(
-                    id=data['project_department_id']
+            project_folder = ProjectFolder.objects.get(id=data['project_folder_id'])
+            if data.get('project_id'):
+                Project.objects.get(
+                    id=data['project_id']
                 )
         except Product.DoesNotExist:
             raise serializers.ValidationError("Product not found")
@@ -44,18 +41,18 @@ class OrderCreateSerializer(serializers.Serializer):
             raise serializers.ValidationError("Unity not found")
         except WhereHouse.DoesNotExist:
             raise serializers.ValidationError("Where House not found")
+        except ProjectFolder.DoesNotExist:
+            raise serializers.ValidationError("Project Folder not found")
+        try:
+            if data.get('project_id'):
+                data['project'] = Project.objects.get(id=data['project_id'])
         except Project.DoesNotExist:
             raise serializers.ValidationError("Project not found")
-        try:
-            if data.get('project_department_id'):
-                data['project_department'] = ProjectDepartment.objects.get(id=data['project_department_id'])
-        except ProjectDepartment.DoesNotExist:
-            raise serializers.ValidationError("Project Department not found")
         
         data['product'] = product
         data['unity'] = unity
         data['wherehouse'] = wherehouse
-        data['project'] = project
+        data['project_folder'] = project_folder
         return data
 
     def create(self, validated_data):
@@ -64,8 +61,8 @@ class OrderCreateSerializer(serializers.Serializer):
                 product=validated_data.get('product'),
                 unity=validated_data.get('unity'),
                 wherehouse=validated_data.get('wherehouse'),
+                project_folder=validated_data.get('project_folder'),
                 project=validated_data.get('project'),
-                project_department=validated_data.get('project_department'),
                 quantity=validated_data.get('quantity'),
                 date=validated_data.get('date')
             )
@@ -76,12 +73,12 @@ class OrderListSerializer(serializers.ModelSerializer):
     product = ProductListSerializer()
     unity = UnityListSerializer()
     project = ProjectListSerializer()
-    project_department = ProjectDepartmentListSerializer()
     wherehouse = WhereHouseListSerializer()
+    project_folder = ProjectFolder()
 
     class Meta:
         model = Order
         fields = [
-            'id', 'product', 'unity', 'quantity', 'project', 'project_department',
+            'id', 'product', 'unity', 'quantity', 'project', 'project_folder',
             'wherehouse', 'date', 'status', 'employee'
         ]

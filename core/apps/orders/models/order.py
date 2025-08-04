@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from core.apps.shared.models import BaseModel
 from core.apps.products.models import Product, Unity
-from core.apps.projects.models import Project, ProjectDepartment
+from core.apps.projects.models import Project, ProjectFolder
 from core.apps.accounts.models import User
 from core.apps.wherehouse.models import WhereHouse
 
@@ -21,11 +21,11 @@ class Order(BaseModel):
     unity = models.ForeignKey(
         Unity, on_delete=models.CASCADE, related_name='orders'
     )
-    project = models.ForeignKey(
-        Project, on_delete=models.CASCADE, related_name='orders'
+    project_folder = models.ForeignKey(
+        ProjectFolder, on_delete=models.CASCADE, related_name='order', null=True
     )
-    project_department = models.ForeignKey(
-        ProjectDepartment, on_delete=models.DO_NOTHING, null=True, blank=True
+    project = models.ForeignKey(
+        Project, on_delete=models.SET_NULL, related_name='orders', null=True, blank=True
     )
     wherehouse = models.ForeignKey(
         WhereHouse, on_delete=models.CASCADE, related_name='orders'

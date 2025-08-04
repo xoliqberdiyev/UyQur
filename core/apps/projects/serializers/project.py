@@ -2,15 +2,7 @@ from django.db import transaction
 
 from rest_framework import serializers
 
-from core.apps.projects.models.project import Project, ProjectDepartment, ProjectFolder
-
-
-class ProjectDepartmentListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProjectDepartment
-        fields = [
-            'id', 'name'
-        ]
+from core.apps.projects.models.project import Project, ProjectFolder
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
@@ -22,12 +14,10 @@ class ProjectListSerializer(serializers.ModelSerializer):
 
 
 class ProjectDetailSerialzier(serializers.ModelSerializer):
-    project_departments = ProjectDepartmentListSerializer(many=True)
-
     class Meta:
         model = Project
         fields = [
-            'id', 'name', 'location', 'start_date', 'end_date', 'project_departments'
+            'id', 'name', 'location', 'start_date', 'end_date',
         ]
 
 

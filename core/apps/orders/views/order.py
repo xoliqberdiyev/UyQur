@@ -10,7 +10,7 @@ from core.apps.shared.paginations.custom import CustomPageNumberPagination
 class OrderListApiView(generics.ListAPIView):
     serializer_class = serializers.OrderListSerializer
     queryset = Order.objects.select_related(
-        'product', 'unity', 'project', 'project_department', 'wherehouse'
+        'product', 'unity', 'project', 'project_folder', 'wherehouse'
     )
     permission_classes = [HasRolePermission]
     required_permissions = []

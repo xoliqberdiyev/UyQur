@@ -1,6 +1,7 @@
 from django.urls import path, include
 
 from core.apps.projects.views import project as project_views
+from core.apps.projects.views import builder as builder_views
 
 urlpatterns = [
     path('project/', include(
@@ -15,6 +16,11 @@ urlpatterns = [
             path('create/', project_views.ProjectFolderCreateApiView.as_view()),
             path('list/', project_views.ProjectFolderListApiView.as_view()),
             path('create/project/', project_views.ProjectFolderCreateProjectApiView.as_view()),
+        ]
+    )),
+    path('builder/', include(
+        [
+            path('list/', builder_views.BuilderListApiView.as_view()),
         ]
     ))
 ]

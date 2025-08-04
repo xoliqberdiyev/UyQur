@@ -27,6 +27,7 @@ APPS = [
     'core.apps.products',
     'core.apps.projects',
     'core.apps.orders',
+    'core.apps.finance',
 ]
 
 PACKAGES = [
