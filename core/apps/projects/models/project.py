@@ -4,11 +4,25 @@ from django.utils.translation import gettext_lazy as _
 from core.apps.shared.models import BaseModel
 
 
+class ProjectFolder(BaseModel):
+    name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        verbose_name = _('Loyiha papkasi')
+        verbose_name_plural = _('Loyiha papkalari')
+
+
 class Project(BaseModel):
     name = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
     start_date = models.DateField()
     end_date = models.DateField()
+    folder = models.ForeignKey(
+        ProjectFolder, on_delete=models.SET_NULL, null=True, blank=True, related_name='projects'
+    )
 
     def __str__(self):
         return self.name

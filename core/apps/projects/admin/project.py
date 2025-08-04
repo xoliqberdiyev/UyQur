@@ -1,6 +1,6 @@
 from django.contrib import admin 
 
-from core.apps.projects.models.project import ProjectDepartment, Project
+from core.apps.projects.models.project import ProjectDepartment, Project, ProjectFolder
 
 
 class ProjectDepartmentInline(admin.TabularInline):
@@ -18,4 +18,10 @@ class ProjectAdmin(admin.ModelAdmin):
 @admin.register(ProjectDepartment)
 class ProjectDepartmentAdmin(admin.ModelAdmin):
     list_display = ['name', 'project']
+    search_fields = ['name']
+
+
+@admin.register(ProjectFolder)
+class ProjectFolderAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name']
     search_fields = ['name']
