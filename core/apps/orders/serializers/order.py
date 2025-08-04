@@ -2,7 +2,7 @@ from django.db import transaction
 
 from rest_framework import serializers
 
-from core.apps.orders.models import Order, OrderApplication
+from core.apps.orders.models import Order
 # products
 from core.apps.products.models import Product, Unity
 from core.apps.products.serializers.product import ProductListSerializer
@@ -35,7 +35,7 @@ class OrderCreateSerializer(serializers.Serializer):
             wherehouse = WhereHouse.objects.get(id=data['wherehouse_id'])
             project = Project.objects.get(id=data['project_id'])
             if data.get('project_department_id'):
-                project_department = ProjectDepartment.objects.get(
+                ProjectDepartment.objects.get(
                     id=data['project_department_id']
                 )
         except Product.DoesNotExist:
@@ -57,7 +57,20 @@ class OrderCreateSerializer(serializers.Serializer):
         data['wherehouse'] = wherehouse
         data['project'] = project
         return data
-    
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            order = Order.objects.create(
+                product=validated_data.get('product'),
+                unity=validated_data.get('unity'),
+                wherehouse=validated_data.get('wherehouse'),
+                project=validated_data.get('project'),
+                project_department=validated_data.get('project_department'),
+                quantity=validated_data.get('quantity'),
+                date=validated_data.get('date')
+            )
+            return order
+
 
 class OrderListSerializer(serializers.ModelSerializer):
     product = ProductListSerializer()

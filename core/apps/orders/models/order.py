@@ -41,22 +41,3 @@ class Order(BaseModel):
     class Meta:
         verbose_name = _("Buyurtma")
         verbose_name_plural = _("Buyurtmalar")
-
-
-class OrderApplication(BaseModel):
-    STATUS = (
-        ('NEW', 'yangi'),
-        ('CANCELLED', "bekor qilindi"),
-        ('ACCEPTED', 'qabul qilindi'),
-    )
-
-    orders = models.ManyToManyField(Order, related_name="applications")
-    employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='applications')
-    status = models.CharField(max_length=20, choices=STATUS)
-
-    def __str__(self):
-        return f"{self.employee} application"
-    
-    class Meta:
-        verbose_name = _("Ariza")
-        verbose_name_plural = _("Arizalar")
