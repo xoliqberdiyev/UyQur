@@ -38,11 +38,11 @@ class Project(BaseModel):
     other_members = models.ManyToManyField(User, related_name='project_members')
 
     # project settings
-    wherehouse = models.ForeignKey(
-        WhereHouse, on_delete=models.CASCADE, related_name='projects', null=True
+    wherehouse = models.ManyToManyField(
+        WhereHouse, related_name='projects'
     )
-    cash_transaction = models.ForeignKey(
-        CashTransaction, on_delete=models.CASCADE, related_name='projects', null=True
+    cash_transaction = models.ManyToManyField(
+        CashTransaction, related_name='projects', null=True
     )
     currency = models.CharField(choices=[('usd', 'usd'),('uzs','uzs')], max_length=3, default='uzs')
     benifit_plan = models.PositiveBigIntegerField(null=True)
