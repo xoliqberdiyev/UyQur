@@ -7,7 +7,7 @@ from core.apps.accounts.models.permission import Permission
 
 class Role(BaseModel):
     name = models.CharField(max_length=200, unique=True)
-    permissions = models.ManyToManyField(Permission, related_name='roles')
+    permissions = models.ManyToManyField(Permission, related_name='roles', blank=True)
 
     def __str__(self):
         return self.name

@@ -9,7 +9,15 @@ from core.apps.finance.models import CashTransaction
 
 
 class ProjectFolder(BaseModel):
+    COLORS = (
+        ('ORANGE', 'orange'),
+        ('GREEN', 'green'),
+        ('BLUE', 'blue'),
+        ('PURPLE', 'purple'),
+        ('RED', 'red')
+    )
     name = models.CharField(max_length=200)
+    color = models.CharField(max_length=10, choices=COLORS, default='ORANGE')
 
     def __str__(self):
         return self.name
@@ -20,6 +28,13 @@ class ProjectFolder(BaseModel):
 
 
 class Project(BaseModel):
+    STATUS = (
+        ('PLANNED', 'planned'),
+        ('IN_PROGRESS', 'in progress'),
+        ('FINISHED', 'finished'),
+        ('SUSPENDED', 'suspended'),
+    )
+
     name = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
     start_date = models.DateField()
@@ -42,10 +57,11 @@ class Project(BaseModel):
         WhereHouse, related_name='projects'
     )
     cash_transaction = models.ManyToManyField(
-        CashTransaction, related_name='projects', null=True
+        CashTransaction, related_name='projects'
     )
     currency = models.CharField(choices=[('usd', 'usd'),('uzs','uzs')], max_length=3, default='uzs')
     benifit_plan = models.PositiveBigIntegerField(null=True)
+    status = models.CharField(max_length=20, choices=STATUS, default='PLANNED')
 
     def __str__(self):
         return self.name

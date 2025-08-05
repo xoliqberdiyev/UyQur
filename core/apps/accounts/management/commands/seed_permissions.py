@@ -8,10 +8,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         permissions = [
-            {"code": "can_see_product_wherehouse", "name": "permission for see wherehouse list"},
+            {"code": "project", "name": "project all access"},
             {
-                "code": "can_add_product_wherehouse",
-                "name": "permission for add product in wherehouse"
+                "code": "project_folder",
+                "name": "project folder all access"
             }
         ]
 
