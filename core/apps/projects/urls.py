@@ -9,6 +9,8 @@ urlpatterns = [
             path('list/', project_views.ProjectListApiView.as_view()),
             path('<uuid:id>/', project_views.ProjectDetailApiView.as_view()),
             path('create/', project_views.ProjectCreateApiView.as_view()),
+            path('<uuid:id>/update/', project_views.ProjectUpdateApiView.as_view()),
+            path('<uuid:id>/delete/', project_views.ProjectDeleteApiView.as_view()),
         ]
     )),
     path('project_folder/', include(

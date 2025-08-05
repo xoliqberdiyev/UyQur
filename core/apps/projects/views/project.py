@@ -35,6 +35,21 @@ class ProjectCreateApiView(generics.CreateAPIView):
     required_permissions = ['project']
 
 
+class ProjectUpdateApiView(generics.UpdateAPIView):
+    serializer_class = serializers.ProjectDetailSerialzier
+    queryset = Project.objects.all()
+    permission_classes = [HasRolePermission]
+    required_permissions = ['project']
+    lookup_field = 'id'
+
+
+class ProjectDeleteApiView(generics.DestroyAPIView):
+    permission_classes = [HasRolePermission]
+    lookup_field = 'id'
+    required_permissions = ['project']
+    queryset = Project.objects.all()
+
+
 # Project Folder
 class ProjectFolderCreateApiView(generics.CreateAPIView):
     serializer_class = serializers.ProjectFolderCreateSerializer
