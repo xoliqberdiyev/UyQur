@@ -1,17 +1,17 @@
 CACHES = {
     "default": {
         "BACKEND": 'django_redis.cache.RedisCache',
-        "LOCATION": 'redis://127.0.0.1:6379/1',
-        "TIMEOUT": 5,
+        "LOCATION": 'redis://redis:6379',
+        "TIMEOUT": 300,
     },
 }
 
-CACHE_MIDDLEWARE_SECONDS = 5
+CACHE_MIDDLEWARE_SECONDS = 300
 
 
-CACHEOPS_REDIS = 'redis://127.0.0.1:6379/1'
+CACHEOPS_REDIS = 'redis://redis:6379'
 CACHEOPS_DEFAULTS = {
-    "timeout": 5,
+    "timeout": 300,
 }
 
 CACHEOPS = {
@@ -22,6 +22,10 @@ CACHEOPS = {
     "company.*": {
         "ops": "all",
         "timeout": 60 * 5
+    },
+    "company.Company":{
+        "ops": "all",
+        "timeout": 300,
     },
     "products.*": {
         "ops": "all",
@@ -42,4 +46,4 @@ CACHEOPS = {
     
 }
 CACHEOPS_DEGRADE_ON_FAILURE = True
-CACHEOPS_ENABLED = False
+CACHEOPS_ENABLED = True
