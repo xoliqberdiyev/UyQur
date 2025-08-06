@@ -13,7 +13,9 @@ class Command(BaseCommand):
                 "code": "project_folder",
                 "name": "project folder all access"
             },
-            {'code': 'delete_user', "name": 'can delete user permissions'}
+            {'code': 'delete_user', "name": 'can delete user permissions'},
+            {'code': 'user', 'name': 'all user access'},
+            {'code': 'settings', 'name': 'all settings access'},
         ]
 
         for perm in permissions:

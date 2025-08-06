@@ -1,6 +1,9 @@
+from django.db import transaction
+
 from rest_framework import serializers
 
 from core.apps.accounts.models import User
+from core.apps.accounts.models.role import Role
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -27,3 +30,46 @@ class UserProfileSerializer(serializers.ModelSerializer):
         instance.profile_image = validated_data.get('profile_image', instance.profile_image)
         instance.save()
         return instance
+    
+
+class UserCreateSerializer(serializers.Serializer):
+    full_name = serializers.CharField()
+    username = serializers.CharField()
+    phone_number = serializers.CharField()
+    profile_image = serializers.ImageField()
+    role_id = serializers.UUIDField()
+    is_blocked = serializers.BooleanField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        role = Role.objects.filter(id=data['role_id']).first()
+        if not role:
+            raise serializers.ValidationError("role not found")
+        data['role'] = role
+        if User.objects.filter(username=data['username']).exists():
+            raise serializers.ValidationError("User with this username already exists")
+        return data
+    
+    def create(self, validated_data):
+        with transaction.atomic():
+            user = User.objects.create(
+                username=validated_data.get('username'),
+                full_name=validated_data.get('full_name'),
+                phone_number=validated_data.get('phone_number'),
+                profile_image=validated_data.get('profile_image'),
+                role=validated_data.get('role'),
+                is_blocked=validated_data.get('is_blocked'),
+            )
+            user.set_password(validated_data.get('password'))
+            user.save()
+            return user
+        
+
+class UserListSerializer(serializers.ModelSerializer):
+    role = serializers.CharField(source='role.name')
+    
+    class Meta:
+        model = User
+        fields = [
+            'id', 'full_name', 'profile_image', 'phone_number', 'role', 'username', 'is_blocked'
+        ]
