@@ -7,6 +7,7 @@ urlpatterns = [
     path('cash_transaction/', include(
         [
             path('list/', cash_views.CashTransactionListApiView.as_view()),
+            path('create/', cash_views.CashTransactionCreateApiView.as_view()),
         ]
     ))
 ]

@@ -9,10 +9,10 @@ class HasRolePermission(BasePermission):
 
         required_permissions = getattr(view, 'required_permissions', [])
         if not required_permissions:
-            return True 
+            return True
 
         if user.role:
             user_permissions = user.role.permissions.values_list('code', flat=True)
-            return all(perm in user_permissions for perm in required_permissions)
+            return any(perm in user_permissions for perm in required_permissions)
 
         return False

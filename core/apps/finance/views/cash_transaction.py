@@ -10,5 +10,12 @@ class CashTransactionListApiView(generics.ListAPIView):
     permission_classes = [HasRolePermission]
     required_permissions = []
     serializer_class = serializers.CashTransactionListSerializer
-    queryset = CashTransaction.objects.all()
+    queryset = CashTransaction.objects.select_related('payment_type').prefetch_related('employees')
     pagination_class = CustomPageNumberPagination
+
+
+class CashTransactionCreateApiView(generics.GenericAPIView):
+    serializer_class = serializers.CashTransactionCreateSerializer
+    queryset = CashTransaction.objects.all()
+    permission_classes = [HasRolePermission]
+    required_permissions = ['project', 'project_folder']

@@ -9,7 +9,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id', 'first_name', 'last_name', 'username', 'role', 'profile_image', 'permissions'
+            'id', 'full_name', 'username', 'phone_number', 'is_blocked', 'role', 'profile_image', 'permissions'
         ]
         extra_kwargs = {'role': {'read_only': True}, "permissions": {'read_only': True}}
 

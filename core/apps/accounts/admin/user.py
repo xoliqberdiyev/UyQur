@@ -10,7 +10,9 @@ class UserAdmin(DjangoUserAdmin):
     change_user_password_template = None
     fieldsets = (
         (None, {"fields": ("username", "password")}),
-        (_("Personal info"), {"fields": ("first_name", "last_name", "email", "role")}),
+        (_("Personal info"), {"fields": (
+            "full_name", 'phone_number', "role", 'profile_image', 'is_blocked'
+        )}),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
     add_fieldsets = (
@@ -22,7 +24,7 @@ class UserAdmin(DjangoUserAdmin):
             },
         ),
     )
-    list_display = ("username", "email", "first_name", "last_name", "is_staff")
-    list_filter = ("is_staff", "is_superuser", "is_active", "groups")
-    search_fields = ("username", "first_name", "last_name", "email")
+    list_display = ("username", "phone_number", "full_name", "is_blocked", "is_staff")
+    list_filter = ("is_staff", "is_superuser", "is_active", "is_blocked")
+    search_fields = ("username", "full_name", "phone_number")
     ordering = ("username",)
