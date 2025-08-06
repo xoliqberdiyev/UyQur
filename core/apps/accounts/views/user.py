@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from core.apps.accounts.models import User
 from core.apps.accounts.serializers import user as serializers
 from core.apps.accounts.permissions.permissions import HasRolePermission
+from core.apps.accounts.utils.permission import get_permissions_with_tabs
 
 
 class UserProfileApiView(generics.GenericAPIView):
@@ -18,7 +19,9 @@ class UserProfileApiView(generics.GenericAPIView):
         user = request.user
         serializer = self.serializer_class(user)
         return Response({
-            "success": True, 'user_data': serializer.data 
+            "success": True,
+            'user_data': serializer.data,
+            'permissions_to_page': get_permissions_with_tabs(user)
         }, status=200)
     
 
