@@ -20,9 +20,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
             return None
         
     def update(self, instance, validated_data):
-        instance.first_name = validated_data.get('first_name', instance.first_name)
-        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.role = validated_data.get('role', instance.role)
+        instance.full_name = validated_data.get('full_name', instance.full_name)
         instance.username = validated_data.get('username', instance.username)
+        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
         instance.profile_image = validated_data.get('profile_image', instance.profile_image)
         instance.save()
         return instance

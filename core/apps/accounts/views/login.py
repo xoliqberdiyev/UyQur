@@ -6,6 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from core.apps.accounts.models.user import User
 from core.apps.accounts.serializers.login import LoginSerializer
 from core.apps.accounts.permissions.permissions import HasRolePermission
+from core.apps.accounts.utils.permission import get_permissions_with_tabs
 
 
 class LoginApiView(generics.GenericAPIView):
@@ -19,7 +20,7 @@ class LoginApiView(generics.GenericAPIView):
             token = RefreshToken.for_user(user)
             user_data = {
                 'role': user.role.name if user.role else None,
-                'permissions': user.role.permissions.values_list('code', flat=True) if user.role else None,
+                'permissions_to_page': get_permissions_with_tabs(user)
             }
             return Response(
                 {"access": str(token.access_token), "refresh": str(token), 'user_data': user_data},

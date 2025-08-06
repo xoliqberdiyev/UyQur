@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from core.apps.shared.models import BaseModel
-from core.apps.accounts.models.permission import Permission
+from core.apps.accounts.models.permission import Permission, PermissionToTab
 
 
 class Role(BaseModel):
