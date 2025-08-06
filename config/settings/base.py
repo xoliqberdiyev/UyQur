@@ -152,7 +152,6 @@ AUTH_USER_MODEL = 'accounts.User'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-
 from config.conf.rest_framework import *
 from config.conf.rest_framework_simplejwt import * 
 from config.conf.logs import *
