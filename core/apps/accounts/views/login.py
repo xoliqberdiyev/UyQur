@@ -19,8 +19,7 @@ class LoginApiView(generics.GenericAPIView):
             user = serializer.validated_data.get('user')
             token = RefreshToken.for_user(user)
             user_data = {
-                'role': user.role.name if user.role else None,
-                'permissions_to_page': get_permissions_with_tabs(user)
+                'role': user.role.name if user.role else None
             }
             return Response(
                 {"access": str(token.access_token), "refresh": str(token), 'user_data': user_data},

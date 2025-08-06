@@ -2,12 +2,17 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from core.apps.shared.models import BaseModel
-from core.apps.accounts.models.permission import Permission, PermissionToTab
+from core.apps.accounts.models.permission import Permission, PermissionToTab, PermissionToAction
 
 
 class Role(BaseModel):
     name = models.CharField(max_length=200, unique=True)
     permissions = models.ManyToManyField(Permission, related_name='roles', blank=True)
+    permission_to_tabs = models.ManyToManyField(PermissionToTab, related_name='roles', blank=True)
+    permission_to_actions = models.ManyToManyField(
+        PermissionToAction, related_name='roles', blank=True
+    )
+    comment = models.CharField(max_length=200, null=True, blank=True)
 
     def __str__(self):
         return self.name
