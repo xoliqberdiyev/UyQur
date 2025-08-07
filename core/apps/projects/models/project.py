@@ -81,6 +81,7 @@ class Project(BaseModel):
     currency = models.CharField(choices=[('usd', 'usd'),('uzs','uzs')], max_length=3, default='uzs')
     benifit_plan = models.PositiveBigIntegerField(null=True)
     status = models.CharField(max_length=20, choices=STATUS, default='PLANNED')
+    is_archive = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

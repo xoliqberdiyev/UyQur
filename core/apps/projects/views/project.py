@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Prefetch
 
 from rest_framework import generics, status, views
 from rest_framework.response import Response
@@ -11,7 +12,7 @@ from core.apps.shared.paginations.custom import CustomPageNumberPagination
 
 class ProjectListApiView(generics.ListAPIView):
     serializer_class = serializers.ProjectListSerializer
-    queryset = Project.objects.select_related('location')
+    queryset = Project.objects.filter(is_archive=False).select_related('location')
     permission_classes = [HasRolePermission]
     required_permissions = ['project']
     pagination_class = CustomPageNumberPagination
@@ -50,6 +51,18 @@ class ProjectDeleteApiView(generics.DestroyAPIView):
     queryset = Project.objects.all()
 
 
+class ArchiveProjectApiView(generics.GenericAPIView):
+    serializer_class = None
+    permission_classes = [HasRolePermission]
+    required_permissions = ['project']
+
+    def get(self, request, id):
+        project = get_object_or_404(Project, id=id)
+        project.is_archive = True
+        project.save()
+        return Response({"success": True, "message": "Archived"}, status=200)
+
+
 # Project Folder
 class ProjectFolderCreateApiView(generics.CreateAPIView):
     serializer_class = serializers.ProjectFolderCreateSerializer
@@ -60,7 +73,9 @@ class ProjectFolderCreateApiView(generics.CreateAPIView):
 
 class ProjectFolderListApiView(generics.ListAPIView):
     serializer_class = serializers.ProjectFolderListSerializer
-    queryset = ProjectFolder.objects.prefetch_related('projects')
+    queryset = ProjectFolder.objects.prefetch_related(
+        Prefetch('projects', Project.objects.filter(is_archive=False))
+    )
     permission_classes = [HasRolePermission]
     required_permissions = ['project_folder']
     pagination_class = CustomPageNumberPagination
