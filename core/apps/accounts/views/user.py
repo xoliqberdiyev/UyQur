@@ -77,7 +77,7 @@ class UserCreateApiView(generics.GenericAPIView):
 
 class UserListApiView(generics.ListAPIView):
     serializer_class = serializers.UserListSerializer
-    queryset = User.objects.c('role')
+    queryset = User.objects.select_related('role')
     permission_classes = [HasRolePermission]
     required_permissions = ['settings', 'user']
     pagination_class = CustomPageNumberPagination
