@@ -108,3 +108,23 @@ class ProjectFolderDeleteApiView(views.APIView):
         folder = get_object_or_404(ProjectFolder, id=id)
         folder.delete()
         return Response({"success": True, "message": 'deleted!'}, status=204)
+    
+
+class ChangeProjectFolderApiView(generics.GenericAPIView):
+    serializer_class = serializers.ChangeProjectFolderSerializer
+    queryset = Project.objects.all()
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            project = serializer.validated_data.get('project')
+            folder = serializer.validated_data.get('project_folder')
+            project.folder = folder
+            project.save()
+            return Response(
+                {'success': True, 'message': 'Project Folder changed!'},
+                status=200
+            )
+        return Response(
+            {'success': False, 'message': serializer.errors}, status=400
+        )

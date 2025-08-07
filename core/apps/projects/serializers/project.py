@@ -138,3 +138,21 @@ class ProjectFolderDetailSerializer(serializers.ModelSerializer):
 
     def get_projects_count(self, obj):
         return obj.projects.count()
+    
+
+class ChangeProjectFolderSerializer(serializers.Serializer):
+    project_id = serializers.UUIDField()
+    project_folder_id = serializers.UUIDField()
+
+    def validate(self, data):
+        project = Project.objects.filter(id=data['project_id']).first()
+        if not project:
+            raise serializers.ValidationError("Project not found")
+        project_folder = ProjectFolder.objects.filter(id=data['project_folder_id']).first()
+        if not project_folder:
+            raise serializers.ValidationError("Project Folder not found")
+        if project.folder == project_folder:
+            raise serializers.ValidationError("the project folder is attached for this project")
+        data['project'] = project
+        data['project_folder'] = project_folder
+        return data
