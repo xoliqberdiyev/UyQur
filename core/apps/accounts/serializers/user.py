@@ -66,10 +66,18 @@ class UserCreateSerializer(serializers.Serializer):
         
 
 class UserListSerializer(serializers.ModelSerializer):
-    role = serializers.CharField(source='role.name')
+    role = serializers.SerializerMethodField(method_name='get_role')
     
     class Meta:
         model = User
         fields = [
             'id', 'full_name', 'profile_image', 'phone_number', 'role', 'username', 'is_blocked'
         ]
+    
+    def get_role(self, obj):
+        if obj.role:
+            return {
+                'id': obj.role.id,
+                'role': obj.role.name,
+            }
+        return None
