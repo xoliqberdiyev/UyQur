@@ -10,10 +10,9 @@ class DistrictListSerializer(serializers.ModelSerializer):
 
 
 class RegionListSerializer(serializers.ModelSerializer):
-    districts = DistrictListSerializer(many=True)
-    
     class Meta:
         model = Region
         fields = [
-            'id', 'name', 'districts'
+            'id', 'name',
         ]
+
