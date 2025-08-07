@@ -14,7 +14,7 @@ class CashTransactionListApiView(generics.ListAPIView):
     pagination_class = CustomPageNumberPagination
 
 
-class CashTransactionCreateApiView(generics.GenericAPIView):
+class CashTransactionCreateApiView(generics.CreateAPIView):
     serializer_class = serializers.CashTransactionCreateSerializer
     queryset = CashTransaction.objects.all()
     permission_classes = [HasRolePermission]

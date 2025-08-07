@@ -23,7 +23,7 @@ class ProjectLocationSerializer(serializers.Serializer):
                 raise serializers.ValidationError("District not found")
             data['district'] = district
         return data
-    
+
 
 class ProjectLocationListSerializer(serializers.ModelSerializer):
     region = serializers.SerializerMethodField(method_name='get_region')

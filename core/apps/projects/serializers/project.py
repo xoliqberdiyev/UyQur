@@ -32,21 +32,44 @@ class ProjectUpdateSerialzier(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = [
-            'id', 'name', 'location', 'start_date', 'end_date', 'status', 'benifit_plan'
+            'id', 'name', 'location', 'start_date', 'end_date', 'status', 'benifit_plan', 'boss',
+            'builder', 'area', 'foreman', 'other_members', 'wherehouse', 'cash_transaction', 'currency',
         ]
     
+    
     def update(self, instance, validated_data):
-        location = validated_data.get('location')
+        location_data = validated_data.pop('location', None)
+
         instance.name = validated_data.get('name', instance.name)
         instance.start_date = validated_data.get('start_date', instance.start_date)
         instance.end_date = validated_data.get('end_date', instance.end_date)
-        instance.status = validated_data.get('name', instance.status)
-        instance.location.region = location.get('region', instance.location.region)
-        instance.location.district = location.get('district', instance.location.district)
-        instance.location.longitude = location.get('longitude', instance.location.longitude)
-        instance.location.latitude = location.get('latitude', instance.location.latitude)
-        instance.location.address = location.get('address', instance.location.address)
-        instance.location.save()
+        instance.status = validated_data.get('status', instance.status)
+        instance.benifit_plan = validated_data.get('benifit_plan', instance.benifit_plan)
+        instance.folder = validated_data.get('folder', instance.folder)
+        instance.builder = validated_data.get('builder', instance.builder)
+        instance.area = validated_data.get('area', instance.area)
+        instance.currency = validated_data.get('currency', instance.currency)
+
+        if 'boss' in validated_data:
+            instance.boss.set(validated_data['boss'])
+        if 'foreman' in validated_data:
+            instance.foreman.set(validated_data['foreman'])
+        if 'other_members' in validated_data:
+            instance.other_members.set(validated_data['other_members'])
+        if 'wherehouse' in validated_data:
+            instance.wherehouse.set(validated_data['wherehouse'])
+        if 'cash_transaction' in validated_data:
+            instance.cash_transaction.set(validated_data['cash_transaction'])
+
+        if location_data and instance.location:
+            location = instance.location
+            location.region = location_data.get('region', location.region)
+            location.district = location_data.get('district', location.district)
+            location.longitude = location_data.get('longitude', location.longitude)
+            location.latitude = location_data.get('latitude', location.latitude)
+            location.address = location_data.get('address', location.address)
+            location.save()
+
         instance.save()
         return instance
 
