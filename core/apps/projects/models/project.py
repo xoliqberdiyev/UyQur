@@ -79,7 +79,7 @@ class Project(BaseModel):
         CashTransaction, related_name='projects'
     )
     currency = models.CharField(choices=[('usd', 'usd'),('uzs','uzs')], max_length=3, default='uzs')
-    benifit_plan = models.PositiveBigIntegerField(null=True)
+    benifit_plan = models.PositiveBigIntegerField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS, default='PLANNED')
     is_archive = models.BooleanField(default=False)
 

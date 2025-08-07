@@ -89,8 +89,8 @@ class ProjectCreateSerializer(serializers.Serializer):
 
     wherehouse = serializers.ListSerializer(child=serializers.UUIDField())
     cash_transaction = serializers.ListSerializer(child=serializers.UUIDField())
-    currency = serializers.ChoiceField(choices=[('uzs', 'uzs'), ('usd', 'usd')])
-    benifit_plan = serializers.IntegerField()
+    currency = serializers.ChoiceField(choices=[('uzs', 'uzs'), ('usd', 'usd')], required=False)
+    benifit_plan = serializers.IntegerField(required=False)
 
     def create(self, validated_data):
         boss_ids = validated_data.pop('boss')
@@ -165,8 +165,8 @@ class ProjectFolderProjectCreateSerializer(serializers.Serializer):
 
     wherehouse = serializers.ListSerializer(child=serializers.UUIDField())
     cash_transaction = serializers.ListSerializer(child=serializers.UUIDField())
-    currency = serializers.ChoiceField(choices=[('uzs', 'uzs'), ('usd', 'usd')])
-    benifit_plan = serializers.IntegerField()
+    currency = serializers.ChoiceField(choices=[('uzs', 'uzs'), ('usd', 'usd')], required=False)
+    benifit_plan = serializers.IntegerField(required=False)
 
     def validate(self, data):
         folder = ProjectFolder.objects.filter(id=data['folder_id']).first()
