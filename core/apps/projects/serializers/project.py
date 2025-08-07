@@ -2,10 +2,13 @@ from django.db import transaction
 
 from rest_framework import serializers
 
-from core.apps.projects.models.project import Project, ProjectFolder
+from core.apps.projects.models.project import Project, ProjectFolder, ProjectLocation
+from core.apps.projects.serializers.project_location import ProjectLocationSerializer, ProjectLocationListSerializer
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
+    location = ProjectLocationListSerializer()
+
     class Meta:
         model = Project
         fields = [
@@ -14,6 +17,8 @@ class ProjectListSerializer(serializers.ModelSerializer):
 
 
 class ProjectDetailSerialzier(serializers.ModelSerializer):
+    location = ProjectLocationListSerializer()
+
     class Meta:
         model = Project
         fields = [
@@ -21,8 +26,33 @@ class ProjectDetailSerialzier(serializers.ModelSerializer):
         ]
 
 
+class ProjectUpdateSerialzier(serializers.ModelSerializer):
+    location = ProjectLocationSerializer()
+    
+    class Meta:
+        model = Project
+        fields = [
+            'id', 'name', 'location', 'start_date', 'end_date', 'status', 'benifit_plan'
+        ]
+    
+    def update(self, instance, validated_data):
+        location = validated_data.get('location')
+        instance.name = validated_data.get('name', instance.name)
+        instance.start_date = validated_data.get('start_date', instance.start_date)
+        instance.end_date = validated_data.get('end_date', instance.end_date)
+        instance.status = validated_data.get('name', instance.status)
+        instance.location.region = location.get('region', instance.location.region)
+        instance.location.district = location.get('district', instance.location.district)
+        instance.location.longitude = location.get('longitude', instance.location.longitude)
+        instance.location.latitude = location.get('latitude', instance.location.latitude)
+        instance.location.address = location.get('address', instance.location.address)
+        instance.location.save()
+        instance.save()
+        return instance
+
+
 class ProjectCreateSerializer(serializers.Serializer):
-    location = serializers.CharField()
+    location = ProjectLocationSerializer()
     start_date = serializers.DateField()
     end_date = serializers.DateField()
     name = serializers.CharField()
@@ -48,11 +78,20 @@ class ProjectCreateSerializer(serializers.Serializer):
         builder_id = validated_data.pop('builder_id')
 
         with transaction.atomic():
+            location_data = validated_data.get('location')
+            location = ProjectLocation.objects.create(
+                address=location_data.get('address'),
+                region=location_data.get('region'),
+                district=location_data.get('district'),
+                latitude=location_data.get('latitude'),
+                longitude=location_data.get('longitude'),
+            )
+
             project = Project.objects.create(
                 name=validated_data.get('name'),
                 start_date=validated_data.get('start_date'),
                 end_date=validated_data.get('end_date'),
-                location=validated_data.get('location'),
+                location=location,
                 area=validated_data.get('area'),
                 currency=validated_data.get('currency'),
                 benifit_plan=validated_data.get('benifit_plan'),
@@ -89,10 +128,22 @@ class ProjectFolderListSerializer(serializers.ModelSerializer):
 
 class ProjectFolderProjectCreateSerializer(serializers.Serializer):
     folder_id = serializers.UUIDField()
-    name = serializers.CharField()
-    location = serializers.CharField()
+    location = ProjectLocationSerializer()
     start_date = serializers.DateField()
     end_date = serializers.DateField()
+    name = serializers.CharField()
+
+    builder_id = serializers.UUIDField()
+    area = serializers.IntegerField()
+
+    boss = serializers.ListSerializer(child=serializers.UUIDField())
+    foreman = serializers.ListSerializer(child=serializers.UUIDField())
+    other_members = serializers.ListSerializer(child=serializers.UUIDField())
+
+    wherehouse = serializers.ListSerializer(child=serializers.UUIDField())
+    cash_transaction = serializers.ListSerializer(child=serializers.UUIDField())
+    currency = serializers.ChoiceField(choices=[('uzs', 'uzs'), ('usd', 'usd')])
+    benifit_plan = serializers.IntegerField()
 
     def validate(self, data):
         folder = ProjectFolder.objects.filter(id=data['folder_id']).first()
@@ -102,14 +153,42 @@ class ProjectFolderProjectCreateSerializer(serializers.Serializer):
         return data 
     
     def create(self, validated_data):
+        boss_ids = validated_data.pop('boss')
+        foreman_ids = validated_data.pop('foreman')
+        other_member_ids = validated_data.pop('other_members')
+        warehouse_ids = validated_data.pop('wherehouse')
+        cash_transaction_ids = validated_data.pop('cash_transaction')
+        builder_id = validated_data.pop('builder_id')
+
         with transaction.atomic():
-            return Project.objects.create(
-                name=validated_data.get('name'),
-                folder=validated_data.get('folder'),
-                location=validated_data.get('location'),
-                start_date=validated_data.get('start_date'),
-                end_date=validated_data.get('end_date')
+            location_data = validated_data.get('location')
+            location = ProjectLocation.objects.create(
+                address=location_data.get('address'),
+                region=location_data.get('region'),
+                district=location_data.get('district'),
+                latitude=location_data.get('latitude'),
+                longitude=location_data.get('longitude'),
             )
+
+            project = Project.objects.create(
+                name=validated_data.get('name'),
+                start_date=validated_data.get('start_date'),
+                end_date=validated_data.get('end_date'),
+                location=location,
+                area=validated_data.get('area'),
+                currency=validated_data.get('currency'),
+                benifit_plan=validated_data.get('benifit_plan'),
+                builder_id=builder_id,
+                folder=validated_data.get('folder')
+            )
+
+            project.boss.set(boss_ids)
+            project.foreman.set(foreman_ids)
+            project.other_members.set(other_member_ids)
+            project.wherehouse.set(warehouse_ids)
+            project.cash_transaction.set(cash_transaction_ids)
+
+            return project
         
 
 class ProjectFolderUpdateSerializer(serializers.ModelSerializer):

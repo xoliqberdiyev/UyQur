@@ -1,6 +1,6 @@
 from django.contrib import admin 
 
-from core.apps.projects.models.project import Project, ProjectFolder
+from core.apps.projects.models.project import Project, ProjectFolder, ProjectLocation
 
 
 
@@ -15,3 +15,8 @@ class ProjectAdmin(admin.ModelAdmin):
 class ProjectFolderAdmin(admin.ModelAdmin):
     list_display = ['id', 'name']
     search_fields = ['name']
+
+
+@admin.register(ProjectLocation)
+class ProjectLocation(admin.ModelAdmin):
+    list_display = ['address', 'latitude', 'longitude']

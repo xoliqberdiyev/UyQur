@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from core.apps.shared.models import BaseModel
+from core.apps.shared.models import BaseModel, Region, District
 from core.apps.projects.models.builder import Builder
 from core.apps.accounts.models.user import User
 from core.apps.wherehouse.models.wherehouse import WhereHouse
@@ -27,6 +27,23 @@ class ProjectFolder(BaseModel):
         verbose_name_plural = _('Loyiha papkalari')
 
 
+class ProjectLocation(BaseModel):
+    address = models.CharField(max_length=200)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name='project_locations')
+    district = models.ForeignKey(
+        District, on_delete=models.CASCADE, related_name='project_locations'
+    )
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+    def __str__(self):
+        return self.address
+    
+    class Meta:
+        verbose_name = _("Loyiha lokatsiyasi")
+        verbose_name_plural = _("Loyiha lokatsiyalari")
+
+
 class Project(BaseModel):
     STATUS = (
         ('PLANNED', 'planned'),
@@ -36,7 +53,9 @@ class Project(BaseModel):
     )
 
     name = models.CharField(max_length=200)
-    location = models.CharField(max_length=200)
+    location = models.ForeignKey(
+        ProjectLocation, on_delete=models.SET_NULL, null=True, related_name='projects'
+    )
     start_date = models.DateField()
     end_date = models.DateField()
     folder = models.ForeignKey(

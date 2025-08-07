@@ -11,7 +11,7 @@ from core.apps.shared.paginations.custom import CustomPageNumberPagination
 
 class ProjectListApiView(generics.ListAPIView):
     serializer_class = serializers.ProjectListSerializer
-    queryset = Project.objects.all()
+    queryset = Project.objects.select_related('location')
     permission_classes = [HasRolePermission]
     required_permissions = ['project']
     pagination_class = CustomPageNumberPagination
@@ -22,7 +22,7 @@ class ProjectListApiView(generics.ListAPIView):
 
 class ProjectDetailApiView(generics.RetrieveAPIView):
     serializer_class = serializers.ProjectDetailSerialzier
-    queryset = Project.objects.all()
+    queryset = Project.objects.select_related('location')
     permission_classes = [HasRolePermission]
     required_permissions = ['project']
     lookup_field = 'id'
@@ -36,7 +36,7 @@ class ProjectCreateApiView(generics.CreateAPIView):
 
 
 class ProjectUpdateApiView(generics.UpdateAPIView):
-    serializer_class = serializers.ProjectDetailSerialzier
+    serializer_class = serializers.ProjectUpdateSerialzier
     queryset = Project.objects.all()
     permission_classes = [HasRolePermission]
     required_permissions = ['project']
