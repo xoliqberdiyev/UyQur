@@ -4,26 +4,22 @@ from rest_framework import serializers
 
 from core.apps.projects.models.project import Project, ProjectFolder, ProjectLocation
 from core.apps.projects.serializers.project_location import ProjectLocationSerializer, ProjectLocationListSerializer
+from core.apps.accounts.serializers.user import UserListSerializer
+from core.apps.wherehouse.serializers.wherehouse import WhereHouseListSerializer
+from core.apps.finance.serializers.cash_transaction import CashTransactionListSerializer
 
 
 class ProjectListSerializer(serializers.ModelSerializer):
-    location = ProjectLocationListSerializer()
+    folder_name = serializers.SerializerMethodField(method_name='get_folder_name')
 
     class Meta:
         model = Project
         fields = [
-            'id', 'name', 'location', 'start_date', 'end_date'
+            'id', 'name', 'start_date', 'end_date', 'status', 'folder_name'
         ]
 
-
-class ProjectDetailSerialzier(serializers.ModelSerializer):
-    location = ProjectLocationListSerializer()
-
-    class Meta:
-        model = Project
-        fields = [
-            'id', 'name', 'location', 'start_date', 'end_date', 'status', 'benifit_plan'
-        ]
+    def get_folder_name(self, obj):
+        return obj.folder.name if obj.folder else None
 
 
 class ProjectUpdateSerialzier(serializers.ModelSerializer):
@@ -142,11 +138,14 @@ class ProjectFolderCreateSerializer(serializers.Serializer):
 
 
 class ProjectFolderListSerializer(serializers.ModelSerializer):
-    projects = ProjectListSerializer(many=True)
+    projects_count = serializers.SerializerMethodField(method_name='get_projects_count')
 
     class Meta:
         model = ProjectFolder
-        fields = ['id', 'name', 'projects']
+        fields = ['id', 'name', 'projects_count']
+
+    def get_projects_count(self, obj):
+        return obj.projects.count()
 
 
 class ProjectFolderProjectCreateSerializer(serializers.Serializer):
@@ -258,3 +257,30 @@ class ChangeProjectFolderSerializer(serializers.Serializer):
         data['project'] = project
         data['project_folder'] = project_folder
         return data
+    
+
+
+
+class ProjectDetailSerialzier(serializers.ModelSerializer):
+    location = ProjectLocationListSerializer()
+    folder = ProjectFolderListSerializer()
+    builder = serializers.SerializerMethodField(method_name='get_builder')
+    boss = UserListSerializer(many=True)
+    foreman = UserListSerializer(many=True)
+    other_members = UserListSerializer(many=True)
+    wherehouse = WhereHouseListSerializer(many=True)
+    cash_transaction = CashTransactionListSerializer(many=True)
+    
+    class Meta:
+        model = Project
+        fields = [
+            'id', 'name', 'location', 'start_date', 'end_date', 'status', 'benifit_plan',
+            'area', 'currency',
+            'folder', 'builder', 'boss', 'foreman', 'other_members', 'wherehouse', 'cash_transaction', 'is_archive'
+        ]
+
+    def get_builder(self, obj):
+        return {
+            'id': obj.builder.id,
+            'name': obj.builder.name
+        }

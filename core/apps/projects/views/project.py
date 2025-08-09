@@ -12,18 +12,24 @@ from core.apps.shared.paginations.custom import CustomPageNumberPagination
 
 class ProjectListApiView(generics.ListAPIView):
     serializer_class = serializers.ProjectListSerializer
-    queryset = Project.objects.filter(is_archive=False).select_related('location')
+    queryset = Project.objects.all()
     permission_classes = [HasRolePermission]
     required_permissions = ['project']
     pagination_class = CustomPageNumberPagination
 
     def get_queryset(self):
-        return Project.objects.exclude(folder__isnull=False)
-
+        return (
+        Project.objects
+        .select_related('location')
+        .exclude(is_archive=True)
+        .exclude(folder__isnull=False)
+    )
 
 class ProjectDetailApiView(generics.RetrieveAPIView):
     serializer_class = serializers.ProjectDetailSerialzier
-    queryset = Project.objects.select_related('location')
+    queryset = Project.objects.select_related('location', 'folder', 'builder').prefetch_related(
+        'boss', 'foreman', 'other_members', 'wherehouse', 'cash_transaction',
+    )
     permission_classes = [HasRolePermission]
     required_permissions = ['project']
     lookup_field = 'id'
@@ -73,9 +79,7 @@ class ProjectFolderCreateApiView(generics.CreateAPIView):
 
 class ProjectFolderListApiView(generics.ListAPIView):
     serializer_class = serializers.ProjectFolderListSerializer
-    queryset = ProjectFolder.objects.prefetch_related(
-        Prefetch('projects', Project.objects.filter(is_archive=False))
-    )
+    queryset = ProjectFolder.objects.prefetch_related('projects')
     permission_classes = [HasRolePermission]
     required_permissions = ['project_folder']
     pagination_class = CustomPageNumberPagination
@@ -110,7 +114,13 @@ class ProjectFolderDetailApiView(generics.GenericAPIView):
     required_permissions = ['project_folder']
 
     def get(self, request, id):
-        folder = get_object_or_404(ProjectFolder, id=id)
+        folder = (
+            ProjectFolder.objects
+            .prefetch_related(
+                Prefetch('projects', queryset=Project.objects.exclude(is_archive=True))
+            )
+            .get(id=id)
+        )
         serializer = self.serializer_class(folder)
         return Response(serializer.data, status=200)
     
