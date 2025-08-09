@@ -2,6 +2,7 @@ from django.urls import path, include
 
 from core.apps.projects.views import project as project_views
 from core.apps.projects.views import builder as builder_views
+from core.apps.projects.views import project_estimate as estimate_views
 
 urlpatterns = [
     path('project/', include(
@@ -28,6 +29,14 @@ urlpatterns = [
     path('builder/', include(
         [
             path('list/', builder_views.BuilderListApiView.as_view()),
+        ]
+    )),
+    path('project_estimate/', include(
+        [
+            path('list/', estimate_views.ProjectEstimateListApiView.as_view()),
+            path('create/', estimate_views.ProjectEstimateCreateApiView.as_view()),
+            path('<uuid:id>/update/', estimate_views.ProjectEstimateUpdateApiView.as_view()),
+            path('<uuid:id>/delete/', estimate_views.ProjectEstimateDeleteApiView.as_view()),
         ]
     ))
 ]
