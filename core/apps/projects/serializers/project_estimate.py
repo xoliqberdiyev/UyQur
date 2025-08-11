@@ -2,14 +2,17 @@ from django.db import transaction
 
 from rest_framework import serializers
 
-from core.apps.projects.models.project_estimate import EstimateProduct, EstimateWork, ProjectEstimate
+from core.apps.projects.models.project_estimate import ProjectEstimate
+from core.apps.projects.serializers.estimate_work import EstimateWorkListSerializer
 
 
 class ProjectEstimateListSerializer(serializers.ModelSerializer):
+    estimate_works = EstimateWorkListSerializer(many=True)
+
     class Meta:
         model = ProjectEstimate
         fields = [
-            'id', 'number', 'name'
+            'id', 'number', 'name', 'estimate_works'
         ]
 
 

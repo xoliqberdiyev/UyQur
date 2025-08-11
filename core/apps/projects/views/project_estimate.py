@@ -10,7 +10,7 @@ from core.apps.projects.serializers import project_estimate as serializers
 
 class ProjectEstimateListApiView(generics.ListAPIView):
     serializer_class = serializers.ProjectEstimateListSerializer
-    queryset = ProjectEstimate.objects.all()
+    queryset = ProjectEstimate.objects.prefetch_related('estimate_works')
     permission_classes = [HasRolePermission]
     required_permissions = ['project']
 
@@ -54,4 +54,3 @@ class ProjectEstimateDeleteApiView(generics.GenericAPIView):
         estimte = get_object_or_404(ProjectEstimate, id=id)
         estimte.delete()
         return Response({"success": True, "message": "deleted"}, status=204)
-    

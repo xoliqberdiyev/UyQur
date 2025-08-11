@@ -3,6 +3,8 @@ from django.urls import path, include
 from core.apps.projects.views import project as project_views
 from core.apps.projects.views import builder as builder_views
 from core.apps.projects.views import project_estimate as estimate_views
+from core.apps.projects.views import estimate_work as estimate_work_views
+from core.apps.projects.views import estimate_product as estimate_product_views
 
 urlpatterns = [
     path('project/', include(
@@ -37,6 +39,20 @@ urlpatterns = [
             path('create/', estimate_views.ProjectEstimateCreateApiView.as_view()),
             path('<uuid:id>/update/', estimate_views.ProjectEstimateUpdateApiView.as_view()),
             path('<uuid:id>/delete/', estimate_views.ProjectEstimateDeleteApiView.as_view()),
+        ]
+    )),
+    path('estimate_work/', include(
+        [
+            path('create/', estimate_work_views.EstimateWorkCreateApiView.as_view()),
+            path('<uuid:id>/update/', estimate_work_views.EstimateWorkUpdateApiView.as_view()),
+            path('<uuid:id>/delete/', estimate_work_views.EstimateWorkDeleteApiView.as_view()),
+        ]
+    )),
+    path('estimate_product/', include(
+        [
+            path('create/', estimate_product_views.EstimateProductCreateApiView.as_view()),
+            path('<uuid:id>/update/', estimate_product_views.EstimateProductUpdateApiView.as_view()),
+            path('<uuid:id>/delete/', estimate_product_views.EstimateProductDeleteApiView.as_view()),
         ]
     ))
 ]

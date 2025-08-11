@@ -29,7 +29,8 @@ class EstimateWork(BaseModel):
     estimate = models.ForeignKey(
         ProjectEstimate, on_delete=models.CASCADE, related_name='estimate_works'
     )
-    date = models.DateField(null=True, blank=True)
+    date = models.DateField(null=True, blank=True)  
+    total_price = models.PositiveBigIntegerField(default=0)
 
     def __str__(self):
         return f"{self.number}.{self.name}"
@@ -42,12 +43,12 @@ class EstimateWork(BaseModel):
 class EstimateProduct(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='estimate_products')
     quantity = models.PositiveIntegerField(default=1)
-    price = models.PositiveBigIntegerField()
     unity = models.ForeignKey(
         Unity, on_delete=models.SET_NULL, null=True, related_name='estimate_products'
     )
     price = models.PositiveBigIntegerField(null=True, blank=True)
     date = models.DateField(null=True, blank=True)
+    estimate_work = models.ForeignKey(EstimateWork, on_delete=models.CASCADE, related_name='estimate_products', null=True)
 
     def __str__(self):
         return f'{self.product} - {self.price}'
