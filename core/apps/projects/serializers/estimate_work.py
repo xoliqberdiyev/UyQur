@@ -66,16 +66,21 @@ class EstimateWorkUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = EstimateWork
         fields = [
-            'name', 'quantity', 'price', 'unity', 'date', 'total_price',
+            'name', 'quantity', 'price', 'unity', 'date', 'total_price', 'employee', 'status',
+            'start_date', 'end_date'
         ]
 
     def update(self, instance, validated_data):
+        employee_ids = validated_data.pop('employee', [])
         instance.name = validated_data.get('name', instance.name)
         instance.quantity = validated_data.get('quantity', instance.quantity)
         instance.price = validated_data.get('price', instance.price)
         instance.unity = validated_data.get('unity', instance.unity)
         instance.date = validated_data.get('date', instance.date)
         instance.total_price = validated_data.get('total_price', instance.total_price)
+        instance.status = validated_data.get('status', instance.status)
+        instance.start_date = validated_data.get('start_date', instance.start_date)
+        instance.end_date = validated_data.get('end_date', instance.end_date)
+        instance.employee.set(employee_ids)
         instance.save()
         return instance
-    
