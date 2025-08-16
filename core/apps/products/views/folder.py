@@ -4,8 +4,10 @@ from rest_framework.response import Response
 from rest_framework import generics, views
 
 from core.apps.products.serializers.folder import FolderSerializer, SubFolderSerializer
-from core.apps.products.models.folder import Folder, SubFolder
+from core.apps.products.models import Folder, SubFolder, Product
+from core.apps.products.serializers.product import ProductListSerializer 
 from core.apps.accounts.permissions.permissions import HasRolePermission
+from core.apps.shared.paginations.custom import CustomPageNumberPagination
 
 
 class FolderCreateApiView(generics.CreateAPIView):
@@ -39,6 +41,23 @@ class FolderDeleteApiView(generics.DestroyAPIView):
     required_permissions = ['product_folder']
     lookup_field = 'id'
 
+
+
+
+class FolderProductListApiView(generics.GenericAPIView):
+    pagination_class = CustomPageNumberPagination
+    permission_classes = [HasRolePermission]
+    required_permissions = ['product', 'product_folder']
+    queryset = Product.objects.all()
+    serializer_class = ProductListSerializer
+
+    def get(self, request, folder_id):
+        folder = get_object_or_404(Folder, id=folder_id)
+        products = Product.objects.filter(folder=folder)
+        data = self.paginate_queryset(products)
+        serializer = self.serializer_class(data, many=True)
+        return self.get_paginated_response(serializer.data)
+    
 
 class SubFolderCreateApiView(generics.CreateAPIView):
     serializer_class = SubFolderSerializer
@@ -74,3 +93,18 @@ class SubFolderDeleteApiView(generics.DestroyAPIView):
     permission_classes = [HasRolePermission]
     required_permissions = ['product_folder']
 
+
+class SubFolderProductListApiView(generics.GenericAPIView):
+    pagination_class = CustomPageNumberPagination
+    permission_classes = [HasRolePermission]
+    required_permissions = ['product', 'product_folder']
+    queryset = Product.objects.all()
+    serializer_class = ProductListSerializer
+
+    def get(self, request, sub_folder_id):
+        sub_folder = get_object_or_404(SubFolder, id=sub_folder_id)
+        products = Product.objects.filter(sub_folder=sub_folder)
+        data = self.paginate_queryset(products)
+        serializer = self.serializer_class(data, many=True)
+        return self.get_paginated_response(serializer.data)
+    

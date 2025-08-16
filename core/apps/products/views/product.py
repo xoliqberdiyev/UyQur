@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics, views
 from rest_framework.response import Response
 
-from core.apps.products.models.product import Product
+from core.apps.products.models import Product
 from core.apps.products.serializers import product as serializers
 from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.shared.paginations.custom import CustomPageNumberPagination

@@ -25,12 +25,14 @@ urlpatterns = [
             path('list/', folder_views.FolderListApiView.as_view()),
             path('<uuid:id>/update/', folder_views.FolderUdateApiView.as_view()),
             path('<uuid:id>/delete/', folder_views.FolderDeleteApiView.as_view()),
+            path('<uuid:folder_id>/products/', folder_views.FolderProductListApiView.as_view()),
             path('sub_folder/', include(
                 [
                     path('create/', folder_views.SubFolderCreateApiView.as_view()),
                     path('<uuid:folder_id>/list/', folder_views.SubFolderListByFolderIdApiView.as_view()),
                     path('<uuid:id>/delete/', folder_views.SubFolderDeleteApiView.as_view()),
                     path('<uuid:id>/update/', folder_views.SubFolderUpdateApiView.as_view()),
+                    path("<uuid:sub_folder_id>/products/", folder_views.SubFolderProductListApiView.as_view()),
                 ]
             )),
         ]

@@ -11,12 +11,12 @@ class FolderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Folder.objects.create(**validated_data)
-    
+
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
         instance.save()
         return instance
-    
+
 
 class SubFolderSerializer(serializers.ModelSerializer):
     class Meta:
