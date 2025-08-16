@@ -9,6 +9,9 @@ urlpatterns = [
     path('product/', include(
         [
             path('list/', product_views.ProductListApiView.as_view()),
+            path('create/', product_views.ProductCreateApiView.as_view()),
+            path('<uuid:product_id>/update/', product_views.ProductUpdateApiView.as_view()),
+            path('<uuid:product_id>/delete/', product_views.ProductDeleteApiView.as_view()),
         ]
     )),
     path('unity/', include(
