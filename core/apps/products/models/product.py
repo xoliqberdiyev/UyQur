@@ -7,7 +7,7 @@ from core.apps.shared.models import BaseModel
 class Product(BaseModel):
     TYPE = (
         ("MECHANISM", "maxanizm"),
-        ("PRODUCT", "product"),
+        ("PRODUCT", "mahsulot"),
         ("HUMAN_RESOURCE", "inson resursi"),
         ("SERVICE", 'xizmat')
     )

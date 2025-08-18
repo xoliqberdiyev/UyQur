@@ -13,3 +13,26 @@ class UnityListApiView(generics.ListAPIView):
     permission_classes = [HasRolePermission]
     required_permissions = []
     pagination_class = CustomPageNumberPagination
+
+
+class UnityCreateApiView(generics.CreateAPIView):
+    serializer_class = serializers.UnityListSerializer
+    queryset = Unity.objects.all()
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+
+
+class UnityUpdateApiView(generics.UpdateAPIView):
+    serializer_class = serializers.UnityListSerializer
+    queryset = Unity.objects.all()
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+    lookup_field = 'id'
+
+
+class UnityDeleteApiView(generics.DestroyAPIView):
+    serializer_class = serializers.UnityListSerializer
+    queryset = Unity.objects.all()
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+    lookup_field = 'id'

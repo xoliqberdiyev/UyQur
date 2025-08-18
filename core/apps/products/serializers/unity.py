@@ -7,3 +7,6 @@ class UnityListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Unity
         fields = ['id', 'value']
+    
+    def create(self, validated_data):
+        return Unity.objects.create(**validated_data)

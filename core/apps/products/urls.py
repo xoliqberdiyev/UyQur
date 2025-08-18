@@ -17,6 +17,9 @@ urlpatterns = [
     path('unity/', include(
         [
             path('list/', unity_views.UnityListApiView.as_view()),
+            path('create/', unity_views.UnityCreateApiView.as_view()),
+            path('<uuid:id>/delete/', unity_views.UnityDeleteApiView.as_view()),
+            path('<uuid:id>/update/', unity_views.UnityUpdateApiView.as_view()),
         ]
     )),
     path('folder/', include(
