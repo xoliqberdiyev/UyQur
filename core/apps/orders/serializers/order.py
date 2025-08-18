@@ -64,7 +64,8 @@ class OrderCreateSerializer(serializers.Serializer):
                 project_folder=validated_data.get('project_folder'),
                 project=validated_data.get('project'),
                 quantity=validated_data.get('quantity'),
-                date=validated_data.get('date')
+                date=validated_data.get('date'),
+                employee=self.context.get('user'),
             )
             return order
 
@@ -81,4 +82,12 @@ class OrderListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'product', 'unity', 'quantity', 'project', 'project_folder',
             'wherehouse', 'date', 'status', 'employee'
+        ]
+
+
+class OrderUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = [
+            'product', 'unity', 'quantity', 'project', 'project_folder', 'wherehouse', 'date',
         ]

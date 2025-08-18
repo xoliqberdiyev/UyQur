@@ -18,6 +18,7 @@ class Command(BaseCommand):
             {'code': 'settings', 'name': 'all settings access'},
             {'code': 'product_folder', 'name': 'all access to product folder'},
             {'code': 'product', 'name': 'all access to product'},
+            {'code': 'order', 'name': 'all access to orders'},
         ]
 
         for perm in permissions:
