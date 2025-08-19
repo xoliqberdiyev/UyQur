@@ -161,10 +161,8 @@ class ProjectAndFolderApiView(views.APIView):
     required_permissions = ['project', 'project_folder']
 
     def get(self, request):
-        folders = ProjectFolder.objects.prefetch_related('projects').only(
-            'id','name', 'projects__id', 'projects__id'
-        )
-        projects = Project.objects.only('id', 'name').exclude(folder__isnull=False)
+        folders = ProjectFolder.objects.prefetch_related('projects')
+        projects = Project.objects.exclude(folder__isnull=False)
         projects_serializer = serializers.ProjectsSerializer(projects, many=True)
         folders_serializer = serializers.ProjectFoldersSerializer(folders, many=True)
         return Response(
