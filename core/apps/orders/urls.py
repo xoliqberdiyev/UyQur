@@ -10,6 +10,9 @@ urlpatterns = [
             path('create/', order_views.OrderCreateApiView.as_view()),
             path('<uuid:id>/update/', order_views.OrderUpdateApiView.as_view()),
             path('<uuid:id>/delete/', order_views.OrderDeleteApiView.as_view()),
+            path('<uuid:order_id>/cancel/', order_views.OrderChangeStatusCancelledApiView.as_view()),
+            path("<uuid:order_id>/accept/", order_views.OrderChangeStatusAcceptedApiView.as_view()),
+            path("accepted/list/", order_views.OrderAcceptApiView.as_view()),
         ]
     )),
 ]

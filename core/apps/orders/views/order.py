@@ -58,3 +58,37 @@ class OrderDeleteApiView(views.APIView):
         return Response({"success": True, "message": "Deleted!"}, status=204)
 
 
+class OrderChangeStatusCancelledApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+    required_permissions = ['order']
+
+    def get(self, request, order_id):
+        order = get_object_or_404(Order, id=order_id)
+        order.status = 'CANCELLED'
+        order.save()
+        return Response(
+            {'success': True, 'message': 'order cancelled'}, 
+            status=200
+        )
+
+
+class OrderChangeStatusAcceptedApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+    required_permissions = ['order']
+
+    def get(self, request, order_id):
+        order = get_object_or_404(Order, id=order_id)
+        order.status = 'ACCEPTED'
+        order.save()
+        return Response(
+            {'success': True, 'message': 'order accepted'}, 
+            status=200
+        )
+    
+
+class OrderAcceptApiView(generics.ListAPIView):
+    serializer_class = serializers.OrderListSerializer
+    queryset = Order.objects.filter(status='ACCEPTED')
+    permission_classes = [HasRolePermission]
+    required_permissions = ['order']
+    pagination_class = CustomPageNumberPagination
