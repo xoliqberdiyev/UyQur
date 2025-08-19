@@ -29,7 +29,7 @@ class OrderListApiView(generics.ListAPIView):
 
 
 class OrderCreateApiView(generics.CreateAPIView):
-    serializer_class = serializers.OrderCreateSerializer
+    serializer_class = serializers.MultipleOrderCreateSerializer
     queryset = Order.objects.all()
     permission_classes = [HasRolePermission]
     required_permissions = ['order']

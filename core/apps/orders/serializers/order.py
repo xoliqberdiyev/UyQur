@@ -70,6 +70,10 @@ class OrderCreateSerializer(serializers.Serializer):
             return order
 
 
+class MultipleOrderCreateSerializer(serializers.Serializer):
+    resources = serializers.ListSerializer(child=OrderCreateSerializer())
+
+
 class OrderListSerializer(serializers.ModelSerializer):
     product = ProductListSerializer()
     unity = UnityListSerializer()
