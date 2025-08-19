@@ -138,6 +138,7 @@ class ProjectFolderDeleteApiView(views.APIView):
 class ChangeProjectFolderApiView(generics.GenericAPIView):
     serializer_class = serializers.ChangeProjectFolderSerializer
     queryset = Project.objects.all()
+    required_permissions = ['project_folder']
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -152,4 +153,24 @@ class ChangeProjectFolderApiView(generics.GenericAPIView):
             )
         return Response(
             {'success': False, 'message': serializer.errors}, status=400
+        )
+    
+
+class ProjectAndFolderApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+    required_permissions = ['project', 'project_folder']
+
+    def get(self, request):
+        folders = ProjectFolder.objects.prefetch_related('projects').only(
+            'id','name', 'projects__id', 'projects__id'
+        ).exclude(folder__isnull=True)
+        projects = Project.objects.only('id', 'name').exclude(folder__isnull=False)
+        projects_serializer = serializers.ProjectsSerializer(projects, many=True)
+        folders_serializer = serializers.ProjectFoldersSerializer(folders, many=True)
+        return Response(
+            {
+                'project_folders': folders_serializer.data,
+                'projects': projects_serializer.data,
+            },
+            status=200
         )

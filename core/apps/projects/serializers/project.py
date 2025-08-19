@@ -284,3 +284,17 @@ class ProjectDetailSerialzier(serializers.ModelSerializer):
             'id': obj.builder.id,
             'name': obj.builder.name
         }
+
+
+class ProjectsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = ['id', 'name']
+
+
+class ProjectFoldersSerializer(serializers.ModelSerializer):
+    projects = ProjectsSerializer(many=True)
+
+    class Meta:
+        model = ProjectFolder
+        fields = ['id', 'name', 'projects']

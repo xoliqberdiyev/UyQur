@@ -54,5 +54,6 @@ urlpatterns = [
             path('<uuid:id>/update/', estimate_product_views.EstimateProductUpdateApiView.as_view()),
             path('<uuid:id>/delete/', estimate_product_views.EstimateProductDeleteApiView.as_view()),
         ]
-    ))
+    )),
+    path('projects_and_folders/', project_views.ProjectAndFolderApiView.as_view()),
 ]
