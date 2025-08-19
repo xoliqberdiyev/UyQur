@@ -25,7 +25,7 @@ class OrderListApiView(generics.ListAPIView):
         'product__name', 'unity__value', 'project_folder__name', 'project__name',
         'wherehouse__name', 'date', 'quantity', 'employee__full_name', 'employee__phone_number'
     ]
-    filterset_class = [OrderFilter]
+    filterset_class = OrderFilter
 
 
 class OrderCreateApiView(generics.CreateAPIView):

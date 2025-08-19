@@ -31,7 +31,7 @@ class SubFolderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubFolder
-        fields = ['id', 'name', 'folder']
+        fields = ['id', 'name', 'folder', 'product_count']
         extra_kwargs = {
             'id': {'read_only': True},
             "folder": {"write_only": True},
