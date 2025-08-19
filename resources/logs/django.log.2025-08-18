@@ -1,2 +1,0 @@
-WARNING 2025-08-18 10:00:19,208 log Forbidden: /api/v1/orders/order/create/
-WARNING 2025-08-18 10:06:24,567 log Bad Request: /api/v1/orders/order/c282e041-278b-487f-90ac-d3df10eab7a4/update/
