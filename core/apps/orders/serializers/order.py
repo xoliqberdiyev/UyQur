@@ -12,7 +12,7 @@ from core.apps.wherehouse.models import WhereHouse
 from core.apps.wherehouse.serializers.wherehouse import WhereHouseListSerializer
 # projects
 from core.apps.projects.models import Project, ProjectFolder
-from core.apps.projects.serializers.project import ProjectListSerializer
+from core.apps.projects.serializers.project import ProjectListSerializer, ProjectFolderListSerializer
 
 
 
@@ -89,7 +89,7 @@ class OrderListSerializer(serializers.ModelSerializer):
     unity = UnityListSerializer()
     project = ProjectListSerializer()
     wherehouse = WhereHouseListSerializer()
-    project_folder = ProjectListSerializer()
+    project_folder = ProjectFolderListSerializer()
     employee = serializers.SerializerMethodField(method_name='get_employee')
 
     class Meta:
