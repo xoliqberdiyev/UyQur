@@ -23,7 +23,6 @@ class OrderCreateSerializer(serializers.Serializer):
     wherehouse_id = serializers.UUIDField()
     project_id = serializers.UUIDField(required=False)
     project_folder_id = serializers.UUIDField()
-    date = serializers.DateField()
 
     def validate(self, data):
         try:
@@ -55,24 +54,45 @@ class OrderCreateSerializer(serializers.Serializer):
         data['project_folder'] = project_folder
         return data
 
-    def create(self, validated_data):
-        with transaction.atomic():
-            order = Order.objects.create(
-                product=validated_data.get('product'),
-                unity=validated_data.get('unity'),
-                wherehouse=validated_data.get('wherehouse'),
-                project_folder=validated_data.get('project_folder'),
-                project=validated_data.get('project'),
-                quantity=validated_data.get('quantity'),
-                date=validated_data.get('date'),
-                employee=self.context.get('user'),
-            )
-            return order
+    # def create(self, validated_data):
+    #     with transaction.atomic():
+    #         order = Order.objects.create(
+    #             product=validated_data.get('product'),
+    #             unity=validated_data.get('unity'),
+    #             wherehouse=validated_data.get('wherehouse'),
+    #             project_folder=validated_data.get('project_folder'),
+    #             project=validated_data.get('project'),
+    #             quantity=validated_data.get('quantity'),
+    #             date=validated_data.get('date'),
+    #             employee=self.context.get('user'),
+    #         )
+    #         return order
 
 
 class MultipleOrderCreateSerializer(serializers.Serializer):
     resources = serializers.ListSerializer(child=OrderCreateSerializer())
+    date = serializers.DateField()
 
+    def create(self, validated_data):
+        with transaction.atomic():
+            resources = validated_data.pop('resources')
+            common_date = validated_data.get('date')
+            orders = []
+
+            for resource in resources:
+                orders.append(Order(
+                    product=resource['product'],
+                    unity=resource['unity'],
+                    wherehouse=resource['wherehouse'],
+                    project_folder=resource['project_folder'],
+                    project=resource.get('project'),
+                    quantity=resource['quantity'],
+                    date=common_date,
+                    employee=self.context.get('user'),
+                ))
+
+            created_orders = Order.objects.bulk_create(orders)
+            return created_orders
 
 class OrderListSerializer(serializers.ModelSerializer):
     product = ProductListSerializer()
