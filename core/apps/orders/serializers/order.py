@@ -70,7 +70,7 @@ class OrderCreateSerializer(serializers.Serializer):
 
 
 class MultipleOrderCreateSerializer(serializers.Serializer):
-    resources = serializers.ListSerializer(child=OrderCreateSerializer())
+    resources = OrderCreateSerializer(many=True)
     date = serializers.DateField()
 
     def create(self, validated_data):
