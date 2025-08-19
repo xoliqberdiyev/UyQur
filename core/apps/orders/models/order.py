@@ -22,7 +22,7 @@ class Order(BaseModel):
         Unity, on_delete=models.CASCADE, related_name='orders'
     )
     project_folder = models.ForeignKey(
-        ProjectFolder, on_delete=models.CASCADE, related_name='order', null=True
+        ProjectFolder, on_delete=models.SET_NULL, related_name='order', null=True, blank=True
     )
     project = models.ForeignKey(
         Project, on_delete=models.SET_NULL, related_name='orders', null=True, blank=True
