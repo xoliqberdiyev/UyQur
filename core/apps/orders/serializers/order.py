@@ -93,7 +93,7 @@ class MultipleOrderCreateSerializer(serializers.Serializer):
 
             created_orders = Order.objects.bulk_create(orders)
             return created_orders
-
+    
 
 class OrderListSerializer(serializers.ModelSerializer):
     product = ProductListSerializer()

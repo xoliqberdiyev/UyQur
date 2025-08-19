@@ -39,6 +39,13 @@ class OrderCreateApiView(generics.CreateAPIView):
         context['user'] = self.request.user
         return context
     
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({'success': True, 'message': 'orders successfully created'}, status=201)
+        return Response({'success': False, 'error':serializer.errors}, status=400)
+    
 
 class OrderUpdateApiView(generics.UpdateAPIView):
     serializer_class = serializers.OrderUpdateSerializer
