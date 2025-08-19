@@ -1,4 +1,6 @@
-from rest_framework import generics, status
+from django.shortcuts import get_object_or_404
+
+from rest_framework import generics, views
 from rest_framework.response import Response
 
 from core.apps.wherehouse.models import WhereHouse, Inventory
@@ -15,7 +17,35 @@ class WhereHouseListApiView(generics.ListAPIView):
 
 class WhereHouseDetailApiView(generics.RetrieveAPIView):
     serializer_class = serializers.WhereHouseDetailSerializer
-    queryset = WhereHouse.objects.select_related('branch').prefetch_related('inventories')
+    queryset = WhereHouse.objects.select_related('branch')
     permission_classes = [HasRolePermission]
     required_permissions = []
     lookup_field = 'id'
+
+
+class WhereHouseCreateApiView(generics.CreateAPIView):
+    serializer_class = serializers.WhereHouseCreateSerializer
+    queryset = WhereHouse.objects.all()
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+
+
+class WhereHouseDeleteApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+
+    def delete(self, request, id):
+        wherehouse = get_object_or_404(WhereHouse, id=id)
+        wherehouse.delete()
+        return Response(
+            {'success': True, 'message': 'Deleted!'},
+            status=204
+        )
+
+
+class WhereHouseUpdateApiView(generics.UpdateAPIView):
+    serializer_class = serializers.WhereHouseUpdateSerializer
+    queryset = WhereHouse.objects.all()
+    lookup_field = 'id'
+    permission_classes = [HasRolePermission]
+    required_permissions = []

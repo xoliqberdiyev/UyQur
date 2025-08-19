@@ -4,10 +4,15 @@ from core.apps.products.models.folder import Folder, SubFolder
 
 
 class FolderSerializer(serializers.ModelSerializer):
+    product_count = serializers.SerializerMethodField(method_name='get_product_count')
+
     class Meta:
         model = Folder
-        fields = ['id', 'name']
-        extra_kwargs = {'id': {'read_only': True}}
+        fields = ['id', 'name', 'product_count']
+        extra_kwargs = {
+            'id': {'read_only': True},
+            'product_count': {'read_only': True}
+        }
 
     def create(self, validated_data):
         return Folder.objects.create(**validated_data)
@@ -17,12 +22,21 @@ class FolderSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    def get_product_count(self, obj):
+        return obj.products.count()
+
 
 class SubFolderSerializer(serializers.ModelSerializer):
+    product_count = serializers.SerializerMethodField(method_name='get_product_count')
+
     class Meta:
         model = SubFolder
         fields = ['id', 'name', 'folder']
-        extra_kwargs = {'id': {'read_only': True}, "folder": {"write_only": True}}
+        extra_kwargs = {
+            'id': {'read_only': True},
+            "folder": {"write_only": True},
+            'product_count': {'read_only': True},
+        }
 
     def create(self, validated_data):
         return SubFolder.objects.create(**validated_data)
@@ -32,3 +46,6 @@ class SubFolderSerializer(serializers.ModelSerializer):
         instance.folder = validated_data.get('folder', instance.folder)
         instance.save()
         return instance
+
+    def get_product_count(self, obj):
+        return obj.products.count()
