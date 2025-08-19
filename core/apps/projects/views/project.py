@@ -163,7 +163,7 @@ class ProjectAndFolderApiView(views.APIView):
     def get(self, request):
         folders = ProjectFolder.objects.prefetch_related('projects').only(
             'id','name', 'projects__id', 'projects__id'
-        ).exclude(folder__isnull=True)
+        )
         projects = Project.objects.only('id', 'name').exclude(folder__isnull=False)
         projects_serializer = serializers.ProjectsSerializer(projects, many=True)
         folders_serializer = serializers.ProjectFoldersSerializer(folders, many=True)
