@@ -89,7 +89,8 @@ class OrderListSerializer(serializers.ModelSerializer):
     unity = UnityListSerializer()
     project = ProjectListSerializer()
     wherehouse = WhereHouseListSerializer()
-    project_folder = ProjectFolder()
+    project_folder = ProjectListSerializer()
+    employee = serializers.SerializerMethodField(method_name='get_employee')
 
     class Meta:
         model = Order
@@ -97,6 +98,13 @@ class OrderListSerializer(serializers.ModelSerializer):
             'id', 'product', 'unity', 'quantity', 'project', 'project_folder',
             'wherehouse', 'date', 'status', 'employee'
         ]
+
+    def get_employee(self, obj):
+        return {
+            "id": obj.employee.id,
+            "full_name": obj.employee.full_name,
+            "phone": obj.employee.phone
+        } if obj.employee else None
 
 
 class OrderUpdateSerializer(serializers.ModelSerializer):
