@@ -1,6 +1,3 @@
-from django.db.models import Value
-from django.db.models.functions import Coalesce
-from django.contrib.postgres.aggregates import ArrayAgg
 from django.shortcuts import get_object_or_404
 from django.db.models import Prefetch
 
@@ -164,28 +161,14 @@ class ProjectAndFolderApiView(views.APIView):
     required_permissions = ['project', 'project_folder']
 
     def get(self, request):
-        # Folderlarni projectlari bilan olish (bitta SQL query)
-        folders = (
-            ProjectFolder.objects
-            .annotate(
-                projects=Coalesce(
-                    ArrayAgg('projects__name', distinct=True),  # project nomlari list ko‘rinishida
-                    Value([])
-                )
-            )
-            .values('id', 'title', 'projects')
-        )
-
-        # Folderga ulanmagan projectlar (folder__isnull=True)
-        projects_without_folder = (
-            Project.objects.filter(folder__isnull=True)
-            .values('id', 'name')
-        )
-
+        folders = ProjectFolder.objects.prefetch_related('projects')
+        projects = Project.objects.exclude(folder__isnull=False)
+        projects_serializer = serializers.ProjectsSerializer(projects, many=True)
+        folders_serializer = serializers.ProjectFoldersSerializer(folders, many=True)
         return Response(
             {
-                "project_folders": list(folders),
-                "projects": list(projects_without_folder),
+                'project_folders': folders_serializer.data,
+                'projects': projects_serializer.data,
             },
             status=200
         )
