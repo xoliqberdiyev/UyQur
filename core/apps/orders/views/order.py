@@ -34,13 +34,8 @@ class OrderCreateApiView(generics.CreateAPIView):
     permission_classes = [HasRolePermission]
     required_permissions = ['order']
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['user'] = self.request.user
-        return context
-    
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, context={'user': request.user})
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response({'success': True, 'message': 'orders successfully created'}, status=201)

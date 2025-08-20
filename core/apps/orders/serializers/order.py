@@ -64,6 +64,7 @@ class MultipleOrderCreateSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         with transaction.atomic():
+            print(self.context['user'])
             resources = validated_data.pop('resources')
             common_date = validated_data.get('date')
             orders = []
@@ -103,7 +104,7 @@ class OrderListSerializer(serializers.ModelSerializer):
         return {
             "id": obj.employee.id,
             "full_name": obj.employee.full_name,
-            "phone": obj.employee.phone
+            "phone_number": obj.employee.phone_number
         } if obj.employee else None
 
 
