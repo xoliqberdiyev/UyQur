@@ -21,7 +21,7 @@ class Offer(BaseModel):
     number = models.PositiveIntegerField(default=1)
 
     def __str__(self):
-        return self.name
+        return str(self.number)
     
     def save(self, *args, **kwargs):
         if not self.pk:

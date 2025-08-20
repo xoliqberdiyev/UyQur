@@ -11,20 +11,20 @@ class OfferCreateSerializer(serializers.Serializer):
     price = serializers.IntegerField()
     phone = serializers.CharField(required=False)
     comment = serializers.CharField(required=False)
-    qqs = serializers.CharField(required=False)
+    qqs = serializers.BooleanField(required=False)
     price_type = serializers.ChoiceField(Offer.PRICE_TYPE)
 
     def validate(self, data):
         counterparty = Counterparty.objects.filter(id=data['counterparty_id']).first()
         if not counterparty:
             raise serializers.ValidationError("Counterparty not found")
-        data['counterparty']
+        data['counterparty'] = counterparty
         return data
 
 
 class MultipleOfferCreateSerializer(serializers.Serializer):
     order_id = serializers.UUIDField()
-    offers = serializers.ListSerializer(child=OfferCreateSerializer())
+    offers = OfferCreateSerializer(many=True)
 
     def validate(self, data):
         order = Order.objects.filter(id=data['order_id']).first()
@@ -37,8 +37,9 @@ class MultipleOfferCreateSerializer(serializers.Serializer):
         with transaction.atomic():
             offers = []
             for offer in validated_data.pop('offers'):
-                offer.append(
+                offers.append(
                     Offer(
+                        order=validated_data.get('order'),
                         counterparty=offer['counterparty'],
                         price=offer['price'],
                         phone=offer.get('phone'),
@@ -48,8 +49,8 @@ class MultipleOfferCreateSerializer(serializers.Serializer):
                     )
                 )
             
-            return Offer.objects.bulk_update(offers)
-
+            created_offers = Offer.objects.bulk_create(offers)
+            return created_offers
 
 class OfferListSerializer(serializers.ModelSerializer):
     counterparty = serializers.SerializerMethodField(method_name='get_counterparty')

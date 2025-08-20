@@ -36,9 +36,12 @@ class OfferListApiView(generics.GenericAPIView):
 
     def get(self, request):
         offers = Offer.objects.all()
+        page = self.paginate_queryset(offers)
+        if page is not None:
+            serializer = self.serializer_class(page, many=True)
+            return self.get_paginated_response(serializer.data)
         serializer = self.serializer_class(offers, many=True)
-        self.paginate_queryset(serializer)
-        return self.get_paginated_response
+        return Response(serializer.data, status=200)
     
 
 class OfferUpdateApiView(generics.GenericAPIView):
