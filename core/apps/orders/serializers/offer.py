@@ -3,15 +3,23 @@ from django.db import transaction
 from rest_framework import serializers
 
 from core.apps.orders.models import Offer, Order
+from core.apps.counterparty.models import Counterparty
 
 
 class OfferCreateSerializer(serializers.Serializer):
-    name = serializers.CharField()
+    counterparty_id = serializers.UUIDField()
     price = serializers.IntegerField()
     phone = serializers.CharField(required=False)
     comment = serializers.CharField(required=False)
     qqs = serializers.CharField(required=False)
     price_type = serializers.ChoiceField(Offer.PRICE_TYPE)
+
+    def validate(self, data):
+        counterparty = Counterparty.objects.filter(id=data['counterparty_id']).first()
+        if not counterparty:
+            raise serializers.ValidationError("Counterparty not found")
+        data['counterparty']
+        return data
 
 
 class MultipleOfferCreateSerializer(serializers.Serializer):
@@ -31,7 +39,7 @@ class MultipleOfferCreateSerializer(serializers.Serializer):
             for offer in validated_data.pop('offers'):
                 offer.append(
                     Offer(
-                        name=offer['name'],
+                        counterparty=offer['counterparty'],
                         price=offer['price'],
                         phone=offer.get('phone'),
                         comment=offer.get('comment'),
@@ -44,22 +52,30 @@ class MultipleOfferCreateSerializer(serializers.Serializer):
 
 
 class OfferListSerializer(serializers.ModelSerializer):
+    counterparty = serializers.SerializerMethodField(method_name='get_counterparty')
+
     class Meta:
         model = Offer
         fields = [
-            'id', 'name', 'price', 'number', 'phone', 'comment', 'qqs', 'price_type'
+            'id', 'counterparty', 'price', 'number', 'phone', 'comment', 'qqs', 'price_type'
         ]
+
+    def get_counterparty(self, obj):
+        return {
+            'id': obj.counterparty.id,
+            'name': obj.counterparty.name
+        }
 
 
 class OfferUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Offer
         fields = [
-            'name', 'price', 'number', 'phone', 'comment', 'qqs', 'price_type'
+            'counterparty', 'price', 'number', 'phone', 'comment', 'qqs', 'price_type'
         ]
     
     def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
+        instance.counterparty = validated_data.get('counterparty', instance.counterparty)
         instance.price = validated_data.get('price', instance.price)
         instance.number = validated_data.get('number', instance.number)
         instance.phone = validated_data.get('phone', instance.phone)

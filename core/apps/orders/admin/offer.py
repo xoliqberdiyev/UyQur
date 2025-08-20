@@ -5,6 +5,6 @@ from core.apps.orders.models import Offer
 
 @admin.register(Offer)
 class OfferAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'number', 'order']
-    search_fields = ['name', 'phone', 'number', 'price']
+    list_display = ['id', 'number', 'order']
+    search_fields = ['phone', 'number', 'price']
 

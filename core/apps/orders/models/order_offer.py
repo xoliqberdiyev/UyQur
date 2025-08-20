@@ -2,6 +2,7 @@ from django.db import models
 
 from core.apps.shared.models import BaseModel
 from core.apps.orders.models import Order
+from core.apps.counterparty.models import Counterparty
 
 
 class Offer(BaseModel):
@@ -11,7 +12,7 @@ class Offer(BaseModel):
     )
     
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='offers')
-    name = models.CharField(max_length=200)
+    counterparty = models.ForeignKey(Counterparty, on_delete=models.CASCADE, related_name='offers', null=True)
     price = models.PositiveBigIntegerField()
     price_type = models.CharField(choices=PRICE_TYPE, default='uzs')
     phone = models.CharField(max_length=15, null=True, blank=True)

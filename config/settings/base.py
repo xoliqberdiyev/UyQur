@@ -29,6 +29,7 @@ APPS = [
     'core.apps.projects',
     'core.apps.orders',
     'core.apps.finance',
+    'core.apps.counterparty',
 ]
 
 PACKAGES = [

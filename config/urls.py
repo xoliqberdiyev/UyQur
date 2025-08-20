@@ -34,6 +34,7 @@ urlpatterns = [
             path('products/', include('core.apps.products.urls')),
             path('orders/', include('core.apps.orders.urls')),
             path('finance/', include('core.apps.finance.urls')),
+            path('counterparties/', include('core.apps.counterparty.urls')),
         ]
     )),
 
