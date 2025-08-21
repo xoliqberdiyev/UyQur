@@ -95,7 +95,7 @@ class OffersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Offer
         fields = [
-            'id', 'number', 'price', 'price_type', 'phone', 'comment', 'qqs', 'counterparty'
+            'id', 'number', 'price', 'price_type', 'phone', 'comment', 'qqs', 'counterparty', 'created_at'
         ]
 
     def get_counterparty(self, obj):
