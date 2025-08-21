@@ -90,12 +90,19 @@ class OfferUpdateSerializer(serializers.ModelSerializer):
     
 
 class OffersSerializer(serializers.ModelSerializer):
+    counterparty = serializers.SerializerMethodField(method_name='get_counterparty')
+
     class Meta:
         model = Offer
         fields = [
-            'id', 'number', 'price', 'price_type', 'phone', 'comment', 'qqs',
+            'id', 'number', 'price', 'price_type', 'phone', 'comment', 'qqs', 'counterparty'
         ]
 
+    def get_counterparty(self, obj):
+        return {
+            'id': obj.counterparty.id,
+            'name': obj.counterparty.name
+        }
 
 
 class OrderListForOfferSerializer(serializers.ModelSerializer):

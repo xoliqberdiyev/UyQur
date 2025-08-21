@@ -127,7 +127,7 @@ class MultipleOrderAddSerializer(serializers.Serializer):
     quantity = serializers.IntegerField()
     unit_amount = serializers.IntegerField()
     currency = serializers.ChoiceField(choices=[('uzs', 'uzs'), ('usd', 'usd')])
-    amount = serializers.UUIDField()
+    amount = serializers.IntegerField()
 
     def validate(self, data):
         product = Product.objects.filter(id=data['product_id']).first()

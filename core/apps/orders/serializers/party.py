@@ -30,6 +30,7 @@ class PartyCreateSerializer(serializers.Serializer):
         with transaction.atomic():
             resources = validated_data.pop('resources')
             orders = []
+            total_price = 0
             for resource in resources:
                 orders.append(Order(
                     product=resource['product'],
@@ -38,5 +39,11 @@ class PartyCreateSerializer(serializers.Serializer):
                     project=resource.get('project'),
                     counterparty=resource.get('counterparty'),
                     wherehouse=resource.get('wherehouse'),
-                    
+                    quantity=resource.get('quantity'),
+                    unit_amount=resource.get('unit_amount'),
+                    currency=resource.get('currency'),
+                    amount=resource.get('amount'), 
                 ))
+                total_price += resource.get('amount')
+            created_orders = Order.objects.bulk_create(orders)
+            
