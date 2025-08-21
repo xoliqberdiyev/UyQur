@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 from core.apps.orders.models import Offer, Order
 from core.apps.counterparty.models import Counterparty
+from core.apps.orders.serializers.order import OrderListSerializer
 
 
 class OfferCreateSerializer(serializers.Serializer):
@@ -54,11 +55,12 @@ class MultipleOfferCreateSerializer(serializers.Serializer):
 
 class OfferListSerializer(serializers.ModelSerializer):
     counterparty = serializers.SerializerMethodField(method_name='get_counterparty')
+    order = OrderListSerializer()
 
     class Meta:
         model = Offer
         fields = [
-            'id', 'counterparty', 'price', 'number', 'phone', 'comment', 'qqs', 'price_type'
+            'id', 'counterparty', 'price', 'number', 'phone', 'comment', 'qqs', 'price_type', 'order'
         ]
 
     def get_counterparty(self, obj):

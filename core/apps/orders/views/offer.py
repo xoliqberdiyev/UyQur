@@ -30,7 +30,7 @@ class OffersCreateApiView(generics.GenericAPIView):
 
 class OfferListApiView(generics.GenericAPIView):
     permission_classes = [HasRolePermission]
-    queryset = Offer.objects.all()
+    queryset = Offer.objects.select_related('order')
     required_permissions = ['offer']
     serializer_class = serializers.OfferListSerializer
 
