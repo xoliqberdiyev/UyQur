@@ -8,8 +8,8 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 from core.apps.shared.paginations.custom import PageNumberPagination
 from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.orders.serializers import offer as serializers
-from core.apps.orders.models import Offer
-from core.apps.orders.filters.offer import OfferFilter
+from core.apps.orders.models import Offer, Order
+from core.apps.orders.filters.order import OrderFilter
 
 
 class OffersCreateApiView(generics.GenericAPIView):
@@ -33,15 +33,15 @@ class OffersCreateApiView(generics.GenericAPIView):
 
 class OfferListApiView(generics.GenericAPIView):
     permission_classes = [HasRolePermission]
-    queryset = Offer.objects.select_related('order')
+    queryset = Order.objects.select_related('product', 'unity').prefetch_related('offers')
     required_permissions = ['offer']
-    serializer_class = serializers.OfferListSerializer
+    serializer_class = serializers.OrderListForOfferSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_class = OfferFilter
+    filterset_class = OrderFilter
 
     def get(self, request):
-        offers = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(offers)
+        orders = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(orders)
         if page is not None:
             serializer = self.serializer_class(page, many=True)
             return self.get_paginated_response(serializer.data)
