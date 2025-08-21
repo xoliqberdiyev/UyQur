@@ -28,6 +28,7 @@ urlpatterns = [
     path('party/', include(
         [
             path('create/', party_views.PartyCreateApiView.as_view()),
+            path('list/', party_views.PartyListApiView.as_view()),
         ]
     )),
 ]

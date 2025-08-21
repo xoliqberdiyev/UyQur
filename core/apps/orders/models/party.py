@@ -11,7 +11,7 @@ class Party(BaseModel):
     mediator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='parties')
     # dates
     delivery_date = models.DateField()
-    coled_date = models.DateField(null=True, blank=True)
+    closed_date = models.DateField(null=True, blank=True)
     order_date = models.DateField(auto_now_add=True)
     payment_date = models.DateField()
     

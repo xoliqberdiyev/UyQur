@@ -3,7 +3,7 @@ from django.db import transaction
 from rest_framework import serializers
 
 from core.apps.orders.models import Party, PartyAmount, Order
-from core.apps.orders.serializers.order import MultipleOrderAddSerializer
+from core.apps.orders.serializers.order import MultipleOrderAddSerializer, OrderListSerializer
 from core.apps.accounts.models import User
 
 
@@ -44,6 +44,7 @@ class PartyCreateSerializer(serializers.Serializer):
                     currency=resource.get('currency'),
                     total_price=resource.get('amount'), 
                     date=resource.get('date'),
+                    employee=self.context.get('user'),
                 ))
                 total_price += resource.get('amount')
             created_orders = Order.objects.bulk_create(orders)
@@ -62,3 +63,24 @@ class PartyCreateSerializer(serializers.Serializer):
                 party=party,
             )
             return party
+
+
+class PartyAmountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PartyAmount
+        fields = [
+            'id', 'total_price', 'cost_amount', 'calculated_amount', 'paid_amount', 'payment_amount'
+        ]
+
+
+class PartyListSerializer(serializers.ModelSerializer):
+    orders = OrderListSerializer(many=True)
+    party_amount = PartyAmountSerializer()
+
+    class Meta:
+        model = Party
+        fields = [
+            'id', 'number', 'delivery_date', 'closed_date', 'order_date', 'payment_date', 'status',
+            'payment_status', 'process', 'confirmation', 'comment', 'audit', 'audit_comment',
+            'orders', 'party_amount'
+        ]
