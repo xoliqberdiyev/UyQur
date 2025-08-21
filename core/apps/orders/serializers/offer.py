@@ -87,3 +87,11 @@ class OfferUpdateSerializer(serializers.ModelSerializer):
         instance.price_type = validated_data.get('price_type', instance.price_type)
         instance.save()
         return instance
+    
+
+class OffersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Offer
+        fields = [
+            'id', 'number', 'price', 'price_type', 'phone', 'comment', 'qqs',
+        ]

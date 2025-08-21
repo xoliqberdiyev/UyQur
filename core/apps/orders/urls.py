@@ -13,6 +13,7 @@ urlpatterns = [
             path('<uuid:order_id>/cancel/', order_views.OrderChangeStatusCancelledApiView.as_view()),
             path("<uuid:order_id>/accept/", order_views.OrderChangeStatusAcceptedApiView.as_view()),
             path("accepted/list/", order_views.OrderAcceptApiView.as_view()),
+            path('<uuid:order_id>/offers/', order_views.OrderOfferListApiView.as_view()),
         ]
     )),
     path('offer/', include(

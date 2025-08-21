@@ -6,8 +6,9 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from core.apps.orders.serializers import order as serializers
-from core.apps.orders.models import Order
+from core.apps.orders.models import Order, Offer
 from core.apps.orders.filters.order import OrderFilter
+from core.apps.orders.serializers.offer import OffersSerializer
 from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.shared.paginations.custom import CustomPageNumberPagination
 
@@ -94,3 +95,16 @@ class OrderAcceptApiView(generics.ListAPIView):
     permission_classes = [HasRolePermission]
     required_permissions = ['order']
     pagination_class = CustomPageNumberPagination
+
+
+class OrderOfferListApiView(generics.GenericAPIView):
+    serializer_class = OffersSerializer
+    permission_classes = [HasRolePermission]
+    required_permissions = ['order']
+    queryset = Offer.objects.select_related('order')
+    pagination_class = None
+
+    def get(self, request, order_id):
+        offers = self.get_queryset().select_related("order").filter(order_id=order_id)
+        serializer = self.serializer_class(offers, many=True)
+        return Response(serializer.data, status=200)

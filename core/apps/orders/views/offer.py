@@ -3,10 +3,13 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics, views
 from rest_framework.response import Response
 
+from django_filters.rest_framework.backends import DjangoFilterBackend
+
 from core.apps.shared.paginations.custom import PageNumberPagination
 from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.orders.serializers import offer as serializers
 from core.apps.orders.models import Offer
+from core.apps.orders.filters.offer import OfferFilter
 
 
 class OffersCreateApiView(generics.GenericAPIView):
@@ -33,9 +36,11 @@ class OfferListApiView(generics.GenericAPIView):
     queryset = Offer.objects.select_related('order')
     required_permissions = ['offer']
     serializer_class = serializers.OfferListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OfferFilter
 
     def get(self, request):
-        offers = Offer.objects.all()
+        offers = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(offers)
         if page is not None:
             serializer = self.serializer_class(page, many=True)
