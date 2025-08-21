@@ -7,6 +7,6 @@ class OrderFilter(django_filters.FilterSet):
     class Meta:
         model = Order
         fields = [
-            'wherehouse', 'project', 'project_folder'
+            'wherehouse', 'project', 'project_folder', 'date'
         ]
     
