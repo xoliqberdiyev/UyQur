@@ -33,7 +33,9 @@ class OffersCreateApiView(generics.GenericAPIView):
 
 class OfferListApiView(generics.GenericAPIView):
     permission_classes = [HasRolePermission]
-    queryset = Order.objects.select_related('product', 'unity').prefetch_related('offers')
+    queryset = Order.objects.select_related('product', 'unity').prefetch_related('offers').filter(
+        offers__isnull=False
+    ).distinct()
     required_permissions = ['offer']
     serializer_class = serializers.OrderListForOfferSerializer
     filter_backends = [DjangoFilterBackend]
