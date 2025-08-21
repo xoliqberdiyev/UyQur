@@ -42,8 +42,23 @@ class PartyCreateSerializer(serializers.Serializer):
                     quantity=resource.get('quantity'),
                     unit_amount=resource.get('unit_amount'),
                     currency=resource.get('currency'),
-                    amount=resource.get('amount'), 
+                    total_price=resource.get('amount'), 
+                    date=resource.get('date'),
                 ))
                 total_price += resource.get('amount')
             created_orders = Order.objects.bulk_create(orders)
-            
+            party = Party.objects.create(
+                mediator=validated_data.get('user'),
+                delivery_date=validated_data.get('delivery_date'),
+                payment_date=validated_data.get('payment_date'),
+                comment=validated_data.get('comment'),
+                audit=validated_data.get('audit'),
+                audit_comment=validated_data.get('audit_comment')
+            )
+            party.orders.add(*created_orders)
+            party.save()
+            PartyAmount.objects.create(
+                total_price=total_price,
+                party=party,
+            )
+            return party

@@ -128,6 +128,7 @@ class MultipleOrderAddSerializer(serializers.Serializer):
     unit_amount = serializers.IntegerField()
     currency = serializers.ChoiceField(choices=[('uzs', 'uzs'), ('usd', 'usd')])
     amount = serializers.IntegerField()
+    date = serializers.DateField()
 
     def validate(self, data):
         product = Product.objects.filter(id=data['product_id']).first()
@@ -136,7 +137,7 @@ class MultipleOrderAddSerializer(serializers.Serializer):
         unity = Unity.objects.filter(id=data['unity_id']).first()
         if not unity:
             raise serializers.ValidationError("Unity not found")
-        wherehouse = WhereHouse.objects.filter(id=data['wherehouse_id'])
+        wherehouse = WhereHouse.objects.filter(id=data['wherehouse_id']).first()
         if not wherehouse:
             raise serializers.ValidationError("WhereHouse not found")
         counterparty = Counterparty.objects.filter(id=data['counterparty_id']).first()

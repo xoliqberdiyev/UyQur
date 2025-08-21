@@ -2,6 +2,7 @@ from django.urls import path, include
 
 from core.apps.orders.views import order as order_views
 from core.apps.orders.views import offer as offer_views
+from core.apps.orders.views import party as party_views
 
 
 urlpatterns = [
@@ -22,6 +23,11 @@ urlpatterns = [
             path('list/', offer_views.OfferListApiView.as_view()),
             path('<uuid:id>/delete/', offer_views.OfferDeleteApiView.as_view()),
             path('<uuid:id>/update/', offer_views.OfferUpdateApiView.as_view()),
+        ]
+    )),
+    path('party/', include(
+        [
+            path('create/', party_views.PartyCreateApiView.as_view()),
         ]
     )),
 ]
