@@ -36,4 +36,3 @@ class PartyListApiView(generics.GenericAPIView):
         parties = self.get_queryset()
         serializer = self.serializer_class(parties, many=True)
         return Response(serializer.data, status=200)
-    

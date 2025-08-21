@@ -37,7 +37,7 @@ class ProductSerializer(serializers.Serializer):
         if not unity:   
             raise serializers.ValidationError("Unity not found")
         if data.get("sub_folder_id"):
-            sub_folder = SubFolder.objects.filter(id=data['sub_folder_id'])
+            sub_folder = SubFolder.objects.filter(id=data['sub_folder_id']).first()
             if not sub_folder:
                 raise serializers.ValidationError("Sub Folder not found")
             data['sub_folder'] = sub_folder
