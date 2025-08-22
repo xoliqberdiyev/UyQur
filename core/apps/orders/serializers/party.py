@@ -18,7 +18,6 @@ class PartyCreateSerializer(serializers.Serializer):
         choices=[('CHECKED', 'tekshirildi'),('PROCESS', 'jarayonda')], required=False
     )
     audit_comment = serializers.CharField(required=False)
-    qqs = serializers.IntegerField(required=False)
 
     def validate(self, data):
         user = User.objects.filter(id=data['mediator_id']).first()
@@ -47,6 +46,7 @@ class PartyCreateSerializer(serializers.Serializer):
                     employee=self.context.get('user'),
                     qqs_price=resource.get('qqs_price'),
                     total_price=resource.get('total_price'),
+                    qqs=resource.get('qqs'),
                 ))
                 total_price += resource.get('amount')
             created_orders = Order.objects.bulk_create(orders)
@@ -58,7 +58,6 @@ class PartyCreateSerializer(serializers.Serializer):
                 audit=validated_data.get('audit'),
                 audit_comment=validated_data.get('audit_comment'),
                 discount=validated_data.get('discount'),
-                qqs=validated_data.get('qqs'),
             )
             party.orders.add(*created_orders)
             party.save()
