@@ -6,6 +6,22 @@ from core.apps.accounts.models import User
 
 
 class Party(BaseModel):
+    STATUS = [
+        ('NEW', 'yangi'),
+        ('PARTY_IS_MADE', 'partiya qilingan'),
+        ("EXPECTED", 'kutilmoqda'),
+        ('DRAFT', 'qoralama'),
+        ('CANCELLED', 'bekor qilingan'),
+        ('PURCHASED', 'sotib olinmoqda'),
+        ('PROCESS', 'jarayonda'),
+    ]
+    PAYMENT_STATUS = (
+        ('PAID', "to'langan"),
+        ('PARTIALLY', 'qisman'),
+        ('NOT_PAID', "to'lanmagan"),
+        ('OVERPAID', "ortiqcha to'langan"),
+    )
+
     number = models.PositiveIntegerField(default=1)
     orders = models.ManyToManyField(Order, related_name='parties', null=True, blank=True)
     mediator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='parties')
@@ -14,14 +30,13 @@ class Party(BaseModel):
     closed_date = models.DateField(null=True, blank=True)
     order_date = models.DateField(auto_now_add=True)
     payment_date = models.DateField()
-    
-    status = models.CharField(
-        max_length=20, choices=[('ORDERED', 'yetkazildi'), ('PROCESS', 'jarayonda')],
-        null=True, blank=True
-    )
-    payment_status = models.FloatField(null=True, blank=True)
-    process = models.FloatField(null=True, blank=True)
+    # choices
+    status = models.CharField(max_length=20, choices=STATUS, default='NEW')
+    payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='NOT_PAID')
     confirmation = models.BooleanField(default=False)
+    # percentages
+    payment_percentage = models.FloatField(null=True, blank=True)
+    process = models.FloatField(null=True, blank=True)
 
     comment = models.TextField(null=True, blank=True)
     audit = models.CharField(

@@ -46,6 +46,8 @@ class PartyCreateSerializer(serializers.Serializer):
                     total_price=resource.get('amount'), 
                     date=resource.get('date'),
                     employee=self.context.get('user'),
+                    qqs_price=resource.get('qqs_price'),
+                    total_price=resource.get('total_price'),
                 ))
                 total_price += resource.get('amount')
             created_orders = Order.objects.bulk_create(orders)
