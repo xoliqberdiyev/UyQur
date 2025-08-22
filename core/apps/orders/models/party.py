@@ -50,9 +50,13 @@ class Party(BaseModel):
     )
     audit_comment = models.TextField(null=True, blank=True)
     discount = models.PositiveBigIntegerField(default=0, null=True, blank=True)
+    discount_currency = models.CharField(
+        max_length=3, choices=[('uzs', 'uzs'), ('usd', 'usd')], default='uzs', null=True, blank=True
+    )
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.number)
+        return f'P - {self.number}'
     
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -83,3 +87,21 @@ class PartyAmount(BaseModel):
         verbose_name = 'Partiya Summasi'
         verbose_name_plural = 'Partiya summalari'
     
+
+
+class DeletedParty(BaseModel):
+    party = models.ForeignKey(Party, on_delete=models.CASCADE, related_name='deleted_parties')
+    deleted_date = models.DateField(auto_now_add=True)
+    comment = models.CharField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.party} deleted at {self.deleted_date}'
+    
+    def save(self, *args, **kwargs):
+        self.party.is_deleted = True
+        self.party.save()
+        return super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "O'chirilgan partiya"
+        verbose_name_plural = "O'chirilgan partiyalar"

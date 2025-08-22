@@ -2,7 +2,7 @@ from django.db import transaction
 
 from rest_framework import serializers
 
-from core.apps.orders.models import Party, PartyAmount, Order
+from core.apps.orders.models import Party, PartyAmount, Order, DeletedParty
 from core.apps.orders.serializers.order import MultipleOrderAddSerializer, OrderListSerializer
 from core.apps.accounts.models import User
 
@@ -14,6 +14,7 @@ class PartyCreateSerializer(serializers.Serializer):
     payment_date = serializers.DateField()
     comment = serializers.CharField(required=False)
     discount = serializers.IntegerField(required=False)
+    discount_currency = serializers.ChoiceField(choices=[('uzs', 'uzs'), ('usd', 'usd')])
     audit = serializers.ChoiceField(
         choices=[('CHECKED', 'tekshirildi'),('PROCESS', 'jarayonda')], required=False
     )
@@ -58,6 +59,7 @@ class PartyCreateSerializer(serializers.Serializer):
                 audit=validated_data.get('audit'),
                 audit_comment=validated_data.get('audit_comment'),
                 discount=validated_data.get('discount'),
+                discount_currency=validated_data.get('discount_currency'),
             )
             party.orders.add(*created_orders)
             party.save()
@@ -99,3 +101,34 @@ class PartyListSerializer(serializers.ModelSerializer):
             'payment_status', 'process', 'confirmation', 'comment', 'audit', 'audit_comment',
             'party_amount'
         ]
+
+
+class DeletedPartyCreateSerializer(serializers.Serializer):
+    comment = serializers.CharField(required=False)
+
+    def validate(self, data):
+        party = Party.objects.filter(id=self.context.get('party_id')).first()
+        if not party:
+            raise serializers.ValidationError("Party not found")
+        data['party'] = party
+        return data
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            return DeletedParty.objects.create(
+                comment=validated_data.get('comment'),
+                party=validated_data.get('party')
+            )
+    
+
+class DeletedPartyListSerializer(serializers.ModelSerializer):
+    party_number = serializers.IntegerField(source='party.number')
+    party_total_price = serializers.IntegerField(source='party.party_amount.total_price')
+    # mediator = serializers.SerializerMethodField(method_name='get_mediator')
+
+    class Meta:
+        model = DeletedParty
+        fields = [
+            'id', 'deleted_date', 'party_number', 'party_total_price',
+        ]
+    

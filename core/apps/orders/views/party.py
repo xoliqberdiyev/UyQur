@@ -5,7 +5,7 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 
 from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.orders.serializers import party as serializers
-from core.apps.orders.models import Order, Party, PartyAmount
+from core.apps.orders.models import Party, PartyAmount, DeletedParty
 from core.apps.orders.filters.party import PartyFilter
 
 
@@ -13,7 +13,7 @@ class PartyCreateApiView(generics.GenericAPIView):
     serializer_class = serializers.PartyCreateSerializer
     queryset = Party.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = []
+    required_permissions = ['party']
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data, context={'user': request.user})
@@ -31,9 +31,9 @@ class PartyCreateApiView(generics.GenericAPIView):
 
 class PartyListApiView(generics.GenericAPIView):
     serializer_class = serializers.PartyListSerializer
-    queryset = Party.objects.select_related('party_amount')
+    queryset = Party.objects.select_related('party_amount').exclude(is_deleted=True)
     permission_classes = [HasRolePermission]
-    required_permissions = []
+    required_permissions = ['party']
     filter_backends = [DjangoFilterBackend]
     filterset_class = PartyFilter
     
@@ -49,7 +49,7 @@ class PartyListApiView(generics.GenericAPIView):
 
 class PartyDetailApiView(generics.GenericAPIView):
     permission_classes = [HasRolePermission]
-    required_permissions = []
+    required_permissions = ['party']
     serializer_class = serializers.PartyDetailSerializer
     queryset = Party.objects.select_related('party_amount').prefetch_related('orders')
 
@@ -58,4 +58,39 @@ class PartyDetailApiView(generics.GenericAPIView):
         if not party:
             return Response({'success': False, 'message': 'party not found'}, status=404)
         serializer = self.serializer_class(party)
+        return Response(serializer.data, status=200)
+    
+
+class PartyDeleteApiView(generics.GenericAPIView):
+    serializer_class = serializers.DeletedPartyCreateSerializer
+    queryset = Party.objects.all()
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+
+    def post(self, request, party_id):
+        serializer = self.serializer_class(data=request.data, context={'party_id': party_id})
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                {'success': True, 'message': 'Party deleted'},
+                status=200
+            )
+        return Response(
+            {'success': False, 'message': 'error while deletign party', 'error': serializer.errors},
+            status=400
+        )
+
+
+class DeletedPartyListApiView(generics.GenericAPIView):
+    serializer_class = serializers.DeletedPartyListSerializer
+    queryset = DeletedParty.objects.select_related('party')
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+
+    def get(self, request):
+        deleted_parties = DeletedParty.objects.select_related('party')
+        page = self.paginate_queryset(deleted_parties)
+        if page is not None:
+            serializer = self.serializer_class(page, many=True)
+            return self.get_paginated_response(serializer.data)
         return Response(serializer.data, status=200)

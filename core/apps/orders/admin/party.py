@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from core.apps.orders.models import Party, PartyAmount
+from core.apps.orders.models import Party, PartyAmount, DeletedParty
 
 
 class PartyAmountInline(admin.StackedInline):
@@ -11,7 +11,7 @@ class PartyAmountInline(admin.StackedInline):
 
 @admin.register(Party)
 class PartyAdmin(admin.ModelAdmin):
-    list_display = ['mediator', 'delivery_date', 'payment_date']
+    list_display = ['mediator', 'delivery_date', 'payment_date', 'is_deleted']
     inlines = [PartyAmountInline]    
 
 
@@ -21,3 +21,7 @@ class PartyAmountAdmin(admin.ModelAdmin):
 
     def has_module_permission(self, request):
         return False
+
+@admin.register(DeletedParty)
+class DeletedPartyAdmin(admin.ModelAdmin):
+    list_display = ['id', 'deleted_date', 'party']
