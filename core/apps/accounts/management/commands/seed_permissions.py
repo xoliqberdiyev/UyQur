@@ -20,7 +20,7 @@ class Command(BaseCommand):
             {'code': 'product', 'name': 'all access to product'},
             {'code': 'order', 'name': 'all access to orders'},
             {'code': 'offer', 'name': 'all access to offers'},
-
+            {'code': 'party', 'name': 'all access to partyies'},
         ]
 
         for perm in permissions:
