@@ -43,7 +43,7 @@ class PartyCreateSerializer(serializers.Serializer):
                     quantity=resource.get('quantity'),
                     unit_amount=resource.get('unit_amount'),
                     currency=resource.get('currency'),
-                    total_price=resource.get('amount'), 
+                    amount=resource.get('amount'), 
                     date=resource.get('date'),
                     employee=self.context.get('user'),
                     qqs_price=resource.get('qqs_price'),

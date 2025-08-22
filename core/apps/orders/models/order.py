@@ -44,7 +44,8 @@ class Order(BaseModel):
     )
     total_price = models.PositiveBigIntegerField(default=0, null=True, blank=True)
     qqs_price = models.PositiveBigIntegerField(default=0, null=True, blank=True)
-
+    amount = models.PositiveBigIntegerField(default=0, null=True, blank=True)
+    
     def __str__(self):
         return f"{self.product} {self.unity} quantity order"
     
