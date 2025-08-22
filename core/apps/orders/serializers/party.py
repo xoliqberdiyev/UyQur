@@ -14,7 +14,7 @@ class PartyCreateSerializer(serializers.Serializer):
     payment_date = serializers.DateField()
     comment = serializers.CharField(required=False)
     discount = serializers.IntegerField(required=False)
-    discount_currency = serializers.ChoiceField(choices=[('uzs', 'uzs'), ('usd', 'usd')])
+    discount_currency = serializers.ChoiceField(choices=[('uzs', 'uzs'), ('usd', 'usd')], required=False)
     audit = serializers.ChoiceField(
         choices=[('CHECKED', 'tekshirildi'),('PROCESS', 'jarayonda')], required=False
     )
