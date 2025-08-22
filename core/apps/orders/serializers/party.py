@@ -13,7 +13,8 @@ class PartyCreateSerializer(serializers.Serializer):
     delivery_date = serializers.DateField()
     payment_date = serializers.DateField()
     comment = serializers.CharField(required=False)
-
+    qqs_price = serializers.IntegerField(required=False)
+    discount = serializers.IntegerField(required=False)
     audit = serializers.ChoiceField(
         choices=[('CHECKED', 'tekshirildi'),('PROCESS', 'jarayonda')], required=False
     )
@@ -54,7 +55,9 @@ class PartyCreateSerializer(serializers.Serializer):
                 payment_date=validated_data.get('payment_date'),
                 comment=validated_data.get('comment'),
                 audit=validated_data.get('audit'),
-                audit_comment=validated_data.get('audit_comment')
+                audit_comment=validated_data.get('audit_comment'),
+                qqs_price=validated_data.get('qqs_price'),
+                discount=validated_data.get('discount'),
             )
             party.orders.add(*created_orders)
             party.save()
