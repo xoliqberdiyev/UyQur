@@ -124,11 +124,16 @@ class DeletedPartyCreateSerializer(serializers.Serializer):
 class DeletedPartyListSerializer(serializers.ModelSerializer):
     party_number = serializers.IntegerField(source='party.number')
     party_total_price = serializers.IntegerField(source='party.party_amount.total_price')
-    # mediator = serializers.SerializerMethodField(method_name='get_mediator')
+    mediator = serializers.SerializerMethodField(method_name='get_mediator')
 
     class Meta:
         model = DeletedParty
         fields = [
-            'id', 'deleted_date', 'party_number', 'party_total_price',
+            'id', 'deleted_date', 'party_number', 'party_total_price', 'mediator'
         ]
     
+    def get_mediator(self, obj):
+        return {
+            'id': obj.party.mediator.id,
+            'name': obj.party.mediator.full_name
+        }
