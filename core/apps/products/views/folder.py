@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 
 from rest_framework.response import Response
-from rest_framework import generics, views
+from rest_framework import generics, views, filters
 
 from core.apps.products.serializers.folder import FolderSerializer, SubFolderSerializer
 from core.apps.products.models import Folder, SubFolder, Product
@@ -42,18 +42,20 @@ class FolderDeleteApiView(generics.DestroyAPIView):
     lookup_field = 'id'
 
 
-
-
 class FolderProductListApiView(generics.GenericAPIView):
     pagination_class = CustomPageNumberPagination
     permission_classes = [HasRolePermission]
     required_permissions = ['product', 'product_folder']
     queryset = Product.objects.all()
     serializer_class = ProductListSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = [
+        'name', 'type', 'unity__value'
+    ]
 
     def get(self, request, folder_id):
         folder = get_object_or_404(Folder, id=folder_id)
-        products = Product.objects.filter(folder=folder)
+        products = self.filter_queryset(Product.objects.filter(folder=folder))
         data = self.paginate_queryset(products)
         serializer = self.serializer_class(data, many=True)
         return self.get_paginated_response(serializer.data)
