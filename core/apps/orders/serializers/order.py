@@ -129,7 +129,7 @@ class MultipleOrderAddSerializer(serializers.Serializer):
     currency = serializers.ChoiceField(choices=[('uzs', 'uzs'), ('usd', 'usd')])
     amount = serializers.IntegerField()
     total_price = serializers.IntegerField(required=False)
-    qqs_summa = serializers.IntegerField(required=False)
+    qqs_price = serializers.IntegerField(required=False)
 
     def validate(self, data):
         product = Product.objects.filter(id=data['product_id']).first()
