@@ -31,7 +31,7 @@ class PartyCreateApiView(generics.GenericAPIView):
 
 class PartyListApiView(generics.GenericAPIView):
     serializer_class = serializers.PartyListSerializer
-    queryset = Party.objects.select_related('party_amount').prefetch_related('orders')
+    queryset = Party.objects.select_related('party_amount')
     permission_classes = [HasRolePermission]
     required_permissions = []
     filter_backends = [DjangoFilterBackend]
@@ -44,4 +44,18 @@ class PartyListApiView(generics.GenericAPIView):
             serializer = self.serializer_class(page, many=True)
             return self.get_paginated_response(serializer.data)
         serializer = self.serializer_class(parties, many=True)
+        return Response(serializer.data, status=200)
+
+
+class PartyDetailApiView(generics.GenericAPIView):
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+    serializer_class = serializers.PartyDetailSerializer
+    queryset = Party.objects.select_related('party_amount').prefetch_related('orders')
+
+    def get(self, request, id):
+        party = Party.objects.select_related('party_amount').prefetch_related('orders').filter(id=id).first()
+        if not party:
+            return Response({'success': False, 'message': 'party not found'}, status=404)
+        serializer = self.serializer_class(party)
         return Response(serializer.data, status=200)

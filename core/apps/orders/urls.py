@@ -29,6 +29,7 @@ urlpatterns = [
         [
             path('create/', party_views.PartyCreateApiView.as_view()),
             path('list/', party_views.PartyListApiView.as_view()),
+            path('<uuid:id>/', party_views.PartyDetailApiView.as_view()),
         ]
     )),
 ]

@@ -76,7 +76,7 @@ class PartyAmountSerializer(serializers.ModelSerializer):
         ]
 
 
-class PartyListSerializer(serializers.ModelSerializer):
+class PartyDetailSerializer(serializers.ModelSerializer):
     orders = OrderListSerializer(many=True)
     party_amount = PartyAmountSerializer()
 
@@ -86,4 +86,16 @@ class PartyListSerializer(serializers.ModelSerializer):
             'id', 'number', 'delivery_date', 'closed_date', 'order_date', 'payment_date', 'status',
             'payment_status', 'process', 'confirmation', 'comment', 'audit', 'audit_comment',
             'orders', 'party_amount'
+        ]
+
+
+class PartyListSerializer(serializers.ModelSerializer):
+    party_amount = PartyAmountSerializer()
+
+    class Meta:
+        model = Party
+        fields = [
+            'id','number', 'delivery_date', 'closed_date', 'order_date', 'payment_date', 'status',
+            'payment_status', 'process', 'confirmation', 'comment', 'audit', 'audit_comment',
+            'party_amount'
         ]
