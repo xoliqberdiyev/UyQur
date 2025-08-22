@@ -1,9 +1,12 @@
 from rest_framework import generics, views
 from rest_framework.response import Response
 
+from django_filters.rest_framework.backends import DjangoFilterBackend
+
 from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.orders.serializers import party as serializers
 from core.apps.orders.models import Order, Party, PartyAmount
+from core.apps.orders.filters.party import PartyFilter
 
 
 class PartyCreateApiView(generics.GenericAPIView):
@@ -31,8 +34,14 @@ class PartyListApiView(generics.GenericAPIView):
     queryset = Party.objects.select_related('party_amount').prefetch_related('orders')
     permission_classes = [HasRolePermission]
     required_permissions = []
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = PartyFilter
     
     def get(self, request):
-        parties = self.get_queryset()
+        parties = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(parties)
+        if page is not None:
+            serializer = self.serializer_class(page, many=True)
+            return self.get_paginated_response(serializer.data)
         serializer = self.serializer_class(parties, many=True)
         return Response(serializer.data, status=200)

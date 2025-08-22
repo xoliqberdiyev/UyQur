@@ -21,6 +21,11 @@ class Party(BaseModel):
         ('NOT_PAID', "to'lanmagan"),
         ('OVERPAID', "ortiqcha to'langan"),
     )
+    CONFIRMATION = (
+        ('EXPECTED', 'kutilmoqda'),
+        ('APPROVER', 'tasdiqlangan'),
+        ('REJECTED', 'rad etilgan'),
+    )
 
     number = models.PositiveIntegerField(default=1)
     orders = models.ManyToManyField(Order, related_name='parties', null=True, blank=True)
@@ -33,7 +38,7 @@ class Party(BaseModel):
     # choices
     status = models.CharField(max_length=20, choices=STATUS, default='NEW')
     payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='NOT_PAID')
-    confirmation = models.BooleanField(default=False)
+    confirmation = models.CharField(max_length=20, choices=CONFIRMATION, default='EXPECTED')
     # percentages
     payment_percentage = models.FloatField(null=True, blank=True)
     process = models.FloatField(null=True, blank=True)
