@@ -31,7 +31,7 @@ class Order(BaseModel):
     wherehouse = models.ForeignKey(
         WhereHouse, on_delete=models.CASCADE, related_name='orders'
     )
-    date = models.DateField()
+    date = models.DateField(null=True, blank=True)
     quantity = models.PositiveBigIntegerField(default=1)
     status = models.CharField(max_length=20, choices=STATUS, default="NEW")
     employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders', null=True)

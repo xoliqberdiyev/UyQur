@@ -128,7 +128,6 @@ class MultipleOrderAddSerializer(serializers.Serializer):
     unit_amount = serializers.IntegerField()
     currency = serializers.ChoiceField(choices=[('uzs', 'uzs'), ('usd', 'usd')])
     amount = serializers.IntegerField()
-    date = serializers.DateField()
     total_price = serializers.IntegerField(required=False)
     qqs_summa = serializers.IntegerField(required=False)
 
