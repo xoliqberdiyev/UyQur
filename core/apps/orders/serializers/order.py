@@ -98,7 +98,8 @@ class OrderListSerializer(serializers.ModelSerializer):
         model = Order
         fields = [
             'id', 'product', 'unity', 'quantity', 'project', 'project_folder',
-            'wherehouse', 'date', 'status', 'employee', 'counterparty'
+            'wherehouse', 'date', 'status', 'employee', 'counterparty', 'unit_amount', 'currency',
+            'total_price', 'qqs_price', 'amount', 'qqs'
         ]
 
     def get_employee(self, obj):
