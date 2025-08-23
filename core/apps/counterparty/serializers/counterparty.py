@@ -12,3 +12,11 @@ class CounterpartySerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'type', 'status', 'description', 'start_date', 'person'
         ]
+
+
+class CounterpartyListPartySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Counterparty
+        fields = [
+            'id', 'name',
+        ]

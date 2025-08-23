@@ -5,6 +5,7 @@ from rest_framework import serializers
 from core.apps.orders.models import Party, PartyAmount, Order, DeletedParty
 from core.apps.orders.serializers.order import MultipleOrderAddSerializer, OrderListSerializer
 from core.apps.accounts.models import User
+from core.apps.counterparty.serializers.counterparty import CounterpartyListPartySerializer
 
 
 class PartyCreateSerializer(serializers.Serializer):
@@ -81,26 +82,49 @@ class PartyAmountSerializer(serializers.ModelSerializer):
 class PartyDetailSerializer(serializers.ModelSerializer):
     orders = OrderListSerializer(many=True)
     party_amount = PartyAmountSerializer()
+    mediator = serializers.SerializerMethodField(method_name='get_mediator')
 
     class Meta:
         model = Party
         fields = [
             'id', 'number', 'delivery_date', 'closed_date', 'order_date', 'payment_date', 'status',
             'payment_status', 'process', 'confirmation', 'comment', 'audit', 'audit_comment',
-            'orders', 'party_amount'
+            'orders', 'party_amount', 'mediator',
         ]
+
+    def get_mediator(self, obj):
+        return {
+            'id': obj.mediator.id,
+            'full_name': obj.mediator.full_name
+        }
 
 
 class PartyListSerializer(serializers.ModelSerializer):
     party_amount = PartyAmountSerializer()
+    mediator = serializers.SerializerMethodField(method_name='get_mediator')
+    counterparty = serializers.SerializerMethodField(method_name='get_counterparty')
 
     class Meta:
         model = Party
         fields = [
             'id','number', 'delivery_date', 'closed_date', 'order_date', 'payment_date', 'status',
             'payment_status', 'process', 'confirmation', 'comment', 'audit', 'audit_comment',
-            'party_amount'
+            'party_amount', 'mediator', 'counterparty'
         ]
+
+    def get_mediator(self, obj):
+        return {
+            'id': obj.mediator.id,
+            'full_name': obj.mediator.full_name
+        }
+    
+    def get_counterparty(self, obj):
+        counterparties = obj.orders.values("counterparty__id", "counterparty__name").distinct()
+        counterparties = [
+            {"id": c["counterparty__id"], "name": c["counterparty__name"]}
+            for c in counterparties
+        ]
+        return CounterpartyListPartySerializer(counterparties, many=True).data
 
 
 class DeletedPartyCreateSerializer(serializers.Serializer):
