@@ -92,12 +92,13 @@ class OrderListSerializer(serializers.ModelSerializer):
     wherehouse = WhereHouseListSerializer()
     project_folder = ProjectFolderListSerializer()
     employee = serializers.SerializerMethodField(method_name='get_employee')
+    counterparty = serializers.SerializerMethodField(method_name='get_counterparty')
 
     class Meta:
         model = Order
         fields = [
             'id', 'product', 'unity', 'quantity', 'project', 'project_folder',
-            'wherehouse', 'date', 'status', 'employee'
+            'wherehouse', 'date', 'status', 'employee', 'counterparty'
         ]
 
     def get_employee(self, obj):
@@ -106,6 +107,12 @@ class OrderListSerializer(serializers.ModelSerializer):
             "full_name": obj.employee.full_name,
             "phone_number": obj.employee.phone_number
         } if obj.employee else None
+
+    def get_counterparty(self, obj):
+        return {
+            'id': obj.counterparty.id,
+            'name': obj.counterparty.name,
+        } if obj.counterparty else None
 
 
 class OrderUpdateSerializer(serializers.ModelSerializer):

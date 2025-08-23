@@ -39,6 +39,7 @@ class Party(BaseModel):
     status = models.CharField(max_length=20, choices=STATUS, default='NEW')
     payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='NOT_PAID')
     confirmation = models.CharField(max_length=20, choices=CONFIRMATION, default='EXPECTED')
+    currency = models.CharField(choices=[('usd', 'usd'), ('uzs', 'uzs')], max_length=3, default='uzs')
     # percentages
     payment_percentage = models.FloatField(null=True, blank=True)
     process = models.FloatField(null=True, blank=True)
