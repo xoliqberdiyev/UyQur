@@ -33,6 +33,9 @@ urlpatterns = [
             path('<uuid:party_id>/delete/', party_views.PartyDeleteApiView.as_view()),
             path('deleted_pary/list/', party_views.DeletedPartyListApiView.as_view()),
             path('<uuid:id>/update/', party_views.PartyUpdateApiView.as_view()),
+            path(
+                '<uuid:party_id>/order/<uuid:order_id>/remove/', party_views.OrderDeleteToPartyApiView.as_view()
+            ),
         ]
     )),
 ]

@@ -7,7 +7,7 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 
 from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.orders.serializers import party as serializers
-from core.apps.orders.models import Party, PartyAmount, DeletedParty
+from core.apps.orders.models import Party, PartyAmount, DeletedParty, Order
 from core.apps.orders.filters.party import PartyFilter
 
 
@@ -101,7 +101,7 @@ class DeletedPartyListApiView(generics.GenericAPIView):
 class PartyUpdateApiView(generics.GenericAPIView):
     serializer_class = serializers.PartyUpdateSerializer
     queryset = Party.objects.all()
-    pagination_class = [HasRolePermission]
+    permission_classes = [HasRolePermission]
     required_permissions = ['party']
     pagination_class = None
 
@@ -114,3 +114,24 @@ class PartyUpdateApiView(generics.GenericAPIView):
                 'success': True, 'message': 'update',
             }, status=200)
         return Response({'success': False, 'error': serializer.errors}, status=400)
+    
+
+class OrderDeleteToPartyApiView(generics.GenericAPIView):
+    serializer_class = None
+    permission_classes = [HasRolePermission]
+    required_permissions = ['party']
+    queryset = None
+    
+
+    def delete(self, request, party_id, order_id):
+        party = get_object_or_404(Party, id=party_id)
+
+        order = party.orders.filter(id=order_id).first()
+        if not order:
+            return Response(
+                {'success': False, 'error_message': 'Order does not belong to the party'},
+                status=400
+            )
+
+        party.orders.remove(order)
+        return Response({'success': True, 'message': 'Order removed from party'}, status=200)

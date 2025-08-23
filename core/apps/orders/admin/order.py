@@ -5,4 +5,4 @@ from core.apps.orders.models import Order
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['unity', 'project', 'wherehouse', 'currency']
+    list_display = ['id', 'product', 'wherehouse', 'currency']
