@@ -6,6 +6,7 @@ from core.apps.orders.models import Party, PartyAmount, Order, DeletedParty
 from core.apps.orders.serializers.order import MultipleOrderAddSerializer, OrderListSerializer
 from core.apps.accounts.models import User
 from core.apps.counterparty.serializers.counterparty import CounterpartyListPartySerializer
+from core.apps.shared.models import UsdCourse
 
 
 class PartyCreateSerializer(serializers.Serializer):
@@ -20,6 +21,7 @@ class PartyCreateSerializer(serializers.Serializer):
         choices=[('CHECKED', 'tekshirildi'),('PROCESS', 'jarayonda')], required=False
     )
     audit_comment = serializers.CharField(required=False)
+    currency = serializers.ChoiceField(choices=[('uzs', 'uzs'), ('usd', 'usd')])
 
     def validate(self, data):
         user = User.objects.filter(id=data['mediator_id']).first()
@@ -50,7 +52,12 @@ class PartyCreateSerializer(serializers.Serializer):
                     total_price=resource.get('total_price'),
                     qqs=resource.get('qqs'),
                 ))
-                total_price += resource.get('amount')
+                if validated_data.get('currency') == 'uzs':
+                    if resource.get('currency') == 'usd':
+                        usd_value = UsdCourse.objects.first().value
+                        total_price += resource.get('amount') * usd_value
+                else:
+                    total_price += resource.get('amount')
             created_orders = Order.objects.bulk_create(orders)
             party = Party.objects.create(
                 mediator=validated_data.get('user'),
@@ -61,6 +68,7 @@ class PartyCreateSerializer(serializers.Serializer):
                 audit_comment=validated_data.get('audit_comment'),
                 discount=validated_data.get('discount'),
                 discount_currency=validated_data.get('discount_currency'),
+                currency=validated_data.get('currency'),
             )
             party.orders.add(*created_orders)
             party.save()
