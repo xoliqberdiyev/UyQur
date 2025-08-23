@@ -7,6 +7,10 @@ from core.apps.orders.serializers.order import MultipleOrderAddSerializer, Order
 from core.apps.accounts.models import User
 from core.apps.counterparty.serializers.counterparty import CounterpartyListPartySerializer
 from core.apps.shared.models import UsdCourse
+from core.apps.products.models import Product, Unity
+from core.apps.projects.models import Project, ProjectFolder
+from core.apps.wherehouse.models import WhereHouse
+from core.apps.counterparty.models import Counterparty
 
 
 class PartyCreateSerializer(serializers.Serializer):
@@ -171,22 +175,113 @@ class DeletedPartyListSerializer(serializers.ModelSerializer):
         }
     
 
+class PartyOrderUpdateSerializer(serializers.Serializer):
+    order_id = serializers.UUIDField()
+    product_id = serializers.UUIDField()
+    unity_id = serializers.UUIDField()
+    project_folder_id = serializers.UUIDField(required=False)
+    project_id = serializers.UUIDField(required=False)
+    wherehouse_id = serializers.UUIDField()
+    counterparty_id = serializers.UUIDField()
+    quantity = serializers.IntegerField()
+    unit_amount = serializers.IntegerField()
+    currency = serializers.ChoiceField(choices=[('uzs', 'uzs'), ('usd', 'usd')])
+    total_price = serializers.IntegerField()
+
+    def validate(self, data):
+        order = Order.objects.filter(id=data['order_id']).first()
+        if not order:
+            raise serializers.ValidationError("Order not found")
+        product = Product.objects.filter(id=data['product_id']).first()
+        if not product:
+            raise serializers.ValidationError(f"Product not found on {order.id}")
+        unity = Unity.objects.filter(id=data['unity_id']).first()
+        if not unity:
+            raise serializers.ValidationError(f"Unity not found on {order.id}")
+        if data.get('project_folder_id'):
+            project_folder = ProjectFolder.objects.filter(id=data['project_folder_id']).first()
+            if not project_folder:
+                raise serializers.ValidationError(f"Project Folder not found on {order.id}")
+            data['project_folder'] = project_folder
+        if data.get('project_id'):
+            project = Project.objects.filter(id=data['project_id']).first()
+            if not project:
+                raise serializers.ValidationError(f"Project not found on {order.id}")
+            data['project'] = project
+        wherehouse = WhereHouse.objects.filter(id=data['wherehouse_id']).first()
+        if not wherehouse:
+            raise serializers.ValidationError(f"WhereHouse not found on {order.id}")
+        counterparty = Counterparty.objects.filter(id=data['counterparty_id']).first()
+        if not counterparty:
+            raise serializers.ValidationError(f"Counterparty not found on {order.id}")
+        
+        data['order'] = order
+        data['product'] = product
+        data['unity'] = unity
+        data['wherehouse'] = wherehouse
+        data['counterparty'] = counterparty
+        return data
+
+
 class PartyUpdateSerializer(serializers.ModelSerializer):
+    orders = PartyOrderUpdateSerializer(many=True, required=False)
+
     class Meta:
         model = Party
         fields = [
-            'mediator', 'delivery_date', 'payment_date',
+            'mediator', 'delivery_date', 'payment_date', 'orders', 'comment', 'audit', 'audit_comment',
+            'discount', 'discount_currency',
         ]
         extra_kwargs = {
-            'mediator': {'required': False}, 
+            'mediator': {'required': False},
             'delivery_date': {'required': False}, 
-            'payment_date': {'required':False}
+            'payment_date': {'required':False},
+            'comment': {'required': False},
+            'audit': {'required': False},
+            'audit_comment': {'required': False},
+            'discount': {'required': False}, 
+            'discount_currency': {'required': False},
         }
 
     def update(self, instance, validated_data):
+        orders_data = validated_data.pop('orders')
+        update_orders = []
         with transaction.atomic():
             instance.mediator = validated_data.get('mediator', instance.mediator)
             instance.delivery_date = validated_data.get('delivery_date', instance.delivery_date)
             instance.payment_date = validated_data.get('payment_date', instance.payment_date)
             instance.save()
+            
+            for order_data in orders_data:
+                order = order_data['order']
+                order.product = order_data['product']
+                order.unity = order_data['unity']
+                order.wherehouse = order_data['wherehouse']
+                order.counterparty = order_data['counterparty']
+                order.quantity = order_data['quantity']
+                order.currency = order_data['currency']
+                order.unit_amount = order_data['unit_amount']
+                order.total_price = order_data['total_price']
+                if 'project_folder' in order_data:
+                    order.project_folder = order_data['project_folder']
+                if 'project' in order_data:
+                    order.project = order_data['project']
+                
+                update_orders.append(order)
+
+            Order.objects.bulk_update(
+                update_orders,
+                fields=[
+                    'product', 
+                    'unity', 
+                    'wherehouse', 
+                    'counterparty', 
+                    'quantity', 
+                    'unit_amount', 
+                    'currency',
+                    'total_price', 
+                    'project_folder', 
+                    'project'
+                ]
+            )
             return instance

@@ -31,14 +31,15 @@ class Order(BaseModel):
     wherehouse = models.ForeignKey(
         WhereHouse, on_delete=models.CASCADE, related_name='orders'
     )
-    date = models.DateField(null=True, blank=True)
-    quantity = models.PositiveBigIntegerField(default=1)
-    status = models.CharField(max_length=20, choices=STATUS, default="NEW")
     employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders', null=True)
-    unit_amount = models.PositiveBigIntegerField(default=0, null=True, blank=True)
     counterparty = models.ForeignKey(
         Counterparty, on_delete=models.SET_NULL, null=True, blank=True, related_name='order'
     )
+    
+    date = models.DateField(null=True, blank=True)
+    quantity = models.PositiveBigIntegerField(default=1)
+    status = models.CharField(max_length=20, choices=STATUS, default="NEW")
+    unit_amount = models.PositiveBigIntegerField(default=0, null=True, blank=True)
     currency = models.CharField(
         choices=[('uzs', 'uzs'), ('usd', 'usd')], default='uzs', null=True, blank=True, max_length=3
     )
