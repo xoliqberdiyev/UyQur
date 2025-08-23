@@ -97,7 +97,7 @@ class PartyDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'number', 'delivery_date', 'closed_date', 'order_date', 'payment_date', 'status',
             'payment_status', 'process', 'confirmation', 'comment', 'audit', 'audit_comment',
-            'orders', 'party_amount', 'mediator',
+            'orders', 'party_amount', 'mediator', 'currency'
         ]
 
     def get_mediator(self, obj):
@@ -117,7 +117,7 @@ class PartyListSerializer(serializers.ModelSerializer):
         fields = [
             'id','number', 'delivery_date', 'closed_date', 'order_date', 'payment_date', 'status',
             'payment_status', 'process', 'confirmation', 'comment', 'audit', 'audit_comment',
-            'party_amount', 'mediator', 'counterparty'
+            'party_amount', 'mediator', 'counterparty', 'currency'
         ]
 
     def get_mediator(self, obj):
