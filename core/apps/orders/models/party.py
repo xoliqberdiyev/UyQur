@@ -27,7 +27,7 @@ class Party(BaseModel):
         ('REJECTED', 'rad etilgan'),
     )
 
-    number = models.PositiveIntegerField(default=1)
+    number = models.PositiveIntegerField(default=0)
     orders = models.ManyToManyField(Order, related_name='parties', null=True, blank=True)
     mediator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='parties')
     # dates
@@ -59,15 +59,6 @@ class Party(BaseModel):
     def __str__(self):
         return f'P - {self.number}'
     
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            last_party = Party.objects.order_by('number').last()
-            if last_party:
-                self.number = last_party.number + 1
-            else:
-                self.number = 1
-        return super().save(*args, **kwargs)
-
     class Meta:
         verbose_name = 'Partiya'
         verbose_name_plural = 'Partiyalar'

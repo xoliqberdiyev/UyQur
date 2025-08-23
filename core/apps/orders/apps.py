@@ -7,3 +7,4 @@ class OrdersConfig(AppConfig):
 
     def ready(self):
         from . import admin 
+        from . import signals
