@@ -137,3 +137,24 @@ class DeletedPartyListSerializer(serializers.ModelSerializer):
             'id': obj.party.mediator.id,
             'name': obj.party.mediator.full_name
         }
+    
+
+class PartyUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Party
+        fields = [
+            'mediator', 'delivery_date', 'payment_date',
+        ]
+        extra_kwargs = {
+            'mediator': {'required': False}, 
+            'delivery_date': {'required': False}, 
+            'payment_date': {'required':False}
+        }
+
+    def update(self, instance, validated_data):
+        with transaction.atomic():
+            instance.mediator = validated_data.get('mediator', instance.mediator)
+            instance.delivery_date = validated_data.get('delivery_date', instance.delivery_date)
+            instance.payment_date = validated_data.get('payment_date', instance.payment_date)
+            instance.save()
+            return instance

@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from rest_framework import generics, views
 from rest_framework.response import Response
 
@@ -94,3 +96,21 @@ class DeletedPartyListApiView(generics.GenericAPIView):
             serializer = self.serializer_class(page, many=True)
             return self.get_paginated_response(serializer.data)
         return Response(serializer.data, status=200)
+    
+
+class PartyUpdateApiView(generics.GenericAPIView):
+    serializer_class = serializers.PartyUpdateSerializer
+    queryset = Party.objects.all()
+    pagination_class = [HasRolePermission]
+    required_permissions = ['party']
+    pagination_class = None
+
+    def patch(self, request, id):
+        party = get_object_or_404(Party, id=id)
+        serializer = self.serializer_class(data=request.data, instance=party, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({
+                'success': True, 'message': 'update',
+            }, status=200)
+        return Response({'success': False, 'error': serializer.errors}, status=400)
