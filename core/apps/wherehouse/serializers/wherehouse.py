@@ -3,7 +3,7 @@ from django.db import transaction
 from rest_framework import serializers
 
 from core.apps.wherehouse.models.wherehouse import WhereHouse
-from core.apps.wherehouse.serializers.inventory import WhereHouseInventoryListSerializer
+from core.apps.wherehouse.serializers.inventory import InventoryListSerializer
 from core.apps.company.serializers.branch import BranchListSerializer
 from core.apps.company.models import Branch
 
@@ -39,7 +39,7 @@ class WhereHouseCreateSerializer(serializers.Serializer):
             raise serializers.ValidationError("Branch not found")
         data['branch'] = branch
         return data
-    
+
     def create(self, validated_data):
         with transaction.atomic():
             return WhereHouse.objects.create(
@@ -55,7 +55,7 @@ class WhereHouseUpdateSerializer(serializers.ModelSerializer):
         fields = [
             'name', 'address', 'branch'
         ]
-    
+
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
         instance.address = validated_data.get('address', instance.address)

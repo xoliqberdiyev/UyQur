@@ -50,8 +50,6 @@ services:
     networks:
       - uyqur
     image: redis
-    ports:
-    - "6380:6379"
 
   celery:
     build:
@@ -65,3 +63,6 @@ services:
       - web
     networks:
       - uyqur
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0

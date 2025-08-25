@@ -25,13 +25,13 @@ JAZZMIN_SETTINGS = {
     "show_sidebar": True,
     "navigation_expanded": True,
     "hide_apps": [],
-    "hide_models": ["auth.Group"],  
+    "hide_models": ["auth.Group"],
     "order_with_respect_to": ["auth"],
 
     "custom_links": {
         "books": [{
-            "name": "Make Messages", 
-            "url": "make_messages", 
+            "name": "Make Messages",
+            "url": "make_messages",
             "icon": "fas fa-comments",
             "permissions": ["books.view_book"]
         }]
@@ -45,7 +45,6 @@ JAZZMIN_SETTINGS = {
     "default_icon_parents": "fas fa-chevron-circle-right",
     "default_icon_children": "fas fa-circle",
 
-    "related_modal_active": True,
 
     "use_google_fonts_cdn": True,
     "show_ui_builder": False,

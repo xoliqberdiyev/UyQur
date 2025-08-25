@@ -38,7 +38,6 @@ PACKAGES = [
     'rest_framework_simplejwt',
     'corsheaders',
     'cacheops',
-    # 'silk',
 ]
 
 DJANGO_APPS = [
@@ -100,7 +99,6 @@ DATABASES = {
         'PASSWORD': env.str('POSTGRES_PASSWORD'),
         'HOST': env.str('POSTGRES_HOST'),
         'PORT': env.str('POSTGRES_PORT'),
-        'CONN_MAX_AGE': 0
     }
 }
 
@@ -159,5 +157,5 @@ from config.conf.logs import *
 from config.conf.cors_headers import * 
 from config.conf.drf_yasg import *
 from config.conf.jazzmin import *
-from config.conf.redis import *
 from config.conf.celery import *
+from config.conf.redis import *

@@ -6,6 +6,7 @@ from core.apps.orders.models import Party, PartyAmount, Order, DeletedParty
 from core.apps.orders.serializers.order import MultipleOrderAddSerializer, OrderListSerializer
 from core.apps.accounts.models import User
 from core.apps.counterparty.serializers.counterparty import CounterpartyListPartySerializer
+from core.apps.orders.tasks.order import create_inventory
 from core.apps.shared.models import UsdCourse
 from core.apps.products.models import Product, Unity
 from core.apps.projects.models import Project, ProjectFolder
@@ -33,7 +34,7 @@ class PartyCreateSerializer(serializers.Serializer):
             raise serializers.ValidationError("User not found")
         data['user'] = user
         return data
-    
+
     def create(self, validated_data):
         with transaction.atomic():
             resources = validated_data.pop('resources')
@@ -50,12 +51,13 @@ class PartyCreateSerializer(serializers.Serializer):
                     quantity=resource.get('quantity'),
                     unit_amount=resource.get('unit_amount'),
                     currency=resource.get('currency'),
-                    amount=resource.get('amount'), 
+                    amount=resource.get('amount'),
                     employee=self.context.get('user'),
                     qqs_price=resource.get('qqs_price'),
                     total_price=resource.get('total_price'),
                     qqs=resource.get('qqs'),
                 ))
+                create_inventory.delay(resource['wherehouse_id'], resource['quantity'], resource['product_id'], resource['unity_id'], resource['total_price'])
                 if validated_data.get('currency') == 'uzs':
                     if resource.get('currency') == 'usd':
                         usd_value = UsdCourse.objects.first().value
@@ -129,7 +131,7 @@ class PartyListSerializer(serializers.ModelSerializer):
             'id': obj.mediator.id,
             'full_name': obj.mediator.full_name
         }
-    
+
     def get_counterparty(self, obj):
         counterparties = obj.orders.values("counterparty__id", "counterparty__name").distinct()
         counterparties = [
@@ -155,7 +157,7 @@ class DeletedPartyCreateSerializer(serializers.Serializer):
                 comment=validated_data.get('comment'),
                 party=validated_data.get('party')
             )
-    
+
 
 class DeletedPartyListSerializer(serializers.ModelSerializer):
     party_number = serializers.IntegerField(source='party.number')
@@ -167,13 +169,13 @@ class DeletedPartyListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'deleted_date', 'party_number', 'party_total_price', 'mediator'
         ]
-    
+
     def get_mediator(self, obj):
         return {
             'id': obj.party.mediator.id,
             'name': obj.party.mediator.full_name
         }
-    
+
 
 class PartyOrderUpdateSerializer(serializers.Serializer):
     order_id = serializers.UUIDField()
@@ -214,7 +216,7 @@ class PartyOrderUpdateSerializer(serializers.Serializer):
         counterparty = Counterparty.objects.filter(id=data['counterparty_id']).first()
         if not counterparty:
             raise serializers.ValidationError(f"Counterparty not found on {order.id}")
-        
+
         data['order'] = order
         data['product'] = product
         data['unity'] = unity
@@ -234,12 +236,12 @@ class PartyUpdateSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             'mediator': {'required': False},
-            'delivery_date': {'required': False}, 
+            'delivery_date': {'required': False},
             'payment_date': {'required':False},
             'comment': {'required': False},
             'audit': {'required': False},
             'audit_comment': {'required': False},
-            'discount': {'required': False}, 
+            'discount': {'required': False},
             'discount_currency': {'required': False},
         }
 
@@ -251,7 +253,7 @@ class PartyUpdateSerializer(serializers.ModelSerializer):
             instance.delivery_date = validated_data.get('delivery_date', instance.delivery_date)
             instance.payment_date = validated_data.get('payment_date', instance.payment_date)
             instance.save()
-            
+
             for order_data in orders_data:
                 order = order_data['order']
                 order.product = order_data['product']
@@ -266,21 +268,21 @@ class PartyUpdateSerializer(serializers.ModelSerializer):
                     order.project_folder = order_data['project_folder']
                 if 'project' in order_data:
                     order.project = order_data['project']
-                
+
                 update_orders.append(order)
 
             Order.objects.bulk_update(
                 update_orders,
                 fields=[
-                    'product', 
-                    'unity', 
-                    'wherehouse', 
-                    'counterparty', 
-                    'quantity', 
-                    'unit_amount', 
+                    'product',
+                    'unity',
+                    'wherehouse',
+                    'counterparty',
+                    'quantity',
+                    'unit_amount',
                     'currency',
-                    'total_price', 
-                    'project_folder', 
+                    'total_price',
+                    'project_folder',
                     'project'
                 ]
             )

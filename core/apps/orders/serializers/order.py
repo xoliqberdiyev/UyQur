@@ -81,8 +81,6 @@ class MultipleOrderCreateSerializer(serializers.Serializer):
                     date=common_date,
                     employee=self.context.get('user'),
                 ))
-                create_inventory.delay(resource['wherehouse'],resource['quantity'],resource)
-
             created_orders = Order.objects.bulk_create(orders)
             return created_orders
     
