@@ -29,7 +29,7 @@ urlpatterns = [
             path('accounts/', include('core.apps.accounts.urls')),
             path('company/', include('core.apps.company.urls')),
             path('shared/', include('core.apps.shared.urls')),
-            path('wherehouses/', include('core.apps.wherehouse.urls')),
+            path('warehouse/', include('core.apps.wherehouse.urls')),
             path('projects/', include('core.apps.projects.urls')),
             path('products/', include('core.apps.products.urls')),
             path('orders/', include('core.apps.orders.urls')),
