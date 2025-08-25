@@ -160,3 +160,4 @@ from config.conf.cors_headers import *
 from config.conf.drf_yasg import *
 from config.conf.jazzmin import *
 from config.conf.redis import *
+from config.conf.celery import *

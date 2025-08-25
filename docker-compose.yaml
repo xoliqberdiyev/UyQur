@@ -50,4 +50,18 @@ services:
     networks:
       - uyqur
     image: redis
+    ports:
+    - "6380:6379"
 
+  celery:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.web
+    command: celery -A config worker --loglevel=info
+    volumes:
+      - "./:/code"
+    depends_on:
+      - redis
+      - web
+    networks:
+      - uyqur

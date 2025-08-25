@@ -1,8 +1,9 @@
 from django.db import transaction
 
 from rest_framework import serializers
-
+# orders
 from core.apps.orders.models import Order
+from core.apps.orders.tasks.order import create_inventory
 # products
 from core.apps.products.models import Product, Unity
 from core.apps.products.serializers.product import ProductListSerializer
@@ -80,6 +81,7 @@ class MultipleOrderCreateSerializer(serializers.Serializer):
                     date=common_date,
                     employee=self.context.get('user'),
                 ))
+                create_inventory.delay(resource['wherehouse'],resource['quantity'],resource)
 
             created_orders = Order.objects.bulk_create(orders)
             return created_orders

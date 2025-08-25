@@ -28,7 +28,7 @@ class Party(BaseModel):
     )
 
     number = models.PositiveIntegerField(default=0)
-    orders = models.ManyToManyField(Order, related_name='parties', null=True, blank=True)
+    orders = models.ManyToManyField(Order, related_name='parties', blank=True)
     mediator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='parties')
     # dates
     delivery_date = models.DateField()
