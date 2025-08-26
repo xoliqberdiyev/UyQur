@@ -8,6 +8,8 @@ from core.apps.wherehouse.models.wherehouse import WhereHouse
 # products
 from core.apps.products.models.product import Product
 from core.apps.products.models.unity import Unity
+# projects
+from core.apps.projects.models import Project, ProjectFolder
 
 
 class Inventory(BaseModel):
@@ -16,6 +18,14 @@ class Inventory(BaseModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='inventories')
     unity = models.ForeignKey(Unity, on_delete=models.SET_NULL, related_name='inventories', null=True)
     price = models.PositiveBigIntegerField(default=0)
+    project_folder = models.ForeignKey(
+        ProjectFolder, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='inventories'
+    )
+    project = models.ForeignKey(
+        Project, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='inventories'
+    )
 
     def __str__(self):
         return f'{self.product} in {self.wherehouse}'
