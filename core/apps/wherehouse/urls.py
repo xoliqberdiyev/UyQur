@@ -16,7 +16,7 @@ urlpatterns = [
     )),
     path('inventory/', include(
         [
-            path('<uuid:wherehouse_id>/list/', inventory_views.InventoryListApiView.as_view()),
+            path('list/', inventory_views.InventoryListApiView.as_view()),
         ]
     )),
 ]

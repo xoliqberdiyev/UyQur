@@ -14,9 +14,12 @@ class InventoryListApiView(generics.GenericAPIView):
     permissions_class = [HasRolePermission]
     required_permissions = ['wherehouse']
 
-    def get(self, request, wherehouse_id):
-        wherehouse = get_object_or_404(WhereHouse, id=wherehouse_id)
-        inventories = Inventory.objects.filter(wherehouse=wherehouse)
+    def get(self, request):
+        wherehouse_ids = request.query_params.getlist('wherehouse_id')
+        if wherehouse_ids:
+            inventories = Inventory.objects.filter(wherehouse__in=wherehouse_ids)
+        else:
+            inventories = Inventory.objects.all()
         page = self.paginate_queryset(inventories)
         if page is not None:
             serializer = self.serializer_class(page, many=True)
