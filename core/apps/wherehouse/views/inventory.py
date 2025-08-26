@@ -17,7 +17,7 @@ class InventoryListApiView(generics.GenericAPIView):
     def get(self, request):
         wherehouse_ids = request.query_params.getlist('wherehouse_id')
         if wherehouse_ids:
-            inventories = Inventory.objects.filter(wherehouse__in=wherehouse_ids)
+            inventories = Inventory.objects.filter(wherehouse__in=wherehouse_ids).select_related('product', 'unity')
         else:
             inventories = Inventory.objects.all()
         page = self.paginate_queryset(inventories)
