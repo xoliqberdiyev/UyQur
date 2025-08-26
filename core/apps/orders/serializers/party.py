@@ -57,7 +57,6 @@ class PartyCreateSerializer(serializers.Serializer):
                     total_price=resource.get('total_price'),
                     qqs=resource.get('qqs'),
                 ))
-                create_inventory.delay(resource['wherehouse_id'], resource['quantity'], resource['product_id'], resource['unity_id'], resource['total_price'])
                 if validated_data.get('currency') == 'uzs':
                     if resource.get('currency') == 'usd':
                         usd_value = UsdCourse.objects.first().value

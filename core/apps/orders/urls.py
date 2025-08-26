@@ -36,6 +36,7 @@ urlpatterns = [
             path(
                 '<uuid:party_id>/order/<uuid:order_id>/remove/', party_views.OrderDeleteToPartyApiView.as_view()
             ),
+            path('<uuid:party_id>/is_made/', party_views.PartyChangeStatusToIsMadeApiView.as_view()),
         ]
     )),
 ]

@@ -9,6 +9,7 @@ from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.orders.serializers import party as serializers
 from core.apps.orders.models import Party, PartyAmount, DeletedParty, Order
 from core.apps.orders.filters.party import PartyFilter
+from core.apps.orders.tasks.order import create_inventory
 
 
 class PartyCreateApiView(generics.GenericAPIView):
@@ -135,3 +136,29 @@ class OrderDeleteToPartyApiView(generics.GenericAPIView):
 
         party.orders.remove(order)
         return Response({'success': True, 'message': 'Order removed from party'}, status=200)
+    
+
+class PartyChangeStatusToIsMadeApiView(generics.GenericAPIView):
+    serializer_class = None
+    queryset = Party.objects.all()
+    permission_classes = [HasRolePermission]
+    required_permission = ['party']
+    pagination_class = None
+
+    def get(self, request, party_id):
+        party = get_object_or_404(Party, id=party_id)
+        party.status = 'PARTY_IS_MADE'
+        party.save()
+        for order in party.orders.all():
+            create_inventory.delay(
+                order.wherehouse.id,
+                order.quantity, 
+                order.product.id, 
+                order.unity.id, 
+                order.total_price
+            )
+        return Response(
+            {'success': True, 'message': 'party updated'},
+            status=200
+        )
+    
