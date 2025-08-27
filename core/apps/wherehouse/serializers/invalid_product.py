@@ -83,3 +83,12 @@ class InvliadProductListSerializer(serializers.ModelSerializer):
             'id': obj.wherehouse.id,
             'name': obj.wherehouse.name
         } if obj.wherehouse else None
+    
+
+class InvalidProductUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InvalidProduct
+        fields = [
+            'project_folder', 'witnesses', 'work', 'amount', 'invalid_status', 'status',
+            'created_date', 'expiry_date', 'comment', 'file'
+        ]

@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from rest_framework import generics, parsers
 from rest_framework.response import Response
 
@@ -43,3 +45,25 @@ class InvalidProductListApiView(generics.GenericAPIView):
             return self.get_paginated_response(serializer.data)
         serializer = self.serializer_class(invalid_products, many=True)
         return Response(serializer.data, status=200) 
+    
+
+class InvalidProductUpdateApiView(generics.GenericAPIView):
+    serializer_class = serializers.InvalidProductUpdateSerializer
+    queryset = InvalidProduct.objects.all()
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+    parser_classes = [parsers.FormParser, parsers.MultiPartParser]
+
+    def patch(self, request, id):
+        invalid_product = get_object_or_404(InvalidProduct, id=id)
+        serializer = self.serializer_class(data=request.data, instance=invalid_product)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                {'success': True, 'message': 'updated'},
+                status=200
+            )
+        return Response(
+            {'success': False, 'error_message': serializer.errors},
+            status=400
+        )

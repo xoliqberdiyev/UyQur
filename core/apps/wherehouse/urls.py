@@ -24,6 +24,7 @@ urlpatterns = [
         [
             path('create/', invalid_product_views.InvalidProductCreateApiView.as_view()),
             path('list/', invalid_product_views.InvalidProductListApiView.as_view()),
+            path('<uuid:id>/update/', invalid_product_views.InvalidProductUpdateApiView.as_view()),
         ]
     )),
 ] 
