@@ -155,7 +155,7 @@ class PartyChangeStatusToIsMadeApiView(generics.GenericAPIView):
                 order.quantity, 
                 order.product.id, 
                 order.unity.id, 
-                order.total_price,
+                order.unit_amount * order.quantity,
                 order.project_folder.id if order.project_folder else None,
                 order.project.id if order.project else None,
             )
