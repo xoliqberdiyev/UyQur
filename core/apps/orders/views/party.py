@@ -158,6 +158,7 @@ class PartyChangeStatusToIsMadeApiView(generics.GenericAPIView):
                 order.unit_amount * order.quantity,
                 order.project_folder.id if order.project_folder else None,
                 order.project.id if order.project else None,
+                order.unit_amount,
             )
         return Response(
             {'success': True, 'message': 'party updated'},

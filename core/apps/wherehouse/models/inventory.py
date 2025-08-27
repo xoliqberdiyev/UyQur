@@ -27,6 +27,7 @@ class Inventory(BaseModel):
         related_name='inventories'
     )
     is_invalid = models.BooleanField(default=False)
+    unit_price = models.PositiveBigIntegerField(default=0)
 
     def __str__(self):
         return f'{self.product} in {self.wherehouse}'
