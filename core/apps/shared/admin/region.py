@@ -12,12 +12,12 @@ class DistrictInline(admin.TabularInline):
 
 @admin.register(Region)
 class ReginAdmin(admin.ModelAdmin):
-    list_display = ['name']
+    list_display = ['id', 'name']
     search_fields = ['name']
     inlines = [DistrictInline]
     
 
 @admin.register(District)
 class DistrictAdmin(admin.ModelAdmin):
-    list_display = ['name']
+    list_display = ['id', 'name']
     search_fields = ['name']

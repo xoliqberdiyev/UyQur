@@ -6,9 +6,8 @@ from core.apps.projects.models.project import Project, ProjectFolder, ProjectLoc
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ['name', 'location', 'start_date', 'end_date']
+    list_display = ['id','name', 'location', 'start_date', 'end_date']
     search_fields = ['name']
-    inlines = []
 
 
 @admin.register(ProjectFolder)
@@ -19,4 +18,4 @@ class ProjectFolderAdmin(admin.ModelAdmin):
 
 @admin.register(ProjectLocation)
 class ProjectLocation(admin.ModelAdmin):
-    list_display = ['address', 'latitude', 'longitude']
+    list_display = ['id','address', 'latitude', 'longitude']

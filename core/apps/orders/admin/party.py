@@ -11,7 +11,7 @@ class PartyAmountInline(admin.StackedInline):
 
 @admin.register(Party)
 class PartyAdmin(admin.ModelAdmin):
-    list_display = ['number','mediator', 'delivery_date', 'payment_date', 'is_deleted']
+    list_display = ['id','number','mediator', 'delivery_date', 'payment_date', 'is_deleted']
     inlines = [PartyAmountInline]    
 
 

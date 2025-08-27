@@ -24,7 +24,7 @@ class UserAdmin(DjangoUserAdmin):
             },
         ),
     )
-    list_display = ("username", "phone_number", "full_name", "is_blocked", "is_staff")
+    list_display = ("id", "username", "phone_number", "full_name", "is_blocked", "is_staff")
     list_filter = ("is_staff", "is_superuser", "is_active", "is_blocked")
     search_fields = ("username", "full_name", "phone_number")
     ordering = ("username",)

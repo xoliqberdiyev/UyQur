@@ -5,4 +5,4 @@ from core.apps.wherehouse.models.stock_movemend import StockMovemend
 
 @admin.register(StockMovemend)
 class StockMovemendAdmin(admin.ModelAdmin):
-    list_display = ['wherehouse_to', 'wherehouse_from', 'product', 'quantity', 'movemend_type']
+    list_display = ['id','wherehouse_to', 'wherehouse_from', 'product', 'quantity', 'movemend_type']
