@@ -26,6 +26,7 @@ class Inventory(BaseModel):
         Project, on_delete=models.SET_NULL, null=True, blank=True,
         related_name='inventories'
     )
+    is_invalid = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.product} in {self.wherehouse}'

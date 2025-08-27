@@ -2,6 +2,7 @@ from django.urls import path, include
 
 from core.apps.wherehouse.views import wherehouse as wherehouse_views
 from core.apps.wherehouse.views import inventory as inventory_views
+from core.apps.wherehouse.views import invalid_product as invalid_product_views
 
 
 urlpatterns = [
@@ -19,4 +20,10 @@ urlpatterns = [
             path('list/', inventory_views.InventoryListApiView.as_view()),
         ]
     )),
-]
+    path('invalid_product/', include(
+        [
+            path('create/', invalid_product_views.InvalidProductCreateApiView.as_view()),
+            path('list/', invalid_product_views.InvalidProductListApiView.as_view()),
+        ]
+    )),
+] 
