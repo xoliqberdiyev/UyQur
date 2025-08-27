@@ -10,7 +10,7 @@ class InventoryListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Inventory
         fields = [
-            'id', 'quantity', 'product', 'price', 'unity'
+            'id', 'quantity', 'product', 'price', 'unity', 'unit_price'
         ]
 
     def get_product(self, obj):
