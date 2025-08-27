@@ -14,7 +14,7 @@ class InvalidProductCreateSerializer(serializers.Serializer):
     witnesses_ids = serializers.ListField(child=serializers.UUIDField())
     work_id = serializers.UUIDField(required=False)
     amount = serializers.IntegerField()
-    status = serializers.ChoiceField(choices=InvalidProduct.STATUS)
+    status = serializers.ChoiceField(choices=InvalidProduct.INVALID_STATUS)
     created_date = serializers.DateField(required=False)
     expiry_date = serializers.DateField(required=False)
     comment = serializers.CharField(required=False)
@@ -49,6 +49,7 @@ class InvalidProductCreateSerializer(serializers.Serializer):
                 expiry_date=validated_data.get('expiry_date'),
                 comment=validated_data.get('comment'),
                 file=validated_data.get('file'),
+                wherehouse=validated_data.get('inventory').wherehouse
             )
             invalid_product.witnesses.set(witnesses_ids)
             invalid_product.inventory.is_invalid = True
@@ -62,12 +63,13 @@ class InvliadProductListSerializer(serializers.ModelSerializer):
     inventory = InventoryListSerializer()
     project_folder = serializers.SerializerMethodField(method_name='get_folder')
     witnesses = UserListSerializer(many=True)
+    wherehouse = serializers.SerializerMethodField(method_name='get_wherehouse')
 
     class Meta:
         model = InvalidProduct
         fields = [
-            'id', 'status', 'inventory', 'project_folder', 'witnesses', 'work', 'amount', 
-            'created_date', 'expiry_date', 'comment', 'file'
+            'id', 'status', 'invalid_status', 'inventory', 'project_folder', 'witnesses', 'work', 
+            'amount', 'created_date', 'expiry_date', 'comment', 'file', 'wherehouse'
         ]
     
     def get_folder(self, obj):
@@ -75,3 +77,9 @@ class InvliadProductListSerializer(serializers.ModelSerializer):
             'id': obj.project_folder.id,
             'name': obj.project_folder.name,
         }
+    
+    def get_wherehouse(self, obj):
+        return {
+            'id': obj.wherehouse.id,
+            'name': obj.wherehouse.name
+        } if obj.wherehouse else None

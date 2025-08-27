@@ -11,10 +11,16 @@ from core.apps.accounts.models import User
 
 
 class InvalidProduct(BaseModel):
-    STATUS = (
+    INVALID_STATUS = (
         ('BROKEN', 'singan'),
         ('LOST', 'yoqolgan'),
         ('OTHER', 'boshqa'),
+    )
+    STATUS = (
+        ('OPEN', 'ochiq'),
+        ('EXPECTED', 'kutilmoqda'),
+        ('ACCEPTED', 'qabul qilingan'),
+        ('CANCELLED', 'bekor qilingan')
     )
 
     # relationship
@@ -26,9 +32,11 @@ class InvalidProduct(BaseModel):
     work = models.ForeignKey(
         EstimateWork, on_delete=models.SET_NULL, null=True, blank=True, related_name='invalid_products'
     )
+    wherehouse = models.ForeignKey(WhereHouse, on_delete=models.CASCADE, related_name='invalid_products', null=True)
     # required
     amount = models.PositiveIntegerField()
-    status = models.CharField(max_length=20, choices=STATUS, default='other')
+    invalid_status = models.CharField(max_length=20, choices=INVALID_STATUS, default='other')
+    status = models.CharField(max_length=20, choices=STATUS, default='OPEN')
     # optional
     created_date = models.DateField(null=True, blank=True)
     expiry_date = models.DateField(null=True, blank=True)
