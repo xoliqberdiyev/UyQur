@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 
-from rest_framework import generics, parsers
+from rest_framework import generics, parsers, views
 from rest_framework.response import Response
 
 from core.apps.accounts.permissions.permissions import HasRolePermission
@@ -66,4 +66,20 @@ class InvalidProductUpdateApiView(generics.GenericAPIView):
         return Response(
             {'success': False, 'error_message': serializer.errors},
             status=400
+        )
+    
+
+class InvalidProductDeleteApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+
+    def delete(self, request, id):
+        invalid_product = get_object_or_404(InvalidProduct, id=id)
+        invalid_product.inventory.is_invalid = False
+        invalid_product.inventory.quantity += invalid_product.amount
+        invalid_product.inventory.save()
+        invalid_product.delete()
+        return Response(
+            {'success': True, 'message': 'invalid product deleted!'},
+            status=204
         )
