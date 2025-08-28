@@ -1,11 +1,18 @@
+# django
 from django.shortcuts import get_object_or_404
+# django filter
+from django_filters.rest_framework.backends import DjangoFilterBackend
 
+# rest framework
 from rest_framework import generics, parsers, views
 from rest_framework.response import Response
 
+# accounts
 from core.apps.accounts.permissions.permissions import HasRolePermission
+# wherehouse
 from core.apps.wherehouse.serializers import invalid_product as serializers
 from core.apps.wherehouse.models import InvalidProduct
+from core.apps.wherehouse.filters.invalid_product import InvalidProductFilter
 
 
 class InvalidProductCreateApiView(generics.GenericAPIView):
@@ -36,9 +43,11 @@ class InvalidProductListApiView(generics.GenericAPIView):
     ).prefetch_related('witnesses')
     permission_classes = [HasRolePermission]
     required_permissions = []
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = InvalidProductFilter
 
     def get(self, request):
-        invalid_products = self.queryset
+        invalid_products = self.filter_queryset(self.queryset)
         page = self.paginate_queryset(invalid_products)
         if page is not None:
             serializer = self.serializer_class(page, many=True)
