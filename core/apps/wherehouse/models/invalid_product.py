@@ -40,7 +40,7 @@ class InvalidProduct(BaseModel):
     # optional
     created_date = models.DateField(null=True, blank=True)
     expiry_date = models.DateField(null=True, blank=True)
-    comment = models.DateField(null=True, blank=True)
+    comment = models.TextField(null=True, blank=True)
     file = models.FileField(null=True, blank=True, upload_to='invalid_product/files/')
 
     def __str__(self):
