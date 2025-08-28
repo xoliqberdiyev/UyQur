@@ -31,6 +31,11 @@ class Inventory(BaseModel):
 
     def __str__(self):
         return f'{self.product} in {self.wherehouse}'
+    
+    def save(self, *args, **kwargs):
+        if self.quantity == 0:
+            self.is_invalid = True
+        return super().save()
 
     class Meta:
         verbose_name = _('inventar')

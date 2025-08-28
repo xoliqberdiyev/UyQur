@@ -52,7 +52,6 @@ class InvalidProductCreateSerializer(serializers.Serializer):
                 wherehouse=validated_data.get('inventory').wherehouse
             )
             invalid_product.witnesses.set(witnesses_ids)
-            invalid_product.inventory.is_invalid = True
             invalid_product.inventory.quantity -= validated_data.get('amount')
             invalid_product.inventory.save()
             invalid_product.save()
