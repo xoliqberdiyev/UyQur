@@ -3,6 +3,7 @@ from django.urls import path, include
 from core.apps.wherehouse.views import wherehouse as wherehouse_views
 from core.apps.wherehouse.views import inventory as inventory_views
 from core.apps.wherehouse.views import invalid_product as invalid_product_views
+from core.apps.wherehouse.views import stock_movemend as stock_movemend_views
 
 
 urlpatterns = [
@@ -28,4 +29,10 @@ urlpatterns = [
             path('<uuid:id>/delete/', invalid_product_views.InvalidProductDeleteApiView.as_view()),
         ]
     )),
+    path('stock_movemend/', include(
+        [
+            path('create/', stock_movemend_views.StockMovemendCreateApiView.as_view()),
+            path('list/', stock_movemend_views.StockMovemendListApiView.as_view()),
+        ]
+    ))
 ] 
