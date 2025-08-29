@@ -1,8 +1,14 @@
-from rest_framework import generics, parsers
+from rest_framework import generics, parsers, filters
 from rest_framework.response import Response
 
+# django-filter
+from django_filters.rest_framework.backends import DjangoFilterBackend
+
+# warehouse
 from core.apps.wherehouse.serializers import stock_movmend as serializers
 from core.apps.wherehouse.models import StockMovemend, StockMovmendProduct
+from core.apps.wherehouse.filters.stock_movemend import StockMovemendFilter
+# accounts
 from core.apps.accounts.permissions.permissions import HasRolePermission
 
 
@@ -32,9 +38,15 @@ class StockMovemendListApiView(generics.GenericAPIView):
     ).prefetch_related('movmend_products')
     permission_classes = [HasRolePermission]
     required_permissions = []
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_class = StockMovemendFilter
+    search_fields = [
+        'number', 'wherehouse_to__name', 'wherehouse_from__name', 'project_folder__name',
+        'project__name', 'movemend_type', 'date', 'comment'
+    ]
 
     def get(self, request):
-        queryset = self.queryset
+        queryset = self.filter_queryset(self.queryset)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.serializer_class(page, many=True)

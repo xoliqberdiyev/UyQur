@@ -21,7 +21,7 @@ class StockMovmendProductSerializer(serializers.Serializer):
 
 class StockMovmendCreateSerializer(serializers.Serializer):
     products = StockMovmendProductSerializer(many=True)
-    project_folder_id = serializers.UUIDField()
+    project_folder_id = serializers.UUIDField(required=False)
     project_id = serializers.UUIDField(required=False)
     wherehouse_to_id = serializers.UUIDField()
     wherehouse_from_id = serializers.UUIDField()
@@ -107,7 +107,7 @@ class StockMovemendListSerializer(serializers.ModelSerializer):
         model = StockMovemend
         fields = [
             'id', 'number', 'wherehouse_to', 'wherehouse_from', 'recipient', 'project_folder',
-            'project', 'movemend_type', 'date', 'comment', 'file', 'movmend_products'
+            'project', 'movemend_type', 'date', 'comment', 'movmend_products'
         ]
     
     def get_wherehouse_to(self, obj):
