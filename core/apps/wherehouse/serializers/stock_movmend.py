@@ -59,6 +59,7 @@ class StockMovmendCreateSerializer(serializers.Serializer):
                 comment=validated_data.get('comment'),
                 wherehouse_to=validated_data.get('wherehouse_to'),
                 wherehouse_from=validated_data.get('wherehouse_from'),
+                recipient=self.context.get('user'),
             )
             movmend_products = []
             for product in products:
@@ -84,8 +85,8 @@ class StockMovemendProductListSerializer(serializers.ModelSerializer):
     def get_product(self, obj):
         return {
             'id': obj.inventory.product.id,
-            'name': obj.inventory.product.name,
             'type': obj.inventory.product.type,
+            'name': obj.inventory.product.name,
         }
 
     def get_unity(self, obj):

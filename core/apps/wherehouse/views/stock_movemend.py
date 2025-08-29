@@ -19,7 +19,7 @@ class StockMovemendCreateApiView(generics.GenericAPIView):
     required_permissions = []
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, context={'user': request.user})
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(
