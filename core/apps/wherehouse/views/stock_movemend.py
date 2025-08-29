@@ -78,8 +78,25 @@ class StockMovemendDeleteApiView(generics.GenericAPIView):
             )
 
 
+class StockMovemendProductRemoveApiView(generics.GenericAPIView):
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+    queryset = StockMovmendProduct.objects.all()
+    serializer_class = None
 
-
-
-
-
+    def delete(self, request, stock_movemend_id, stock_movemend_product_id):
+        stock_movemend = get_object_or_404(StockMovemend, id=stock_movemend_id)
+        stock_movemend_product = stock_movemend.movmend_products.filter(id=stock_movemend_product_id).first()
+        if not stock_movemend_product:
+            return Response(
+                {
+                    'success': False,
+                    'message': 'Product Does not belong to the stock_movemend',
+                },
+                status=404
+            )
+        stock_movemend.movmend_products.remove(stock_movemend_product)
+        return Response(
+            {'success': True, 'message': 'removed'},
+            status=200
+        )
