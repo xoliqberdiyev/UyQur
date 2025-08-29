@@ -33,6 +33,7 @@ urlpatterns = [
         [
             path('create/', stock_movemend_views.StockMovemendCreateApiView.as_view()),
             path('list/', stock_movemend_views.StockMovemendListApiView.as_view()),
+            path('<uuid:id>/delete/', stock_movemend_views.StockMovemendDeleteApiView.as_view()),
         ]
     ))
 ] 

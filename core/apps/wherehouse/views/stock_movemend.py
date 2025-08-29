@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from rest_framework import generics, parsers, filters
 from rest_framework.response import Response
 
@@ -54,3 +56,30 @@ class StockMovemendListApiView(generics.GenericAPIView):
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=200)
     
+
+class StockMovemendDeleteApiView(generics.GenericAPIView):
+    serializer_class = None
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+    queryset = StockMovemend.objects.all()
+
+    def delete(self, request, id):
+        stock_movemend = get_object_or_404(StockMovemend, id=id)
+        if stock_movemend.movemend_type == 'EXPECTED' or stock_movemend.movemend_type == 'CANCELLED':
+            stock_movemend.delete()        
+            return Response(
+                {'success': True, 'message': 'stock movemend deleted'}, 
+                status=204
+            )
+        else:
+            return Response(
+                {'success': False, 'message': 'can not delete stock movemend'},
+                status=400
+            )
+
+
+
+
+
+
+
