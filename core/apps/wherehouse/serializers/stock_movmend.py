@@ -25,14 +25,15 @@ class StockMovmendCreateSerializer(serializers.Serializer):
     project_id = serializers.UUIDField(required=False)
     wherehouse_to_id = serializers.UUIDField()
     wherehouse_from_id = serializers.UUIDField()
-    date = serializers.DateField()
+    date = serializers.DateField(required=False)
     comment = serializers.CharField(required=False)
-    file = serializers.FileField(required=False)
 
     def validate(self, data):
-        project_folder = ProjectFolder.objects.filter(id=data['project_folder_id']).first()
-        if not project_folder:
-            raise serializers.ValidationError("Project Folder not found")
+        if data.get('project_folder_id'):
+            project_folder = ProjectFolder.objects.filter(id=data['project_folder_id']).first()
+            if not project_folder:
+                raise serializers.ValidationError("Project Folder not found")
+            data['project_folder'] = project_folder
         if data.get('project_id'):
             project = Project.objects.filter(id=data['project_id']).first()
             if not project:
@@ -44,7 +45,6 @@ class StockMovmendCreateSerializer(serializers.Serializer):
         wherehouse_from = WhereHouse.objects.filter(id=data['wherehouse_from_id']).first()
         if not wherehouse_from:
             raise serializers.ValidationError("WhereHouse from not found")
-        data['project_folder'] = project_folder
         data['wherehouse_to'] = wherehouse_to
         data['wherehouse_from'] = wherehouse_from
         return data
@@ -57,7 +57,6 @@ class StockMovmendCreateSerializer(serializers.Serializer):
                 project=validated_data.get('project'),
                 date=validated_data.get('date'),
                 comment=validated_data.get('comment'),
-                file=validated_data.get('file'),
                 wherehouse_to=validated_data.get('wherehouse_to'),
                 wherehouse_from=validated_data.get('wherehouse_from'),
             )

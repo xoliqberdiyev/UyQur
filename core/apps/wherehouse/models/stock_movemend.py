@@ -28,15 +28,14 @@ class StockMovemend(BaseModel):
         User, on_delete=models.SET_NULL, related_name='stock_movmends', null=True, blank=True
     )
     project_folder = models.ForeignKey(
-        ProjectFolder, on_delete=models.CASCADE, related_name='stock_movmends', null=True
+        ProjectFolder, on_delete=models.SET_NULL, related_name='stock_movmends', null=True, blank=True
     )
     project = models.ForeignKey(
-        Project, on_delete=models.SET_NULL, related_name='stock_movmends', null=True
+        Project, on_delete=models.SET_NULL, related_name='stock_movmends', null=True, blank=True
     )
     movemend_type = models.CharField(max_length=20, choices=TYPE, default='EXPECTED')
     date = models.DateField(null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
-    file = models.FileField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.wherehouse_from} to {self.wherehouse_to}'
