@@ -100,3 +100,18 @@ class StockMovemendProductRemoveApiView(generics.GenericAPIView):
             {'success': True, 'message': 'removed'},
             status=200
         )
+
+
+class StockMovemendUpdateApiView(generics.GenericAPIView):
+    serializer_class = serializers.StockMovemendUpdateSerializer
+    queryset = StockMovemend.objects.all()
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+
+    def patch(self, request, id):
+        stock_movemend = get_object_or_404(StockMovemend, id=id)
+        serializer = self.serializer_class(data=request.data, instance=stock_movemend, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({'success': True, 'message': 'updated!'}, status=200)
+        return Response({'success': False, 'error_message': serializer.errors}, status=400)

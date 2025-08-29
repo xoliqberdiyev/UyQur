@@ -140,3 +140,28 @@ class StockMovemendListSerializer(serializers.ModelSerializer):
             'id': obj.project.id,
             'name': obj.project.name
         } if obj.project else None
+
+
+class StockMovemendProductUpdateSerializer(serializers.Serializer):
+    movemend_product_id = serializers.UUIDField()
+    quantity = serializers.IntegerField()
+
+    def validate(self, data):
+        movemend_product = StockMovmendProduct.objects.filter(id=data['movemend_product_id']).first()
+        if not movemend_product:
+            raise serializers.ValidationError("Stock Movemend Product not found")
+        if movemend_product.inventory.quantity < data['quantity']:
+            raise serializers.ValidationError("invalid quantity, quantity must les than product quantity")
+        data['movemend_product']
+        return data
+
+class StockMovemendUpdateSerializer(serializers.ModelSerializer):
+    movemend_product = StockMovemendProductUpdateSerializer(many=True, required=False)
+
+    class Meta:
+        model = StockMovemend
+        fields = [
+            'wherehouse_from', 'project_folder', 'project', 'date',
+            'comment', 'movemend_product'
+        ]
+        extra_kwargs = {'wherehouse_from': {'required': False}}
