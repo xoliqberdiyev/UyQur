@@ -152,16 +152,17 @@ class StockMovemendProductUpdateSerializer(serializers.Serializer):
             raise serializers.ValidationError("Stock Movemend Product not found")
         if movemend_product.inventory.quantity < data['quantity']:
             raise serializers.ValidationError("invalid quantity, quantity must les than product quantity")
-        data['movemend_product']
+        data['movmend_products'] = movemend_product
         return data
 
+
 class StockMovemendUpdateSerializer(serializers.ModelSerializer):
-    movemend_product = StockMovemendProductUpdateSerializer(many=True, required=False)
+    movmend_products = StockMovemendProductUpdateSerializer(many=True, required=False)
 
     class Meta:
         model = StockMovemend
         fields = [
-            'wherehouse_from', 'project_folder', 'project', 'date',
-            'comment', 'movemend_product'
+            'wherehouse_to', 'project_folder', 'project', 'date',
+            'comment', 'movmend_products'
         ]
-        extra_kwargs = {'wherehouse_from': {'required': False}}
+        extra_kwargs = {'wherehouse_to': {'required': False}}
