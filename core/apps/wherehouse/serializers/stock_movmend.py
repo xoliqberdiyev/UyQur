@@ -176,15 +176,17 @@ class StockMovemendUpdateSerializer(serializers.ModelSerializer):
             instance.comment = validated_data.get('comment', instance.comment)
             instance.save()
 
-            movemend_products = validated_data.pop('movemend_products')
-            updated_products = []
-            for product_data in movemend_products:
-                product = product_data['movemend_product']
-                product.quantity = product_data['quantity']
-                updated_products.append(product)
+            movemend_products = validated_data.pop('movemend_products', [])
+            if movemend_products:
+                updated_products = []
+                for product_data in movemend_products:
+                    product = product_data['movemend_product']
+                    product.quantity = product_data['quantity']
+                    updated_products.append(product)
 
-            StockMovmendProduct.objects.bulk_update(
-                updated_products,
-                fields=['quantity']
-            )
-            return instance 
+                StockMovmendProduct.objects.bulk_update(
+                    updated_products,
+                    fields=['quantity']
+                )
+
+            return instance
