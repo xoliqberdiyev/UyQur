@@ -1,6 +1,7 @@
 from django.urls import path, include
 
 from core.apps.counterparty.views import counterparty as cp_views
+from core.apps.counterparty.views import counterparty_folder as folder_views
 
 
 urlpatterns = [
@@ -9,5 +10,11 @@ urlpatterns = [
             path('list/', cp_views.CounterpartyListApiView.as_view()),
             path('create/', cp_views.CounterpartyCreateApiView.as_view()),
         ]
-    ))    
+    )),
+    path('counterparty_folder/', include(
+        [
+            path('list/', folder_views.CounterpartyFolderListApiView.as_view()),
+            path('create/', folder_views.CounterpartyCreateApiView.as_view()),
+        ]
+    ))
 ]
