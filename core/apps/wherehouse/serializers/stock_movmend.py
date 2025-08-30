@@ -97,7 +97,7 @@ class StockMovemendProductListSerializer(serializers.ModelSerializer):
 
 
 class StockMovemendListSerializer(serializers.ModelSerializer):
-    movmend_products = StockMovemendProductListSerializer(many=True)
+    movemend_products = StockMovemendProductListSerializer(many=True)
     wherehouse_to = serializers.SerializerMethodField(method_name='get_wherehouse_to')
     wherehouse_from = serializers.SerializerMethodField(method_name='get_wherehouse_from')
     recipient = serializers.SerializerMethodField(method_name='get_recipient')
@@ -108,7 +108,7 @@ class StockMovemendListSerializer(serializers.ModelSerializer):
         model = StockMovemend
         fields = [
             'id', 'number', 'wherehouse_to', 'wherehouse_from', 'recipient', 'project_folder',
-            'project', 'movemend_type', 'date', 'comment', 'movmend_products'
+            'project', 'movemend_type', 'date', 'comment', 'movemend_products'
         ]
     
     def get_wherehouse_to(self, obj):
@@ -152,17 +152,39 @@ class StockMovemendProductUpdateSerializer(serializers.Serializer):
             raise serializers.ValidationError("Stock Movemend Product not found")
         if movemend_product.inventory.quantity < data['quantity']:
             raise serializers.ValidationError("invalid quantity, quantity must les than product quantity")
-        data['movmend_products'] = movemend_product
+        data['movemend_product'] = movemend_product
         return data
 
 
 class StockMovemendUpdateSerializer(serializers.ModelSerializer):
-    movmend_products = StockMovemendProductUpdateSerializer(many=True, required=False)
+    movemend_products = StockMovemendProductUpdateSerializer(many=True, required=False)
 
     class Meta:
         model = StockMovemend
         fields = [
             'wherehouse_to', 'project_folder', 'project', 'date',
-            'comment', 'movmend_products'
+            'comment', 'movemend_products'
         ]
         extra_kwargs = {'wherehouse_to': {'required': False}}
+
+    def update(self, instance, validated_data):
+        with transaction.atomic():
+            instance.wherehouse_to = validated_data.get('wherehouse_to', instance.wherehouse_to)
+            instance.project_folder = validated_data.get('project_folder', instance.project_folder)
+            instance.project = validated_data.get('project', instance.project)
+            instance.date = validated_data.get('date', instance.date)
+            instance.comment = validated_data.get('comment', instance.comment)
+            instance.save()
+
+            movemend_products = validated_data.pop('movemend_products')
+            updated_products = []
+            for product_data in movemend_products:
+                product = product_data['movemend_product']
+                product.quantity = product_data['quantity']
+                updated_products.append(product)
+
+            StockMovmendProduct.objects.bulk_update(
+                updated_products,
+                fields=['quantity']
+            )
+            return instance 

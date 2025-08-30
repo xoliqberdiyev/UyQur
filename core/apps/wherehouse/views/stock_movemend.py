@@ -37,7 +37,7 @@ class StockMovemendListApiView(generics.GenericAPIView):
     serializer_class = serializers.StockMovemendListSerializer
     queryset = StockMovemend.objects.select_related(
         'wherehouse_to', 'wherehouse_from', 'recipient', 'project_folder', 'project'
-    ).prefetch_related('movmend_products')
+    ).prefetch_related('movemend_products')
     permission_classes = [HasRolePermission]
     required_permissions = []
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]

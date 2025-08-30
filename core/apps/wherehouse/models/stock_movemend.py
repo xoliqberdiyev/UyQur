@@ -47,12 +47,12 @@ class StockMovemend(BaseModel):
 
 class StockMovmendProduct(BaseModel):
     inventory = models.ForeignKey(
-        Inventory, on_delete=models.CASCADE, related_name='movmend_products',
+        Inventory, on_delete=models.CASCADE, related_name='movemend_products',
         null=True
     )
     quantity = models.PositiveIntegerField()
     stock_movemend = models.ForeignKey(
-        StockMovemend, on_delete=models.CASCADE, related_name='movmend_products'
+        StockMovemend, on_delete=models.CASCADE, related_name='movemend_products'
     )
 
     def __str__(self):
