@@ -5,7 +5,7 @@ from rest_framework import serializers
 from core.apps.orders.models import Party, PartyAmount, Order, DeletedParty
 from core.apps.orders.serializers.order import MultipleOrderAddSerializer, OrderListSerializer
 from core.apps.accounts.models import User
-from core.apps.counterparty.serializers.counterparty import CounterpartyListPartySerializer
+from core.apps.counterparty.serializers.counterparty import CounterpartySerializer
 from core.apps.orders.tasks.order import create_inventory
 from core.apps.shared.models import UsdCourse
 from core.apps.products.models import Product, Unity
@@ -137,7 +137,7 @@ class PartyListSerializer(serializers.ModelSerializer):
             {"id": c["counterparty__id"], "name": c["counterparty__name"]}
             for c in counterparties
         ]
-        return CounterpartyListPartySerializer(counterparties, many=True).data
+        return CounterpartySerializer(counterparties, many=True).data
 
 
 class DeletedPartyCreateSerializer(serializers.Serializer):

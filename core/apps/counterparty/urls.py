@@ -7,6 +7,7 @@ urlpatterns = [
     path('counterparty/', include(
         [
             path('list/', cp_views.CounterpartyListApiView.as_view()),
+            path('create/', cp_views.CounterpartyCreateApiView.as_view()),
         ]
     ))    
 ]

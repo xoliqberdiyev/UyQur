@@ -1,18 +1,47 @@
 from django.db import models
 
-from core.apps.shared.models import BaseModel
+from core.apps.shared.models import BaseModel, Region, District
 from core.apps.accounts.models import User
 
 
-class Counterparty(BaseModel):
+class CounterpartyFolder(BaseModel):
     name = models.CharField(max_length=200)
-    description = models.TextField(null=True, blank=True)
-    start_date = models.DateField()
-    status = models.CharField(
-        max_length=20, choices=[('active', 'active'), ('inactive', 'inactive')], default='active'
+
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        verbose_name = 'Kontragent papkasi'
+        verbose_name_plural = 'Kontragent papkalari'
+
+
+class Counterparty(BaseModel):
+    TYPE = (
+        ('SUPPLIER', "ta'minotchi"),
+        ('WORKER', 'ishchi')
     )
-    type = models.CharField(max_length=20, choices=[('supplier', 'supplier')])
-    person = models.ForeignKey(User, on_delete=models.CASCADE, related_name='counterparties')
+
+    inn = models.CharField(max_length=20, null=True)
+    name = models.CharField(max_length=200)
+    phone = models.CharField(max_length=15, null=True)
+    
+    type = models.CharField(max_length=20, choices=TYPE, default='SUPPLIER')
+    folder = models.ForeignKey(
+        CounterpartyFolder, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='counterparties',
+    )
+    region = models.ForeignKey(
+        Region, on_delete=models.SET_NULL, null=True, blank=True, related_name='counterparties'
+    )
+    district = models.ForeignKey(
+        District, on_delete=models.SET_NULL, null=True, blank=True, related_name='counterparties'
+    )
+    balance = models.PositiveBigIntegerField(null=True, blank=True)
+    balance_currency = models.CharField(
+        max_length=3, choices=[('usd', 'usd'), ('uzs', 'uzs')], null=True, blank=True
+    )
+    balance_date = models.DateField(null=True, blank=True)
+    comment = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.name
