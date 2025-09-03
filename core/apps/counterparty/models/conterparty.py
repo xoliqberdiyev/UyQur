@@ -20,12 +20,17 @@ class Counterparty(BaseModel):
         ('SUPPLIER', "ta'minotchi"),
         ('WORKER', 'ishchi')
     )
+    STATUS = (
+        ('CREDITOR', 'kreditor'),
+        ('DEBITOR', 'debitor')
+    )
 
     inn = models.CharField(max_length=20, null=True)
     name = models.CharField(max_length=200)
     phone = models.CharField(max_length=15, null=True)
     
     type = models.CharField(max_length=20, choices=TYPE, default='SUPPLIER')
+    status = models.CharField(max_length=20, choices=STATUS, default='kreditor')
     folder = models.ForeignKey(
         CounterpartyFolder, on_delete=models.SET_NULL, null=True, blank=True,
         related_name='counterparties',

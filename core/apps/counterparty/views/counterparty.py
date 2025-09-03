@@ -2,12 +2,13 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework import generics, views
 from rest_framework.response import Response
+from django_filters.rest_framework.backends import DjangoFilterBackend
 
 from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.shared.paginations.custom import CustomPageNumberPagination
 from core.apps.counterparty.models import Counterparty
 from core.apps.counterparty.serializers import counterparty as serializers
-
+from core.apps.counterparty.filters.counterparty import CounterpartyFilter
 
 class CounterpartyListApiView(generics.ListAPIView):
     serializer_class = serializers.CounterpartyListSerializer
@@ -15,6 +16,8 @@ class CounterpartyListApiView(generics.ListAPIView):
     pagination_class = [HasRolePermission]
     required_permissions = []
     pagination_class = CustomPageNumberPagination
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = CounterpartyFilter
 
 
 class CounterpartyCreateApiView(generics.GenericAPIView):
