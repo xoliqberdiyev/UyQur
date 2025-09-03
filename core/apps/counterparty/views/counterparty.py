@@ -49,3 +49,11 @@ class ArchiveCounterpartyApiView(views.APIView):
             {'success': True, 'message': 'counterparty archived'},
             status=200
         )
+    
+
+class ArchivedCounterpartyListApiView(generics.ListAPIView):
+    serializer_class = serializers.CounterpartyListSerializer
+    queryset = Counterparty.objects.exclude(is_archived=False)
+    pagination_class = [HasRolePermission]
+    required_permissions = []
+    pagination_class = CustomPageNumberPagination
