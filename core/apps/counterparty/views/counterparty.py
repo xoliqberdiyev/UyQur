@@ -57,3 +57,16 @@ class ArchivedCounterpartyListApiView(generics.ListAPIView):
     pagination_class = [HasRolePermission]
     required_permissions = []
     pagination_class = CustomPageNumberPagination
+
+
+class CounterpartyDeleteApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+
+    def delete(self, request, id):
+        counterparty = get_object_or_404(Counterparty, id=id)
+        counterparty.delete()
+        return Response(
+            {'success': True, 'message': 'counterparty deleted'},
+            status=204
+        )
