@@ -13,7 +13,7 @@ class CounterpartyFolderListApiView(generics.GenericAPIView):
     required_permissions = []
 
     def get(self, request):
-        folders = self.queryset
+        folders = self.get_queryset()
         serializer = self.serializer_class(folders, many=True)
         return Response(serializer.data, status=200)
     
@@ -27,7 +27,7 @@ class CounterpartyCreateApiView(generics.GenericAPIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            serializers.save()
+            serializer.save()
             return Response(
                 {'success': True, 'message': 'created'},
                 status=201
