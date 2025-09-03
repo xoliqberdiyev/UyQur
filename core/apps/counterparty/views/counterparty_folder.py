@@ -54,3 +54,9 @@ class CounterpartyDeleteApiView(views.APIView):
         )
     
 
+class CounterpartyUpdateApiView(generics.UpdateAPIView):
+    queryset = CounterpartyFolder.objects.all()
+    serializer_class = serializers.CounterpartyFolderListSerializer
+    lookup_field = 'id'
+    permission_classes = [HasRolePermission]
+    required_permissions = []
