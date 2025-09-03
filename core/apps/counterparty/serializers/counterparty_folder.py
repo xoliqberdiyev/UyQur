@@ -6,11 +6,16 @@ from core.apps.counterparty.models import CounterpartyFolder
 
 
 class CounterpartyFolderListSerializer(serializers.ModelSerializer):
+    counterparty_count = serializers.SerializerMethodField(method_name='get_counterparty_count')
+
     class Meta:
         model = CounterpartyFolder
         fields = [
-            'id', 'name'
+            'id', 'name', 'counterparty_count'
         ]
+
+    def get_counterparty_count(self, obj):
+        return obj.counterparties.count()
 
 
 class CounterpartyFolderCreateSerializer(serializers.Serializer):

@@ -11,6 +11,7 @@ class CounterpartyFolderListApiView(generics.GenericAPIView):
     queryset = CounterpartyFolder.objects.all()
     permission_classes = [HasRolePermission]
     required_permissions = []
+    pagination_class = None
 
     def get(self, request):
         folders = self.get_queryset()
