@@ -1,4 +1,6 @@
-from rest_framework import generics
+from django.shortcuts import get_object_or_404
+
+from rest_framework import generics, views
 from rest_framework.response import Response
 
 from core.apps.counterparty.models import CounterpartyFolder
@@ -37,3 +39,18 @@ class CounterpartyCreateApiView(generics.GenericAPIView):
             {'success': False, 'message': serializer.errors},
             status=400
         )
+
+
+class CounterpartyDeleteApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+
+    def delete(self, request, id):
+        counterparty_folder = get_object_or_404(CounterpartyFolder, id=id)
+        counterparty_folder.delete()
+        return Response(
+            {'success': True, 'message': 'counterparty folder deleted'},
+            status=204
+        )
+    
+

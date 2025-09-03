@@ -19,6 +19,7 @@ urlpatterns = [
         [
             path('list/', folder_views.CounterpartyFolderListApiView.as_view()),
             path('create/', folder_views.CounterpartyCreateApiView.as_view()),
+            path('<uuid:id>/', folder_views.CounterpartyDeleteApiView.as_view()),
         ]
     ))
 ]
