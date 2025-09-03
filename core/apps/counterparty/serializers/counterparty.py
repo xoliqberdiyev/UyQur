@@ -11,7 +11,7 @@ class CounterpartyListSerializer(serializers.ModelSerializer):
         model = Counterparty
         fields = [
             'id', 'inn', 'name', 'phone', 'type', 'folder', 'type', 'region', 'district',
-            'balance', 'balance_currency', 'balance_date', 'comment',
+            'balance', 'balance_currency', 'balance_date', 'comment', 'is_archived',
         ]
     
 

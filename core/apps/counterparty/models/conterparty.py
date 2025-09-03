@@ -42,6 +42,7 @@ class Counterparty(BaseModel):
     )
     balance_date = models.DateField(null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
+    is_archived = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
