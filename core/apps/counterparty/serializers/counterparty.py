@@ -66,3 +66,23 @@ class CounterpartyCreateSerializer(serializers.Serializer):
                 balance_date=validated_data.get('balance_date'),
                 comment=validated_data.get('comment'),
             )
+
+
+class CounterpartyUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Counterparty
+        fields = [
+            'inn', 'name', 'phone', 'type', 'folder', 'region', 'district', 'balance',
+            'balance_currency', 'balance_date', 'comment'
+        ]
+        extra_kwargs = {
+            'name': {'required': False},
+            'type': {'required': False},
+            'folder': {'required': False},
+            'region': {'required': False},
+            'district': {'required': False},
+            'balance': {'required': False},
+            'balance_currency': {'required': False},
+            'balance_date': {'required': False},
+            'comment': {'required': False}
+        }

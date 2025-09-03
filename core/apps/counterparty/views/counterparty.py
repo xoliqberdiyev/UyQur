@@ -70,3 +70,11 @@ class CounterpartyDeleteApiView(views.APIView):
             {'success': True, 'message': 'counterparty deleted'},
             status=204
         )
+    
+
+class CounterpartyUpdateApiView(generics.UpdateAPIView):
+    permission_classes = [HasRolePermission]
+    required_permissions = []
+    lookup_field = 'id'
+    serializer_class = serializers.CounterpartyUpdateSerializer
+    queryset = Counterparty.objects.all()
