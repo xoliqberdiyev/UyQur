@@ -6,6 +6,7 @@ from core.apps.finance.models import CashTransaction
 from core.apps.accounts.models import User
 from core.apps.finance.models import PaymentType
 
+
 class CashTransactionEmployeeListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User 

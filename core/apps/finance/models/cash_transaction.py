@@ -6,6 +6,17 @@ from core.apps.finance.models.payment_type import PaymentType
 from core.apps.accounts.models import User
 
 
+class CashTransactionFolder(BaseModel):
+    name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        verbose_name = 'Kassa papkasi'
+        verbose_name_plural = 'Kassa papkalari'
+
+
 class CashTransaction(BaseModel):
     name = models.CharField(max_length=200, unique=True)
     payment_type = models.ForeignKey(
@@ -13,6 +24,10 @@ class CashTransaction(BaseModel):
     )
     employees = models.ManyToManyField(User, related_name='cash_transactions')
     status = models.BooleanField(default=False)
+    folder = models.ForeignKey(
+        CashTransactionFolder, on_delete=models.SET_NULL, related_name='cash_transactions', 
+        null=True, blank=True
+    )
 
     def __str__(self):
         return self.name

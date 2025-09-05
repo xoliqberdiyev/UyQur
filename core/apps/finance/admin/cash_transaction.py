@@ -1,9 +1,15 @@
 from django.contrib import admin
 
-from core.apps.finance.models import CashTransaction
+from core.apps.finance.models import CashTransaction, CashTransactionFolder
 
 
 @admin.register(CashTransaction)
-class CachTransaction(admin.ModelAdmin):
+class CashTransaction(admin.ModelAdmin):
+    list_display = ['id', 'name']
+    search_fields = ['name']
+
+
+@admin.register(CashTransactionFolder)
+class CashTransactionFolderAdmin(admin.ModelAdmin):
     list_display = ['id', 'name']
     search_fields = ['name']
