@@ -52,7 +52,7 @@ urlpatterns = [
             path('list/', ex_views.ExpenceTypeListApiView.as_view()),
             path('create/', ex_views.ExpenceTypeCreateApiView.as_view()),
             path('<uuid:id>/update/', ex_views.ExpenceTypeUpdateApiView.as_view()),
-            path('<uuid:id/delete/', ex_views.ExpenceTypeDeleteApiView.as_view()),
+            path('<uuid:id>/delete/', ex_views.ExpenceTypeDeleteApiView.as_view()),
         ]
     )),
 ]
