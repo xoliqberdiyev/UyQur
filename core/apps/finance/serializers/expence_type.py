@@ -7,5 +7,5 @@ class ExpenceTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExpenceType
         fields = [
-            'id', 'name'
+            'id', 'name', 'category', 'activity', 'comment', 'status'
         ]
