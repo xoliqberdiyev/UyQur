@@ -80,6 +80,8 @@ class PartyCreateSerializer(serializers.Serializer):
             PartyAmount.objects.create(
                 total_price=total_price,
                 party=party,
+                payment_amount=total_price-validated_data.get('discount', 0),
+                cost_amount=total_price-validated_data.get('discount', 0),
             )
             return party
 
