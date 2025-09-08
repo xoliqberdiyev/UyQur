@@ -3,6 +3,7 @@ from django.urls import path, include
 from core.apps.finance.views import cash_transaction as cash_views
 from core.apps.finance.views import cash_transaction_folder as folder_views
 from core.apps.finance.views import payment_type as pt_views
+from core.apps.finance.views import type_income as ti_views
 
 
 urlpatterns = [
@@ -28,6 +29,14 @@ urlpatterns = [
             path('list/', pt_views.PaymentListApiView.as_view()),
             path('<uuid:id>/delete/', pt_views.PaymentDeleteApiView.as_view()),
             path('<uuid:id>/update/', pt_views.PaymentUpdateApiView.as_view()),
+        ]
+    )),
+    path('type_income/', include(
+        [
+            path('create/', ti_views.TypeIncomeCreateApiView.as_view()),
+            path('list/', ti_views.TypeIncomeListApiView.as_view()),
+            path('<uuid:id>/update/', ti_views.TypeIncomeUpdateApiView.as_view()),
+            path('<uuid:id>/delete/', ti_views.TypeIncomeDeleteApiView.as_view()),
         ]
     ))
 ]

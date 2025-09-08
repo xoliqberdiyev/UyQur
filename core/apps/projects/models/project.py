@@ -5,7 +5,7 @@ from core.apps.shared.models import BaseModel, Region, District
 from core.apps.projects.models.builder import Builder
 from core.apps.accounts.models.user import User
 from core.apps.wherehouse.models.wherehouse import WhereHouse
-from core.apps.finance.models import CashTransaction
+from core.apps.finance.models.cash_transaction import CashTransaction
 
 
 class ProjectFolder(BaseModel):
