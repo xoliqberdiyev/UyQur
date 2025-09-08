@@ -10,6 +10,8 @@ urlpatterns = [
         [
             path('list/', cash_views.CashTransactionListApiView.as_view()),
             path('create/', cash_views.CashTransactionCreateApiView.as_view()),
+            path('<uuid:id>/delete/', cash_views.CashTransactionDeleteApiView.as_view()),
+            path('<uuid:id>/update/', cash_views.CashTransactionUpdateApiView.as_view()),
         ]
     )),
     path('cash_transaction_folder/', include(

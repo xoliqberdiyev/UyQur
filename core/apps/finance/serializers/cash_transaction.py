@@ -32,6 +32,13 @@ class CashTransactionListSerializer(serializers.ModelSerializer):
         }
     
 
+class CashTransactionUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CashTransaction
+        fields = [
+            'name', 'payment_type', 'employees', 'status', 'folder',
+        ]
+
 class CashTransactionCreateSerializer(serializers.Serializer):
     payment_type_id = serializers.UUIDField()
     employee_ids = serializers.ListSerializer(child=serializers.UUIDField())
