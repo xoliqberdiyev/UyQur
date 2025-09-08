@@ -5,6 +5,7 @@ from core.apps.finance.views import cash_transaction_folder as folder_views
 from core.apps.finance.views import payment_type as pt_views
 from core.apps.finance.views import type_income as ti_views
 from core.apps.finance.views import income as income_views
+from core.apps.finance.views import expence_type as ex_views
 
 
 urlpatterns = [
@@ -45,5 +46,13 @@ urlpatterns = [
             path('list/', income_views.IncomeListApiView.as_view()),
             path('create/', income_views.IncomeCreateApiView.as_view()),
         ]
-    ))
+    )),
+    path('expence_type/', include(
+        [
+            path('list/', ex_views.ExpenceTypeListApiView.as_view()),
+            path('create/', ex_views.ExpenceTypeCreateApiView.as_view()),
+            path('<uuid:id>/update/', ex_views.ExpenceTypeUpdateApiView.as_view()),
+            path('<uuid:id/delete/', ex_views.ExpenceTypeDeleteApiView.as_view()),
+        ]
+    )),
 ]
