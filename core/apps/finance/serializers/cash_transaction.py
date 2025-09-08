@@ -39,16 +39,22 @@ class CashTransactionUpdateSerializer(serializers.ModelSerializer):
             'name', 'payment_type', 'employees', 'status', 'folder',
         ]
 
+
 class CashTransactionCreateSerializer(serializers.Serializer):
     payment_type_id = serializers.UUIDField()
-    employee_ids = serializers.ListSerializer(child=serializers.UUIDField())
+    employee_ids = serializers.ListSerializer(child=serializers.UUIDField(), write_only=True)
     name = serializers.CharField()
     status = serializers.BooleanField()
     folder_id = serializers.UUIDField(required=False)
 
+    def validate_name(self, value):
+        if CashTransaction.objects.filter(name=value).exists():
+            raise serializers.ValidationError('cash transaction with this name already exists')
+        return value
+
     def validate(self, data):
-        payment_type = PaymentType.objects.filter(id=data['id']).first()
-        if payment_type:
+        payment_type = PaymentType.objects.filter(id=data['payment_type_id']).first()
+        if not payment_type:
             raise serializers.ValidationError("Payment Type not found")
         if data.get('folder_id'):
             folder = CashTransactionFolder.objects.filter(id=data.get('folder_id')).first()
@@ -60,7 +66,7 @@ class CashTransactionCreateSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         with transaction.atomic():
-            employee_ids = validated_data.pop('employee_ids')
+            employee_ids = validated_data.pop('employee_ids', [])
             cash_transaction = CashTransaction.objects.create(
                 name=validated_data.get('name'),
                 payment_type=validated_data.get('payment_type'),
