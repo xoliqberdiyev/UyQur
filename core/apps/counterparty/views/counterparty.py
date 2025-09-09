@@ -1,3 +1,4 @@
+from django.db.models import Sum 
 from django.shortcuts import get_object_or_404
 
 from rest_framework import generics, views
@@ -96,3 +97,18 @@ class FolderCounterpartyListApiView(generics.GenericAPIView):
         if page is not None:
             serializer = self.serializer_class(page, many=True)
             return self.get_paginated_response(serializer.data)
+    
+
+class CounterpartyStatisticsApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+
+    def get(self, request):
+        res = Counterparty.objects.aggregate(
+            kredit_usd=Sum('kredit_usd'),
+            kredit_uzs=Sum('kredit_uzs'),
+            total_kredit=Sum('total_kredit'),
+            debit_usd=Sum('debit_usd'),
+            debit_uzs=Sum('debit_uzs'),
+            total_debut=Sum('total_debit'),
+        )
+        return Response(res)

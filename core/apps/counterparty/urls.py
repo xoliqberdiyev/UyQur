@@ -13,6 +13,7 @@ urlpatterns = [
             path('archived/list/', cp_views.ArchivedCounterpartyListApiView.as_view()),
             path('<uuid:id>/delete/', cp_views.CounterpartyDeleteApiView.as_view()),
             path('<uuid:id>/update/', cp_views.CounterpartyUpdateApiView.as_view()),
+            path('statistics/', cp_views.CounterpartyStatisticsApiView.as_view()),
         ]
     )),
     path('counterparty_folder/', include(
