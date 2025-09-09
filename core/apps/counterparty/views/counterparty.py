@@ -6,13 +6,14 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 
 from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.shared.paginations.custom import CustomPageNumberPagination
-from core.apps.counterparty.models import Counterparty
+from core.apps.counterparty.models import Counterparty, CounterpartyFolder
 from core.apps.counterparty.serializers import counterparty as serializers
 from core.apps.counterparty.filters.counterparty import CounterpartyFilter
 
+
 class CounterpartyListApiView(generics.ListAPIView):
     serializer_class = serializers.CounterpartyListSerializer
-    queryset = Counterparty.objects.exclude(is_archived=True)
+    queryset = Counterparty.objects.exclude(is_archived=True).exclude(folder__isnull=True)
     pagination_class = [HasRolePermission]
     required_permissions = []
     pagination_class = CustomPageNumberPagination
@@ -81,3 +82,17 @@ class CounterpartyUpdateApiView(generics.UpdateAPIView):
     lookup_field = 'id'
     serializer_class = serializers.CounterpartyUpdateSerializer
     queryset = Counterparty.objects.all()
+
+
+class FolderCounterpartyListApiView(generics.GenericAPIView):
+    serializer_class = serializers.CounterpartyListSerializer
+    queryset = Counterparty.objects.exclude(is_archived=True)
+    permission_classes = [HasRolePermission]
+
+    def get(self, reuqest, folder_id):
+        folder = get_object_or_404(CounterpartyFolder, id=folder_id)
+        queryset = self.queryset.filter(fodler=folder).exclude(folder__isnull=False)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.serializer_class(page, many=True)
+            return self.get_paginated_response(serializer.data)
