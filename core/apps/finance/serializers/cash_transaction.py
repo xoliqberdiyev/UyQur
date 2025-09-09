@@ -23,7 +23,9 @@ class CashTransactionListSerializer(serializers.ModelSerializer):
     class Meta:
         model = CashTransaction
         fields = [
-            'id', 'name', 'payment_type', 'employees', 'status'
+            'id', 'name', 'payment_type', 'employees', 'status', 'total_balance_usd',
+            'income_balance_usd', 'expence_balance_usd', 'total_balance_uzs',
+            'income_balance_uzs', 'expence_balance_uzs'
         ]
 
 

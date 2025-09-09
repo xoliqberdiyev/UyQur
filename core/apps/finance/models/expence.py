@@ -22,13 +22,14 @@ class Expence(BaseModel):
     )
 
     price = models.PositiveBigIntegerField() 
-    exchange_rate = models.PositiveBigIntegerField(default=0)
+    exchange_rate = models.PositiveBigIntegerField(default=0, null=True, blank=True)
     currency = models.CharField(
         max_length=3, choices=[('usd','usd'), ('uzs', 'uzs')]
     )
     date = models.DateField(null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
     audit = models.CharField(max_length=200, null=True, blank=True)
+    file = models.FileField(null=True, blank=True, upload_to='finance/expence/files/')
 
     def __str__(self):
         return f'{self.cash_transaction} kassa uchun chiqim {self.price}'
