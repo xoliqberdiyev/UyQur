@@ -91,11 +91,34 @@ class IncomeCreateSerializer(serializers.ModelSerializer):
                 cash_transaction.income_balance_uzs += income.price
                 cash_transaction.total_balance_uzs = cash_transaction.income_balance_uzs - cash_transaction.expence_balance_uzs
                 payment_type.total_uzs += income.price
+            
+                if income.counterparty:
+                    if income.counterparty.debit_uzs != 0:
+                        income.counterparty.debit_uzs -= income.price 
+                        income.counterparty.total_debit -= income.price
+
+                        income.counterparty.kredit_uzs += income.counterparty.debit_uzs - income.price
+                        income.counterparty.total_kredit += income.price
+                    else:
+                        income.counterparty.kredit_uzs += income.price
+                        income.counterparty.total_kredit += income.price
+                
             elif validated_data.get('currency') == 'usd':
                 cash_transaction.income_balance_usd += income.price
                 cash_transaction.total_balance_usd = cash_transaction.income_balance_usd - cash_transaction.expence_balance_usd
                 payment_type.total_usd += income.price
+                if income.counterparty:
+                    if income.counterparty.debit_usd != 0:
+                        income.counterparty.debit_usd -= validated_data.get('price')
+                        income.counterparty.total_debit -= income.price
 
+                        income.counterparty.kredit_usd += income.counterparty.debit_usd - validated_data.get('price')
+                        income.counterparty.total_kredit += income.price
+                    else:
+                        income.counterparty.kredit_usd += validated_data.get('price')
+                        income.counterparty.total_kredit += income.price
+            
             cash_transaction.save()
             payment_type.save()
+            income.counterparty.save()
             return income

@@ -13,7 +13,7 @@ from core.apps.counterparty.filters.counterparty import CounterpartyFilter
 
 class CounterpartyListApiView(generics.ListAPIView):
     serializer_class = serializers.CounterpartyListSerializer
-    queryset = Counterparty.objects.exclude(is_archived=True).exclude(folder__isnull=True)
+    queryset = Counterparty.objects.exclude(is_archived=True).exclude(folder__isnull=False)
     pagination_class = [HasRolePermission]
     required_permissions = []
     pagination_class = CustomPageNumberPagination
@@ -91,7 +91,7 @@ class FolderCounterpartyListApiView(generics.GenericAPIView):
 
     def get(self, reuqest, folder_id):
         folder = get_object_or_404(CounterpartyFolder, id=folder_id)
-        queryset = self.queryset.filter(fodler=folder).exclude(folder__isnull=False)
+        queryset = self.queryset.filter(fodler=folder).exclude(folder__isnull=True)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.serializer_class(page, many=True)

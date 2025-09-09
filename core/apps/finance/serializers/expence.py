@@ -38,14 +38,38 @@ class ExpenceCreateSerializer(serializers.ModelSerializer):
                 cash_transaction.total_balance_uzs = cash_transaction.income_balance_uzs - cash_transaction.expence_balance_uzs
                 if payment_type.total_uzs > expence.price:
                     payment_type.total_uzs -= expence.price
+            
+                if expence.counterparty:
+                    if expence.counterparty.kredit_uzs != 0:
+                        expence.counterparty.kredit_uzs -= expence.price 
+                        expence.counterparty.total_kredit -= expence.price
+
+                        expence.counterparty.debit_uzs += expence.counterparty.kredit_uzs - expence.price
+                        expence.counterparty.total_debit += expence.price
+                    else:
+                        expence.counterparty.debit_uzs += expence.price
+                        expence.counterparty.total_debit += expence.price
+            
             elif validated_data.get('currency') == 'usd':
                 cash_transaction.expence_balance_usd += expence.price
                 cash_transaction.total_balance_usd = cash_transaction.income_balance_usd - cash_transaction.expence_balance_usd
                 if payment_type.total_usd > expence.price:
                     payment_type.total_usd -= expence.price
             
+                if expence.counterparty:
+                    if expence.counterparty.kredit_usd != 0:
+                        expence.counterparty.kredit_usd -= validated_data.get('price')
+                        expence.counterparty.total_kredit -= expence.price
+
+                        expence.counterparty.debit_usd += expence.counterparty.kredit_usd - validated_data.get('price')
+                        expence.counterparty.total_debit += expence.price
+                    else:
+                        expence.counterparty.debit_usd += validated_data.get('price')
+                        expence.counterparty.total_debit += expence.price
+            
             cash_transaction.save()
             payment_type.save()
+            expence.counterparty.save()
             return expence
         
     

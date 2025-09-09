@@ -25,8 +25,8 @@ class Income(BaseModel):
 
     currency = models.CharField(choices=[('uzs', 'uzs'),('usd', 'usd')], max_length=3)
     price = models.PositiveBigIntegerField()
-    exchange_rate = models.PositiveBigIntegerField(default=0)
-    date = models.DateField()
+    exchange_rate = models.PositiveBigIntegerField(default=0, null=True, blank=True)
+    date = models.DateField(null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
     file = models.FileField(upload_to='finance/income/file/', null=True, blank=True)
     audit = models.CharField(max_length=200, null=True, blank=True)

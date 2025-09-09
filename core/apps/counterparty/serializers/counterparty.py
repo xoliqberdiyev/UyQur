@@ -12,6 +12,7 @@ class CounterpartyListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'inn', 'name', 'phone', 'type', 'folder', 'type', 'region', 'district',
             'balance', 'balance_currency', 'balance_date', 'comment', 'is_archived',
+            'kredit_usd', 'kredit_uzs', 'total_kredit', 'debit_usd', 'debit_uzs', 'total_debit',
         ]
     
 

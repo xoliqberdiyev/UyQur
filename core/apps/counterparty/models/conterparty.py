@@ -49,6 +49,13 @@ class Counterparty(BaseModel):
     comment = models.TextField(null=True, blank=True)
     is_archived = models.BooleanField(default=False)
 
+    debit_usd = models.BigIntegerField(default=0, null=True, blank=True)
+    debit_uzs = models.BigIntegerField(default=0, null=True, blank=True)
+    total_debit = models.BigIntegerField(default=0, null=True, blank=True)
+    kredit_usd = models.BigIntegerField(default=0, null=True, blank=True)
+    kredit_uzs = models.BigIntegerField(default=0, null=True, blank=True)
+    total_kredit = models.BigIntegerField(default=0, null=True, blank=True)
+
     def __str__(self):
         return self.name
     
