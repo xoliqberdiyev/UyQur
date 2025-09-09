@@ -85,13 +85,17 @@ class IncomeCreateSerializer(serializers.ModelSerializer):
                 audit=validated_data.get('audit')
             )
             cash_transaction = income.cash_transaction
+            payment_type = income.payment_type
 
             if validated_data.get('currency') == 'uzs':
                 cash_transaction.income_balance_uzs += income.price
                 cash_transaction.total_balance_uzs = cash_transaction.income_balance_uzs - cash_transaction.expence_balance_uzs
+                payment_type.total_uzs += income.price
             elif validated_data.get('currency') == 'usd':
                 cash_transaction.income_balance_usd += income.price
                 cash_transaction.total_balance_usd = cash_transaction.income_balance_usd - cash_transaction.expence_balance_usd
+                payment_type.total_usd += income.price
 
             cash_transaction.save()
+            payment_type.save()
             return income
