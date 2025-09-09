@@ -19,8 +19,8 @@ class CashTransactionFolder(BaseModel):
 
 class CashTransaction(BaseModel):
     name = models.CharField(max_length=200, unique=True)
-    payment_type = models.ForeignKey(
-        PaymentType, on_delete=models.CASCADE, related_name='cash_transactions', null=True
+    payment_type = models.ManyToManyField(
+        PaymentType, related_name='cash_transactions', blank=True
     )
     employees = models.ManyToManyField(User, related_name='cash_transactions')
     status = models.BooleanField(default=False)

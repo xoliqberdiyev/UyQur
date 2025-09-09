@@ -13,20 +13,20 @@ class CashTransactionListApiView(generics.ListAPIView):
     permission_classes = [HasRolePermission]
     required_permissions = []
     serializer_class = serializers.CashTransactionListSerializer
-    queryset = CashTransaction.objects.select_related('payment_type').prefetch_related('employees')
+    queryset = CashTransaction.objects.prefetch_related('employees', 'payment_type')
     pagination_class = CustomPageNumberPagination
 
 
 class CashTransactionCreateApiView(generics.CreateAPIView):
     serializer_class = serializers.CashTransactionCreateSerializer
-    queryset = CashTransaction.objects.all()
+    queryset = CashTransaction.objects.prefetch_related('employees', 'payment_type')
     permission_classes = [HasRolePermission]
     required_permissions = ['project', 'project_folder']
 
 
 class CashTransactionUpdateApiView(generics.GenericAPIView):
     serializer_class = serializers.CashTransactionUpdateSerializer
-    queryset = CashTransaction.objects.all()
+    queryset = CashTransaction.objects.prefetch_related('employees', 'payment_type')
     permission_classes = [HasRolePermission]
 
     def patch(self, request, id):

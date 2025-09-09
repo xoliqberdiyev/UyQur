@@ -5,6 +5,7 @@ from rest_framework import serializers
 from core.apps.finance.models import CashTransaction, CashTransactionFolder
 from core.apps.accounts.models import User
 from core.apps.finance.models import PaymentType
+from core.apps.finance.serializers.payment_type import PaymentTypeSerializer
 
 
 class CashTransactionEmployeeListSerializer(serializers.ModelSerializer):
@@ -16,7 +17,7 @@ class CashTransactionEmployeeListSerializer(serializers.ModelSerializer):
 
 
 class CashTransactionListSerializer(serializers.ModelSerializer):
-    payment_type = serializers.SerializerMethodField(method_name='get_payment_type')
+    payment_type = PaymentTypeSerializer(many=True)
     employees = CashTransactionEmployeeListSerializer(many=True)
 
     class Meta:
@@ -25,12 +26,6 @@ class CashTransactionListSerializer(serializers.ModelSerializer):
             'id', 'name', 'payment_type', 'employees', 'status'
         ]
 
-    def get_payment_type(self, obj):
-        return {
-            "id": obj.payment_type.id,
-            "name": obj.payment_type.name
-        }
-    
 
 class CashTransactionUpdateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -41,7 +36,7 @@ class CashTransactionUpdateSerializer(serializers.ModelSerializer):
 
 
 class CashTransactionCreateSerializer(serializers.Serializer):
-    payment_type_id = serializers.UUIDField()
+    payment_type_ids = serializers.ListSerializer(child=serializers.UUIDField(), write_only=True)
     employee_ids = serializers.ListSerializer(child=serializers.UUIDField(), write_only=True)
     name = serializers.CharField()
     status = serializers.BooleanField()
@@ -53,27 +48,24 @@ class CashTransactionCreateSerializer(serializers.Serializer):
         return value
 
     def validate(self, data):
-        payment_type = PaymentType.objects.filter(id=data['payment_type_id']).first()
-        if not payment_type:
-            raise serializers.ValidationError("Payment Type not found")
         if data.get('folder_id'):
             folder = CashTransactionFolder.objects.filter(id=data.get('folder_id')).first()
             if not folder:
                 raise serializers.ValidationError("Cash Transaction Folder not found")
             data['folder'] = folder
-        data['payment_type'] = payment_type
         return data
 
     def create(self, validated_data):
         with transaction.atomic():
             employee_ids = validated_data.pop('employee_ids', [])
+            payment_type_ids = validated_data.pop('payment_type_ids', [])
             cash_transaction = CashTransaction.objects.create(
                 name=validated_data.get('name'),
-                payment_type=validated_data.get('payment_type'),
                 status=validated_data.get('status'),
                 folder=validated_data.get('folder')
             )
             cash_transaction.employees.set(employee_ids)
+            cash_transaction.payment_type.set(payment_type_ids)
             cash_transaction.save()
             return cash_transaction
     
