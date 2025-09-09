@@ -40,10 +40,7 @@ class ExpenceCreateSerializer(serializers.ModelSerializer):
                     payment_type.total_uzs -= expence.price
             elif validated_data.get('currency') == 'usd':
                 cash_transaction.expence_balance_usd += expence.price
-                if cash_transaction.income_balance_usd > cash_transaction.expence_balance_usd:
-                    cash_transaction.total_balance_usd = cash_transaction.income_balance_usd - cash_transaction.expence_balance_usd
-                else:
-                    cash_transaction.total_balance_usd = 0
+                cash_transaction.total_balance_usd = cash_transaction.income_balance_usd - cash_transaction.expence_balance_usd
                 if payment_type.total_usd > expence.price:
                     payment_type.total_usd -= expence.price
             

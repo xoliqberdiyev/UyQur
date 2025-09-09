@@ -28,13 +28,13 @@ class CashTransaction(BaseModel):
         CashTransactionFolder, on_delete=models.SET_NULL, related_name='cash_transactions', 
         null=True, blank=True
     )
-    total_balance_usd = models.PositiveBigIntegerField(default=0)
-    income_balance_usd = models.PositiveBigIntegerField(default=0)
-    expence_balance_usd = models.PositiveBigIntegerField(default=0)
+    total_balance_usd = models.BigIntegerField(default=0)
+    income_balance_usd = models.BigIntegerField(default=0)
+    expence_balance_usd = models.BigIntegerField(default=0)
 
-    total_balance_uzs = models.PositiveBigIntegerField(default=0)
-    income_balance_uzs = models.PositiveBigIntegerField(default=0)
-    expence_balance_uzs = models.PositiveBigIntegerField(default=0)
+    total_balance_uzs = models.BigIntegerField(default=0)
+    income_balance_uzs = models.BigIntegerField(default=0)
+    expence_balance_uzs = models.BigIntegerField(default=0)
 
     def __str__(self):
         return self.name
