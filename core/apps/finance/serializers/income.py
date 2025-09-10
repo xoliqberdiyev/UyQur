@@ -37,7 +37,7 @@ class IncomeListSerializer(serializers.ModelSerializer):
         return {
             'id': obj.project_folder.id,
             'name': obj.project_folder.name
-        }
+        } if obj.project_folder else None
     
     def get_project(self, obj):
         return {
@@ -72,7 +72,7 @@ class IncomeCreateSerializer(serializers.ModelSerializer):
             income = Income.objects.create(
                 cash_transaction=validated_data['cash_transaction'],
                 payment_type=validated_data['payment_type'],
-                project_folder=validated_data['project_folder'],
+                project_folder=validated_data.get('project_folder'),
                 project=validated_data.get('project'),
                 counterparty=validated_data.get('counterparty'),
                 type_income=validated_data.get('type_income'),

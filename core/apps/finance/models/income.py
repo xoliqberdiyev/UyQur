@@ -11,7 +11,7 @@ class Income(BaseModel):
     )
     payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE, related_name='incomes')
     project_folder = models.ForeignKey(
-        'projects.ProjectFolder', on_delete=models.CASCADE, related_name='incomes'
+        'projects.ProjectFolder', on_delete=models.SET_NULL, related_name='incomes', null=True, blank=True
     )
     project = models.ForeignKey(
         'projects.Project', on_delete=models.SET_NULL, related_name='incomes', null=True, blank=True

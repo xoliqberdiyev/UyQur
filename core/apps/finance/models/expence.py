@@ -9,7 +9,7 @@ class Expence(BaseModel):
     cash_transaction = models.ForeignKey(CashTransaction, on_delete=models.CASCADE, related_name='expences')
     payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE, related_name='expences')
     project_folder = models.ForeignKey(
-        'projects.ProjectFolder', on_delete=models.CASCADE, related_name='expences'
+        'projects.ProjectFolder', on_delete=models.SET_NULL, related_name='expences', null=True, blank=True
     )
     project = models.ForeignKey(
         'projects.Project', on_delete=models.SET_NULL, null=True, related_name='expences', blank=True
