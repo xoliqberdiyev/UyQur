@@ -26,6 +26,14 @@ class FolderSerializer(serializers.ModelSerializer):
         return obj.products.count()
 
 
+class FolderDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Folder
+        fields = [
+            'id', 'name'
+        ]
+
+
 class SubFolderSerializer(serializers.ModelSerializer):
     product_count = serializers.SerializerMethodField(method_name='get_product_count')
 
@@ -49,3 +57,11 @@ class SubFolderSerializer(serializers.ModelSerializer):
 
     def get_product_count(self, obj):
         return obj.products.count()
+
+
+class SubFolderDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubFolder
+        fields = [
+            'id', 'name'
+        ]

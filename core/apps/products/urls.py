@@ -29,6 +29,7 @@ urlpatterns = [
             path('<uuid:id>/update/', folder_views.FolderUdateApiView.as_view()),
             path('<uuid:id>/delete/', folder_views.FolderDeleteApiView.as_view()),
             path('<uuid:folder_id>/products/', folder_views.FolderProductListApiView.as_view()),
+            path('<uuid:id>/', folder_views.FolderDetailApiView.as_view()),
             path('sub_folder/', include(
                 [
                     path('create/', folder_views.SubFolderCreateApiView.as_view()),
@@ -36,6 +37,7 @@ urlpatterns = [
                     path('<uuid:id>/delete/', folder_views.SubFolderDeleteApiView.as_view()),
                     path('<uuid:id>/update/', folder_views.SubFolderUpdateApiView.as_view()),
                     path("<uuid:sub_folder_id>/products/", folder_views.SubFolderProductListApiView.as_view()),
+                    path('<uuid:id>/', folder_views.SubFolderDetailApiView.as_view()),
                 ]
             )),
         ]
