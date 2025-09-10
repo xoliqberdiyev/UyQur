@@ -21,7 +21,7 @@ class CounterpartyListApiView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = CounterpartyFilter
     search_fields = [
-        'name', 'iin'
+        'name', 'inn'
     ]
 
 
@@ -94,7 +94,7 @@ class FolderCounterpartyListApiView(generics.GenericAPIView):
     permission_classes = [HasRolePermission]
     filter_backends = [filters.SearchFilter]
     search_fields = [
-        'name', 'iin'
+        'name', 'inn'
     ]
 
     def get(self, reuqest, folder_id):
@@ -127,7 +127,7 @@ class CounterpartiesApiView(generics.GenericAPIView):
     permission_classes = [HasRolePermission]
     filter_backends = [filters.SearchFilter]
     search_fields = [
-        'name', 'iin'
+        'name', 'inn'
     ]
 
     def get(self, request):

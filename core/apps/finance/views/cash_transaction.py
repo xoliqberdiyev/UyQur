@@ -63,3 +63,5 @@ class CashTransactionDeleteApiView(views.APIView):
             },
             status=204
         )
+    
+
