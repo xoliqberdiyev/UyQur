@@ -112,3 +112,16 @@ class CounterpartyStatisticsApiView(views.APIView):
             total_debut=Sum('total_debit'),
         )
         return Response(res)
+
+
+class CounterpartiesApiView(generics.GenericAPIView):
+    serializer_class = serializers.CounterpartyListSerializer
+    queryset = Counterparty.objects.all()
+    permission_classes = [HasRolePermission]
+
+    def get(self, request):
+        page = self.paginate_queryset(self.queryset)
+        if page is not None:
+            ser = self.serializer_class(page, many=True)
+            return self.get_paginated_response(ser.data)
+        
