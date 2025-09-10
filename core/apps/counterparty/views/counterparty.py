@@ -110,7 +110,12 @@ class CounterpartyStatisticsApiView(views.APIView):
     permission_classes = [HasRolePermission]
 
     def get(self, request):
-        res = Counterparty.objects.aggregate(
+        counterparty_ids = request.query_params.getlist('counterparty')
+        if counterparty_ids:
+            queryset = Counterparty.objects.filter(id__in=counterparty_ids)
+        queryset = Counterparty.objects.all()
+        
+        res = queryset.aggregate(
             kredit_usd=Sum('kredit_usd'),
             kredit_uzs=Sum('kredit_uzs'),
             total_kredit=Sum('total_kredit'),
