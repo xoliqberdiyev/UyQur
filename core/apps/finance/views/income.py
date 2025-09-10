@@ -16,6 +16,9 @@ class IncomeListApiView(generics.GenericAPIView):
     permission_classes = [HasRolePermission]
 
     def get(self, request):
+        cash_transaction_ids = request.query_params.getlist('cash_transaction')
+        if cash_transaction_ids:
+            self.queryset = self.queryset.filter(cash_transaction__in=cash_transaction_ids)
         page = self.paginate_queryset(self.queryset)
         if page is not None:
             serializer = self.serializer_class(page, many=True)
@@ -47,3 +50,4 @@ class IncomeCreateApiView(generics.GenericAPIView):
             },
             status=400
         )
+
