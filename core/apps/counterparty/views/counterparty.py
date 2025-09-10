@@ -1,7 +1,7 @@
 from django.db.models import Sum 
 from django.shortcuts import get_object_or_404
 
-from rest_framework import generics, views
+from rest_framework import generics, views, filters
 from rest_framework.response import Response
 from django_filters.rest_framework.backends import DjangoFilterBackend
 
@@ -18,8 +18,11 @@ class CounterpartyListApiView(generics.ListAPIView):
     pagination_class = [HasRolePermission]
     required_permissions = []
     pagination_class = CustomPageNumberPagination
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = CounterpartyFilter
+    search_fields = [
+        'name', 'iin'
+    ]
 
 
 class CounterpartyCreateApiView(generics.GenericAPIView):
@@ -89,11 +92,15 @@ class FolderCounterpartyListApiView(generics.GenericAPIView):
     serializer_class = serializers.CounterpartyListSerializer
     queryset = Counterparty.objects.exclude(is_archived=True)
     permission_classes = [HasRolePermission]
+    filter_backends = [filters.SearchFilter]
+    search_fields = [
+        'name', 'iin'
+    ]
 
     def get(self, reuqest, folder_id):
         folder = get_object_or_404(CounterpartyFolder, id=folder_id)
         queryset = self.queryset.filter(folder=folder).exclude(folder__isnull=True)
-        page = self.paginate_queryset(queryset)
+        page = self.paginate_queryset(self.filter_queryset(queryset))
         if page is not None:
             serializer = self.serializer_class(page, many=True)
             return self.get_paginated_response(serializer.data)
@@ -118,9 +125,13 @@ class CounterpartiesApiView(generics.GenericAPIView):
     serializer_class = serializers.CounterpartyListSerializer
     queryset = Counterparty.objects.all()
     permission_classes = [HasRolePermission]
+    filter_backends = [filters.SearchFilter]
+    search_fields = [
+        'name', 'iin'
+    ]
 
     def get(self, request):
-        page = self.paginate_queryset(self.queryset)
+        page = self.paginate_queryset(self.filter_queryset(self.queryset))
         if page is not None:
             ser = self.serializer_class(page, many=True)
             return self.get_paginated_response(ser.data)
