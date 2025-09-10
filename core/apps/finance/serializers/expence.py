@@ -49,6 +49,7 @@ class ExpenceCreateSerializer(serializers.ModelSerializer):
                     else:
                         expence.counterparty.debit_uzs += expence.price
                         expence.counterparty.total_debit += expence.price
+                    expence.counterparty.save()
             
             elif validated_data.get('currency') == 'usd':
                 cash_transaction.expence_balance_usd += expence.price
@@ -66,10 +67,10 @@ class ExpenceCreateSerializer(serializers.ModelSerializer):
                     else:
                         expence.counterparty.debit_usd += validated_data.get('price')
                         expence.counterparty.total_debit += expence.price
+                    expence.counterparty.save()
             
             cash_transaction.save()
             payment_type.save()
-            expence.counterparty.save()
             return expence
         
     

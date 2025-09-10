@@ -102,7 +102,8 @@ class IncomeCreateSerializer(serializers.ModelSerializer):
                     else:
                         income.counterparty.kredit_uzs += income.price
                         income.counterparty.total_kredit += income.price
-                
+                    income.counterparty.save()
+
             elif validated_data.get('currency') == 'usd':
                 cash_transaction.income_balance_usd += income.price
                 cash_transaction.total_balance_usd = cash_transaction.income_balance_usd - cash_transaction.expence_balance_usd
@@ -117,8 +118,8 @@ class IncomeCreateSerializer(serializers.ModelSerializer):
                     else:
                         income.counterparty.kredit_usd += validated_data.get('price')
                         income.counterparty.total_kredit += income.price
-            
+                    income.counterparty.save()
+
             cash_transaction.save()
             payment_type.save()
-            income.counterparty.save()
             return income
