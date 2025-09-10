@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Sum
 
 from rest_framework import generics, views
 from rest_framework.response import Response
@@ -65,3 +66,22 @@ class CashTransactionDeleteApiView(views.APIView):
         )
     
 
+class CashTransactionStatisticsApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+
+    def get(self, request):
+        cash_transaction_ids = request.query_params.getlist('cash_transaction')
+        if cash_transaction_ids:
+            queryset = CashTransaction.objects.filter(id__in=cash_transaction_ids)
+        queryset = CashTransaction.objects.all()
+        res = queryset.aggregate(
+            total_balance_usd=Sum('total_balance_usd'),
+            income_balance_usd=Sum('income_balance_usd'),
+            expence_balance_usd=Sum('expence_balance_usd'),
+            total_balance_uzs=Sum('total_balance_uzs'),
+            income_balance_uzs=Sum('income_balance_uzs'),
+            expence_balance_uzs=Sum('expence_balance_uzs')
+        )
+
+        return Response(res)
+    

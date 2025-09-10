@@ -16,6 +16,7 @@ urlpatterns = [
             path('create/', cash_views.CashTransactionCreateApiView.as_view()),
             path('<uuid:id>/delete/', cash_views.CashTransactionDeleteApiView.as_view()),
             path('<uuid:id>/update/', cash_views.CashTransactionUpdateApiView.as_view()),
+            path('statistics/', cash_views.CashTransactionStatisticsApiView.as_view()),
         ]
     )),
     path('cash_transaction_folder/', include(
