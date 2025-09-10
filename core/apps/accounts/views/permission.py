@@ -11,3 +11,4 @@ class PermissionListApiView(generics.ListAPIView):
     serializer_class = serializers.PermissionListSerializer
     permission_classes = [HasRolePermission]
     required_permissions = ['settings', 'permissions', 'role']
+    pagination_class = None

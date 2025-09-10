@@ -24,7 +24,7 @@ class UserProfileApiView(generics.GenericAPIView):
         return Response({
             "success": True,
             'user_data': serializer.data,
-            'permissions_to_page': get_permissions_with_tabs(user)
+            # 'permissions_to_page': get_permissions_with_tabs(user)
         }, status=200)
     
 
