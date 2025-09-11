@@ -10,6 +10,7 @@ from core.apps.orders.serializers import party as serializers
 from core.apps.orders.models import Party, PartyAmount, DeletedParty, Order
 from core.apps.orders.filters.party import PartyFilter
 from core.apps.orders.tasks.order import create_inventory
+from core.apps.finance.models import Expence
 
 
 class PartyCreateApiView(generics.GenericAPIView):
@@ -165,3 +166,28 @@ class PartyChangeStatusToIsMadeApiView(generics.GenericAPIView):
             status=200
         )
     
+
+class PartyPaymentApiView(generics.GenericAPIView):
+    serializer_class = serializers.PartyExpenceCreateSerializer
+    queryset = Expence.objects.all()
+    permission_classes = [HasRolePermission]
+
+    def post(self, request):
+        ser = self.serializer_class(data=request.data)
+        if ser.is_valid():
+            ser.save()
+            return Response(
+                {
+                    'success': True,
+                    'message': 'partiyage tolov qilindi'
+                },
+                status=200
+            )
+        return Response(
+            {
+                'success': False,
+                'message': 'partiyaga tolov qilishda xatolik yuz berdi',
+                'error': ser.errors,
+            },
+            status=400
+        )

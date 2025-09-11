@@ -357,6 +357,10 @@ class PartyExpenceCreateSerializer(serializers.ModelSerializer):
                         expence.counterparty.debit_usd += validated_data.get('price')
                         expence.counterparty.total_debit += expence.price
                     expence.counterparty.save()
+                if expence.party.currency == 'usd':
+                    expence.party.party_amount.payment_amount -= validated_data.get('price')
+                    expence.party.party_amount.paid_amount += validated_data.get('price')
+                    expence.party.save()
             
             cash_transaction.save()
             payment_type.save()
