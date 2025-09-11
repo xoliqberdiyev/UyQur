@@ -3,9 +3,11 @@ from django.db import models
 from core.apps.shared.models import BaseModel
 from core.apps.finance.models import CashTransaction, PaymentType, ExpenceType
 from core.apps.counterparty.models import Counterparty
+from core.apps.accounts.models import User
 
 
 class Expence(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='expences', null=True)
     cash_transaction = models.ForeignKey(CashTransaction, on_delete=models.CASCADE, related_name='expences')
     payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE, related_name='expences')
     project_folder = models.ForeignKey(
@@ -19,6 +21,9 @@ class Expence(BaseModel):
     )
     counterparty = models.ForeignKey(
         Counterparty, on_delete=models.SET_NULL, null=True, blank=True, related_name='expences'
+    )
+    party = models.ForeignKey(
+        'orders.Party', on_delete=models.SET_NULL, null=True, blank=True, related_name='expences'
     )
 
     price = models.PositiveBigIntegerField() 

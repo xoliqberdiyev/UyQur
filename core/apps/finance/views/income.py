@@ -32,7 +32,7 @@ class IncomeCreateApiView(generics.GenericAPIView):
     parser_classes = [parsers.FormParser, parsers.MultiPartParser]
 
     def post(self, request):
-        ser = self.serializer_class(data=request.data)
+        ser = self.serializer_class(data=request.data, context={'user': request.user})
         if ser.is_valid(raise_exception=True):
             ser.save()
             return Response(

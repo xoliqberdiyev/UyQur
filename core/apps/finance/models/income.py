@@ -3,9 +3,11 @@ from django.db import models
 from core.apps.shared.models import BaseModel
 from core.apps.finance.models import CashTransaction, PaymentType, TypeIncome
 from core.apps.counterparty.models import Counterparty
+from core.apps.accounts.models import User
 
 
 class Income(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='incomes', null=True)
     cash_transaction = models.ForeignKey(
         CashTransaction, on_delete=models.CASCADE, related_name='incomes'
     )

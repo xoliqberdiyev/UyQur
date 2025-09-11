@@ -12,6 +12,7 @@ from core.apps.products.models import Product, Unity
 from core.apps.projects.models import Project, ProjectFolder
 from core.apps.wherehouse.models import WhereHouse
 from core.apps.counterparty.models import Counterparty
+from core.apps.finance.models import Expence
 
 
 class PartyCreateSerializer(serializers.Serializer):
@@ -288,3 +289,76 @@ class PartyUpdateSerializer(serializers.ModelSerializer):
                 ]
             )
             return instance
+
+
+
+class PartyExpenceCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Expence
+        fields = [
+            'cash_transaction', 'payment_type', 'project_folder', 'project', 'counterparty',
+            'price', 'exchange_rate', 'currency', 'date', 'comment', 'party'
+        ]
+    
+    def create(self, validated_data):
+        with transaction.atomic():
+            expence = Expence.objects.create(
+                cash_transaction=validated_data.get('cash_transaction'),
+                payment_type=validated_data.get('payment_type'),
+                project_folder=validated_data.get('project_folder'),
+                project=validated_data.get('project'),
+                counterparty=validated_data.get('counterparty'),
+                price=validated_data.get('price') * validated_data.get('exchange_rate') if validated_data.get('exchange_rate') else validated_data.get('price'),
+                exchange_rate=validated_data.get('exchange_rate'),
+                currency=validated_data.get('currency'),
+                date=validated_data.get('date'),
+                comment=validated_data.get('comment'),
+                party=validated_data.get('party'),
+            )
+            cash_transaction = expence.cash_transaction
+            payment_type = expence.payment_type
+            
+            if validated_data.get('currency') == 'uzs':
+                cash_transaction.expence_balance_uzs += expence.price
+                cash_transaction.total_balance_uzs = cash_transaction.income_balance_uzs - cash_transaction.expence_balance_uzs
+                if payment_type.total_uzs > expence.price:
+                    payment_type.total_uzs -= expence.price
+            
+                if expence.counterparty:
+                    if expence.counterparty.kredit_uzs != 0:
+                        expence.counterparty.kredit_uzs -= expence.price 
+                        expence.counterparty.total_kredit -= expence.price
+
+                        expence.counterparty.debit_uzs += expence.counterparty.kredit_uzs - expence.price
+                        expence.counterparty.total_debit += expence.price
+                    else:
+                        expence.counterparty.debit_uzs += expence.price
+                        expence.counterparty.total_debit += expence.price
+                    expence.counterparty.save()
+                if expence.party.currency == 'uzs':
+                    expence.party.party_amount.payment_amount -= expence.price
+                    expence.party.party_amount.paid_amount += expence.price
+                    expence.party.save()
+            
+            elif validated_data.get('currency') == 'usd':
+                cash_transaction.expence_balance_usd += expence.price
+                cash_transaction.total_balance_usd = cash_transaction.income_balance_usd - cash_transaction.expence_balance_usd
+                if payment_type.total_usd > expence.price:
+                    payment_type.total_usd -= expence.price
+            
+                if expence.counterparty:
+                    if expence.counterparty.kredit_usd != 0:
+                        expence.counterparty.kredit_usd -= validated_data.get('price')
+                        expence.counterparty.total_kredit -= expence.price
+
+                        expence.counterparty.debit_usd += expence.counterparty.kredit_usd - validated_data.get('price')
+                        expence.counterparty.total_debit += expence.price
+                    else:
+                        expence.counterparty.debit_usd += validated_data.get('price')
+                        expence.counterparty.total_debit += expence.price
+                    expence.counterparty.save()
+            
+            cash_transaction.save()
+            payment_type.save()
+            return expence
+        

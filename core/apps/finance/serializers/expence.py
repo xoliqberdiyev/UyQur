@@ -16,6 +16,7 @@ class ExpenceCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             expence = Expence.objects.create(
+                user=self.context.get('user'),
                 cash_transaction=validated_data.get('cash_transaction'),
                 payment_type=validated_data.get('payment_type'),
                 project_folder=validated_data.get('project_folder'),
@@ -81,13 +82,22 @@ class ExpenceListSerializer(serializers.ModelSerializer):
     project = serializers.SerializerMethodField(method_name='get_project')
     counterparty = serializers.SerializerMethodField(method_name='get_counterparty')
     expence_type = serializers.SerializerMethodField(method_name='get_expence_type')
+    user = serializers.SerializerMethodField(method_name='get_user')
 
     class Meta:
         model = Expence
         fields = [
             'id', 'cash_transaction', 'payment_type', 'project_folder', 'project', 'expence_type',
             'counterparty', 'price', 'exchange_rate', 'currency', 'date', 'comment', 'audit', 'file'
+            'user'
         ]
+    
+    def get_user(self, obj):
+        return {
+            'id': obj.user.id,
+            'first_name': obj.user.first_name,
+            'last_name': obj.user.last_name,
+        } if obj.user else None
     
     def get_cash_transaction(self, obj):
         return {

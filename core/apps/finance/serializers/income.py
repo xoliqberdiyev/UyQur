@@ -12,13 +12,14 @@ class IncomeListSerializer(serializers.ModelSerializer):
     project = serializers.SerializerMethodField(method_name='get_project')
     counterparty = serializers.SerializerMethodField(method_name='get_counterparty')
     type_income = serializers.SerializerMethodField(method_name='get_type_income')
+    user = serializers.SerializerMethodField(method_name='get_user')
 
     class Meta:
         model = Income
         fields = [
             'id', 'cash_transaction', 'payment_type', 'project_folder', 'project',
             'counterparty', 'type_income', 'currency', 'price', 'exchange_rate', 'date',
-            'comment', 'file', 'audit'
+            'comment', 'file', 'audit', 'user'
         ]
     
     def get_cash_transaction(self, obj):
@@ -57,6 +58,13 @@ class IncomeListSerializer(serializers.ModelSerializer):
             'name': obj.type_income.name
         } if obj.type_income else None
 
+    def get_user(self, obj):
+        return {
+            'id': obj.user.id,
+            'first_name': obj.user.first_name,
+            'last_name': obj.user.last_name,
+        } if obj.user else None
+
 
 class IncomeCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -70,6 +78,7 @@ class IncomeCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         with transaction.atomic():
             income = Income.objects.create(
+                user=self.context.get('user'),
                 cash_transaction=validated_data['cash_transaction'],
                 payment_type=validated_data['payment_type'],
                 project_folder=validated_data.get('project_folder'),
