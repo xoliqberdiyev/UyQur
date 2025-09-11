@@ -1,3 +1,5 @@
+from django.shortcuts import get_object_or_404
+
 from rest_framework import generics, views, parsers, filters
 from rest_framework.response import Response
 
@@ -7,6 +9,7 @@ from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.finance.models import Expence
 from core.apps.finance.serializers import expence as serializers
 from core.apps.finance.filters.expence import ExpenceFilter
+from core.apps.counterparty.models import Counterparty
 
 
 class ExpenceCreateApiView(generics.GenericAPIView):
@@ -61,3 +64,20 @@ class ExpenceListApiView(generics.GenericAPIView):
             serializer = self.serializer_class(page, many=True)
             return self.get_paginated_response(serializer.data)
         
+    
+
+class CounterpartyExpenceListApiView(generics.GenericAPIView):
+    permission_classes = [HasRolePermission]
+    queryset = Expence.objects.select_related(
+        'cash_transaction', 'payment_type', 'project_folder', 'project', 'counterparty', 'expence_type',
+        'user'
+    ).exclude(counterparty__isnull=True)
+    serializer_class = serializers.ExpenceListSerializer
+
+    def get(self, request, counterparty_id):
+        counterparty = get_object_or_404(Counterparty, id=counterparty_id)
+        page = self.paginate_queryset(self.queryset.filter(counterparty=counterparty))
+        if page is not None:
+            ser = self.serializer_class(page, many=True)
+            return self.get_paginated_response(ser.data)
+    

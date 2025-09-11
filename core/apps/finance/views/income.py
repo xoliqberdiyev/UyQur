@@ -9,6 +9,7 @@ from core.apps.finance.models import Income
 from core.apps.finance.serializers import income as serializers
 from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.finance.filters.income import IncomeFilter
+from core.apps.counterparty.models import Counterparty
 
 
 class IncomeListApiView(generics.GenericAPIView):
@@ -60,3 +61,19 @@ class IncomeCreateApiView(generics.GenericAPIView):
             status=400
         )
 
+
+class CounterpartyIncomeListApiView(generics.GenericAPIView):
+    permission_classes = [HasRolePermission]
+    queryset = Income.objects.select_related(
+        'cash_transaction', 'payment_type', 'project_folder', 'project', 'counterparty', 'type_income',
+        'user'
+    ).exclude(counterparty__isnull=True)
+    serializer_class = serializers.IncomeListSerializer
+
+    def get(self, request, counterparty_id):
+        counterparty = get_object_or_404(Counterparty, id=counterparty_id)
+        page = self.paginate_queryset(self.queryset.filter(counterparty=counterparty))
+        if page is not None:
+            ser = self.serializer_class(page, many=True)
+            return self.get_paginated_response(ser.data)
+    

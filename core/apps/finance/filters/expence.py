@@ -7,5 +7,5 @@ class ExpenceFilter(django_filters.FilterSet):
     class Meta:
         model = Expence
         fields = [
-            'w'
+            'payment_type', 'project_folder', 'project', 'user', 'expence_type'
         ]

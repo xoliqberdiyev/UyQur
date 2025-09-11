@@ -47,6 +47,7 @@ urlpatterns = [
         [
             path('list/', income_views.IncomeListApiView.as_view()),
             path('create/', income_views.IncomeCreateApiView.as_view()),
+            path('<uuid:counterparty_id>/list/', income_views.CounterpartyIncomeListApiView.as_view()),
         ]
     )),
     path('expence_type/', include(
@@ -61,6 +62,7 @@ urlpatterns = [
         [
             path('list/', expence_views.ExpenceListApiView.as_view()),
             path('create/', expence_views.ExpenceCreateApiView.as_view()),
+            path('<uuid:counterparty_id>/list/', expence_views.CounterpartyExpenceListApiView.as_view()),
         ]
     ))
 ]
