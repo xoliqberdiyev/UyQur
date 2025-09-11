@@ -113,7 +113,8 @@ class CounterpartyStatisticsApiView(views.APIView):
         counterparty_ids = request.query_params.getlist('counterparty')
         if counterparty_ids:
             queryset = Counterparty.objects.filter(id__in=counterparty_ids)
-        queryset = Counterparty.objects.all()
+        else:
+            queryset = Counterparty.objects.all()
         
         res = queryset.aggregate(
             kredit_usd=Sum('kredit_usd'),
