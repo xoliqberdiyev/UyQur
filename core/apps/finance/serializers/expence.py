@@ -88,7 +88,7 @@ class ExpenceListSerializer(serializers.ModelSerializer):
         model = Expence
         fields = [
             'id', 'cash_transaction', 'payment_type', 'project_folder', 'project', 'expence_type',
-            'counterparty', 'price', 'exchange_rate', 'currency', 'date', 'comment', 'audit', 'file'
+            'counterparty', 'price', 'exchange_rate', 'currency', 'date', 'comment', 'audit', 'file',
             'user'
         ]
     

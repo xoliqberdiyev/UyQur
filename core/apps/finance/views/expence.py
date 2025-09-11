@@ -10,7 +10,7 @@ class ExpenceCreateApiView(generics.GenericAPIView):
     serializer_class = serializers.ExpenceCreateSerializer
     queryset = Expence.objects.select_related(
         'cash_transaction', 'payment_type', 'project_folder', 'project',
-        'counterparty', 'expence_type',
+        'counterparty', 'expence_type', 'user'
     )
     permission_classes = [HasRolePermission]
     parser_classes = [parsers.FormParser, parsers.MultiPartParser]

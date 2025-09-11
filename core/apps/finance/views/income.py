@@ -11,7 +11,8 @@ from core.apps.accounts.permissions.permissions import HasRolePermission
 class IncomeListApiView(generics.GenericAPIView):
     serializer_class = serializers.IncomeListSerializer
     queryset = Income.objects.select_related(
-        'cash_transaction', 'payment_type', 'project_folder', 'project', 'counterparty', 'type_income'
+        'cash_transaction', 'payment_type', 'project_folder', 'project', 'counterparty', 'type_income',
+        'user'
     )
     permission_classes = [HasRolePermission]
 
