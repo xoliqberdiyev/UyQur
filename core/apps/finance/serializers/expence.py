@@ -95,8 +95,7 @@ class ExpenceListSerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         return {
             'id': obj.user.id,
-            'first_name': obj.user.first_name,
-            'last_name': obj.user.last_name,
+            'full_name': obj.user.full_name,
         } if obj.user else None
     
     def get_cash_transaction(self, obj):

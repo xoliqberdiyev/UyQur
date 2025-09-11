@@ -1,4 +1,4 @@
-from rest_framework import generics, views, parsers
+from rest_framework import generics, views, parsers, filters
 from rest_framework.response import Response
 
 from django_filters.rest_framework.backends import DjangoFilterBackend
@@ -46,8 +46,11 @@ class ExpenceListApiView(generics.GenericAPIView):
         'counterparty', 'expence_type',
     )
     permission_classes = [HasRolePermission]
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = ExpenceFilter
+    search_fields = [
+        'cash_transaction__name', 'payment_type__name', 'project_folder__name', 'project__name', 'counterparty__name', 'expence_type__name', 'user__full_name'
+    ]
 
     def get(self, request):
         cash_transaction_ids = request.query_params.getlist('cash_transaction')

@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 
-from rest_framework import generics, views, parsers
+from rest_framework import generics, views, parsers, filters
 from rest_framework.response import Response
 
 from django_filters.rest_framework.backends import DjangoFilterBackend
@@ -18,8 +18,11 @@ class IncomeListApiView(generics.GenericAPIView):
         'user'
     )
     permission_classes = [HasRolePermission]
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = IncomeFilter
+    search_fields = [
+        'cash_transaction__name', 'payment_type__name', 'project_folder__name', 'project__name', 'counterparty__name', 'type_income__name', 'user__full_name'
+    ]
 
     def get(self, request):
         cash_transaction_ids = request.query_params.getlist('cash_transaction')
