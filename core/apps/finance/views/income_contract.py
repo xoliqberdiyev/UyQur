@@ -5,11 +5,11 @@ from rest_framework.response import Response
 
 from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.finance.models import IncomeContract
-from core.apps.finance.serializers.income_contract import IncomeContractSerializer
+from core.apps.finance.serializers.income_contract import IncomeContractSerializer, IncomeContractCreateSerializer
 
 
 class IncomeContractCreateApiView(generics.GenericAPIView):
-    serializer_class = IncomeContractSerializer
+    serializer_class = IncomeContractCreateSerializer
     queryset = IncomeContract.objects.all()
     permission_classes = [HasRolePermission]
 

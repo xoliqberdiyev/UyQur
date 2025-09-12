@@ -44,6 +44,16 @@ class IncomeContractSerializer(serializers.ModelSerializer):
         }
 
 
+
+class IncomeContractCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IncomeContract
+        fields = [
+            'id', 'project_folder', 'project', 'income_type', 'counterparty', 'price', 'currency',
+            'date', 'comment' 
+        ]
+        extra_kwargs = {'id': {'read_only': True}}
+    
     def create(self, validated_data):
         with transaction.atomic():
             income_contract = IncomeContract.objects.create(
