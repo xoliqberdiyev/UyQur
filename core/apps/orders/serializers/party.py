@@ -99,13 +99,14 @@ class PartyDetailSerializer(serializers.ModelSerializer):
     orders = OrderListSerializer(many=True)
     party_amount = PartyAmountSerializer()
     mediator = serializers.SerializerMethodField(method_name='get_mediator')
+    counterparty = serializers.SerializerMethodField(method_name='get_counterparty')
 
     class Meta:
         model = Party
         fields = [
             'id', 'number', 'delivery_date', 'closed_date', 'order_date', 'payment_date', 'status',
             'payment_status', 'process', 'confirmation', 'comment', 'audit', 'audit_comment',
-            'orders', 'party_amount', 'mediator', 'currency'
+            'orders', 'party_amount', 'mediator', 'currency', 'counterparty'
         ]
 
     def get_mediator(self, obj):
@@ -113,6 +114,14 @@ class PartyDetailSerializer(serializers.ModelSerializer):
             'id': obj.mediator.id,
             'full_name': obj.mediator.full_name
         }
+
+    def get_counterparty(self, obj):
+        counterparties = obj.orders.values("counterparty__id", "counterparty__name").distinct()
+        counterparties = [
+            {"id": c["counterparty__id"], "name": c["counterparty__name"]}
+            for c in counterparties
+        ]
+        return CounterpartySerializer(counterparties, many=True).data
 
 
 class PartyListSerializer(serializers.ModelSerializer):
