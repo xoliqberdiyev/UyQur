@@ -142,3 +142,11 @@ class CounterpartiesApiView(generics.GenericAPIView):
             ser = self.serializer_class(page, many=True)
             return self.get_paginated_response(ser.data)
         
+
+class CounterpartyDetailApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+
+    def get(self, request, id):
+        obj = get_object_or_404(Counterparty, id=id)
+        serializer = serializers.CounterpartyListSerializer(obj)
+        return Response(serializer.data, status=200)

@@ -15,6 +15,7 @@ urlpatterns = [
             path('<uuid:id>/update/', cp_views.CounterpartyUpdateApiView.as_view()),
             path('statistics/', cp_views.CounterpartyStatisticsApiView.as_view()),
             path('all/', cp_views.CounterpartiesApiView.as_view()),
+            path("<uuid:id>/", cp_views.CounterpartyDetailApiView.as_view()),
         ]
     )),
     path('counterparty_folder/', include(
@@ -25,5 +26,5 @@ urlpatterns = [
             path('<uuid:id>/update/', folder_views.CounterpartyUpdateApiView.as_view()),
             path('<uuid:folder_id>/counterparty/list/', cp_views.FolderCounterpartyListApiView.as_view()),
         ]
-    ))
+    )),
 ]
