@@ -8,6 +8,7 @@ from core.apps.finance.views import income as income_views
 from core.apps.finance.views import expence_type as ex_views
 from core.apps.finance.views import expence as expence_views
 from core.apps.finance.views import income_contract as ic_views
+from core.apps.finance.views import expence_contract as ec_views
 
 
 urlpatterns = [
@@ -72,4 +73,10 @@ urlpatterns = [
             path('create/', ic_views.IncomeContractCreateApiView.as_view()),
         ]
     )),
+    path('expence_contract/', include(
+        [
+            path('list/', ec_views.ExpenceContractListApiView.as_view()),
+            path('create/', ec_views.ExpenceContractCreateApiView.as_view()),
+        ]
+    ))
 ]
