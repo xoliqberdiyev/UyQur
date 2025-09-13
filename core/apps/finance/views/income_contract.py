@@ -2,7 +2,9 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Q, F
 from django.utils.timezone import now
 
-from rest_framework import generics, views
+from django_filters.rest_framework.backends import DjangoFilterBackend
+
+from rest_framework import generics, views, filters
 from rest_framework.response import Response
 
 from core.apps.accounts.permissions.permissions import HasRolePermission
@@ -42,12 +44,17 @@ class IncomeContractListApiView(generics.GenericAPIView):
         'project_folder', 'project', 'income_type', 'counterparty',
     )
     permission_classes = [HasRolePermission]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    search_fields = [
+        'user__full_name', 'project_folder__name', 'project__name', 'expence_type__name',
+        'counterparty__name'
+    ]
 
     def get(self, request):
         counterparty_id = request.query_params.get('counterparty')
         if counterparty_id:
             self.queryset = self.queryset.filter(counterparty=counterparty_id)
-            
+
         page = self.paginate_queryset(self.queryset)
         if page is not None:
             serializer = self.serializer_class(page, many=True)
