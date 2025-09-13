@@ -43,6 +43,10 @@ class ExpenceContractListApiView(generics.GenericAPIView):
     permission_classes = [HasRolePermission]
 
     def get(self, request):
+        counterparty_id = request.query_params.get('counterparty')
+        if counterparty_id:
+            self.queryset = self.queryset.filter(counterparty=counterparty_id)
+
         page = self.paginate_queryset(self.queryset)
         if page is not None:
             serializer = self.serializer_class(page, many=True)
