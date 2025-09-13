@@ -73,7 +73,8 @@ class CashTransactionStatisticsApiView(views.APIView):
         cash_transaction_ids = request.query_params.getlist('cash_transaction')
         if cash_transaction_ids:
             queryset = CashTransaction.objects.filter(id__in=cash_transaction_ids)
-        queryset = CashTransaction.objects.all()
+        else:
+            queryset = CashTransaction.objects.all()
         res = queryset.aggregate(
             total_balance_usd=Sum('total_balance_usd'),
             income_balance_usd=Sum('income_balance_usd'),
