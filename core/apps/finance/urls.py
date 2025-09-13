@@ -71,12 +71,14 @@ urlpatterns = [
         [
             path('list/', ic_views.IncomeContractListApiView.as_view()),
             path('create/', ic_views.IncomeContractCreateApiView.as_view()),
+            path('statistics/', ic_views.IncomeContractStatisticsApiView.as_view()),
         ]
     )),
     path('expence_contract/', include(
         [
             path('list/', ec_views.ExpenceContractListApiView.as_view()),
             path('create/', ec_views.ExpenceContractCreateApiView.as_view()),
+            path('statistics/', ec_views.ExpenceContractStatisticsApiView.as_view()),
         ]
     ))
 ]

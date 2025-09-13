@@ -1,3 +1,6 @@
+from django.utils.timezone import now
+from django.db.models import Sum, Q, F
+
 from rest_framework import generics, views 
 from rest_framework.response import Response
 
@@ -44,3 +47,44 @@ class ExpenceContractListApiView(generics.GenericAPIView):
         if page is not None:
             serializer = self.serializer_class(page, many=True)
             return self.get_paginated_response(serializer.data)
+        
+
+class ExpenceContractStatisticsApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+    
+    def get(self, request):
+        counterparty_id = request.query_params.get('counterparty')
+        if counterparty_id:
+            queryset = ExpenceContract.objects.filter(counterparty=counterparty_id)
+        else:
+            queryset = ExpenceContract.objects.all()
+        today = now().date()
+        usd = queryset.aggregate(
+            plan_payments=Sum('price', filter=Q(currency='usd')),
+            pending_payments=Sum(
+                'price',
+                filter=Q(date__gte=today) & Q(paid_price__isnull=True) & Q(currency='usd')
+            ),
+            paid_payments=Sum('paid_price', filter=Q(currency='usd')),
+            overdue_payments=Sum(
+                'price',
+                filter=Q(date__lt=today) & Q(paid_price__lt=F('price')) & Q(currency='usd')
+            )
+        )
+        uzs = queryset.aggregate(
+            plan_payments=Sum('price', filter=Q(currency='uzs')),
+            pending_payments=Sum(
+                'price',
+                filter=Q(date__gte=today) & Q(paid_price__isnull=True) & Q(currency='uzs')
+            ),
+            paid_payments=Sum('paid_price', filter=Q(currency='uzs')),
+            overdue_payments=Sum(
+                'price',
+                filter=Q(date__lt=today) & Q(paid_price__lt=F('price')) & Q(currency='uzs')
+            )
+        )
+        res = {
+            'uzs': uzs,
+            'usd': usd
+        }
+        return Response(res, status=200)

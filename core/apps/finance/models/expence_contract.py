@@ -23,6 +23,7 @@ class ExpenceContract(BaseModel):
 
     price = models.PositiveBigIntegerField()
     currency = models.CharField(max_length=3, choices=[('uzs', 'uzs'), ('usd', 'usd')])
+    paid_price = models.PositiveBigIntegerField(default=0, null=True, blank=True)
     date = models.DateField()
     comment = models.TextField(null=True, blank=True)
 
