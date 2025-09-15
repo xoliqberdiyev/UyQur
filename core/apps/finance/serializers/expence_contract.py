@@ -51,7 +51,7 @@ class ExpenceContractSerializer(serializers.ModelSerializer):
         return {
             'id': obj.project_folder.id,
             'name': obj.project_folder.name
-        }
+        } if obj.project_folder else None
 
 
     def create(self, validated_data):
