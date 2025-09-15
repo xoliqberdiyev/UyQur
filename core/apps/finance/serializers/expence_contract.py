@@ -81,3 +81,7 @@ class ExpenceContractCreateSerializer(serializers.ModelSerializer):
             )
             return expence_contract
 
+
+
+class ExpenceContractCalculatePriceSerializer(serializers.Serializer):
+    price = serializers.IntegerField()

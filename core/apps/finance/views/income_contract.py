@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.finance.models import IncomeContract
-from core.apps.finance.serializers.income_contract import IncomeContractSerializer, IncomeContractCreateSerializer
+from core.apps.finance.serializers.income_contract import IncomeContractSerializer, IncomeContractCreateSerializer, IncomeContractCalculatePriceSerializer
 
 
 class IncomeContractCreateApiView(generics.GenericAPIView):
@@ -100,3 +100,22 @@ class IncomeContractStatisticsApiView(views.APIView):
             'usd': usd
         }
         return Response(res, status=200)
+
+
+class IncomeContractCalculatePriceApiView(generics.GenericAPIView):
+    serializer_class = IncomeContractCalculatePriceSerializer
+    queryset = IncomeContract.objects.all()
+    permission_classes = [HasRolePermission]
+
+    def get(self, request, id):
+        income_contract = get_object_or_404(IncomeContract, id=id)
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+        price = serializer.validated_data.get('price')
+        income_contract.price -= price
+        income_contract.paid_price += price
+        income_contract.save()
+        return Response({
+            'success': True,
+            'message': 'price calculated',
+        }, status=200)

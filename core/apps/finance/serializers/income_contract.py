@@ -77,3 +77,5 @@ class IncomeContractCreateSerializer(serializers.ModelSerializer):
             return income_contract
         
     
+class IncomeContractCalculatePriceSerializer(serializers.Serializer):
+    price = serializers.IntegerField()

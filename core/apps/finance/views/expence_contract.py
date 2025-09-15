@@ -1,5 +1,6 @@
 from django.utils.timezone import now
 from django.db.models import Sum, Q, F
+from django.shortcuts import get_object_or_404
 
 from django_filters.rest_framework.backends import DjangoFilterBackend
 
@@ -7,7 +8,7 @@ from rest_framework import generics, views, filters
 from rest_framework.response import Response
 
 from core.apps.finance.models import ExpenceContract
-from core.apps.finance.serializers.expence_contract import ExpenceContractSerializer, ExpenceContractCreateSerializer
+from core.apps.finance.serializers.expence_contract import ExpenceContractSerializer, ExpenceContractCreateSerializer, ExpenceContractCalculatePriceSerializer
 from core.apps.accounts.permissions.permissions import HasRolePermission
 
 
@@ -99,3 +100,22 @@ class ExpenceContractStatisticsApiView(views.APIView):
             'usd': usd
         }
         return Response(res, status=200)
+
+
+class ExpenceContractCalculatePriceApiView(generics.GenericAPIView):
+    serializer_class = ExpenceContractCalculatePriceSerializer
+    queryset = ExpenceContract.objects.all()
+    permission_classes = [HasRolePermission]
+
+    def get(self, request, id):
+        expence_contract = get_object_or_404(ExpenceContract, id=id)
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+        price = serializer.validated_data.get('price')
+        expence_contract.price -= price
+        expence_contract.paid_price += price
+        expence_contract.save()
+        return Response({
+            'success': True,
+            'message': 'price calculated',
+        }, status=200)
