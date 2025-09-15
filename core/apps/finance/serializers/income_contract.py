@@ -10,6 +10,7 @@ class IncomeContractSerializer(serializers.ModelSerializer):
     project = serializers.SerializerMethodField(method_name='get_project')
     income_type = serializers.SerializerMethodField(method_name='get_income_type')
     counterparty = serializers.SerializerMethodField(method_name='get_counterparty')
+    user = serializers.SerializerMethodField(method_name='get_user')
 
     class Meta:
         model = IncomeContract
@@ -23,7 +24,7 @@ class IncomeContractSerializer(serializers.ModelSerializer):
         return {
             'id': obj.user.id,
             'full_name': obj.user.full_name, 
-        }
+        } if obj.user else None
     
     def get_counterparty(self, obj):
         return {

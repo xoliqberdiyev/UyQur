@@ -38,6 +38,7 @@ urlpatterns = [
             ),
             path('<uuid:party_id>/is_made/', party_views.PartyChangeStatusToIsMadeApiView.as_view()),
             path('pay/', party_views.PartyPaymentApiView.as_view()),
+            path('statistics/', party_views.PartyStatisticsApiView.as_view()),
         ]
     )),
 ]

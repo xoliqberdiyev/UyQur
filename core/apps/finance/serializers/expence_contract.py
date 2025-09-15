@@ -27,7 +27,7 @@ class ExpenceContractSerializer(serializers.ModelSerializer):
         return {
             'id': obj.user.id,
             'full_name': obj.user.full_name
-        }
+        } if obj.user else None
 
     def get_counterparty(self, obj):
         return {

@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Sum, Q
 
 from rest_framework import generics, views
 from rest_framework.response import Response
@@ -191,3 +192,34 @@ class PartyPaymentApiView(generics.GenericAPIView):
             },
             status=400
         )
+
+
+class PartyStatisticsApiView(generics.GenericAPIView):
+    permission_classes = [HasRolePermission]
+    serializer_class = None
+    queryset = Party.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = PartyFilter
+    pagination_class = None
+
+    def get(self, request):
+        qeryset = self.filter_queryset(self.queryset)
+        usd = qeryset.filter(currency='usd').aggregate(
+            total_price_usd=Sum('party_amount__total_price'),
+            cost_amount_usd=Sum('party_amount__cost_amount'),
+            calculated_amount_usd=Sum('party_amount__calculated_amount'),
+            paid_amount_usd=Sum('party_amount__paid_amount'),
+            payment_amount_usd=Sum('party_amount__payment_amount'),
+        )
+        uzs = qeryset.filter(currency='uzs').aggregate(
+            total_price_uzs=Sum('party_amount__total_price'),
+            cost_amount_uzs=Sum('party_amount__cost_amount'),
+            calculated_amount_uzs=Sum('party_amount__calculated_amount'),
+            paid_amount_uzs=Sum('party_amount__paid_amount'),
+            payment_amount_uzs=Sum('party_amount__payment_amount'),
+        )
+        res = {
+            'usd': usd,
+            'uzs': uzs
+        }
+        return Response(res, status=200)
