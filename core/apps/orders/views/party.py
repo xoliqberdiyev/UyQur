@@ -213,7 +213,7 @@ class PartyStatisticsApiView(generics.GenericAPIView):
             paid_amount_usd=Sum('party_amount__paid_amount'),
             payment_amount_usd=Sum('party_amount__payment_amount'),
             overdue_payments=Sum(
-                'payment_price',
+                'party_amount__payment_amount',
                 filter=Q(date__lt=today)
             )
         )
@@ -224,7 +224,7 @@ class PartyStatisticsApiView(generics.GenericAPIView):
             paid_amount_uzs=Sum('party_amount__paid_amount'),
             payment_amount_uzs=Sum('party_amount__payment_amount'),
             overdue_payments=Sum(
-                'payment_price',
+                'party_amount__payment_amount',
                 filter=Q(date__lt=today)
             )
         )
