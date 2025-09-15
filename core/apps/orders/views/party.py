@@ -214,7 +214,7 @@ class PartyStatisticsApiView(generics.GenericAPIView):
             payment_amount_usd=Sum('party_amount__payment_amount'),
             overdue_payments=Sum(
                 'party_amount__payment_amount',
-                filter=Q(date__lt=today)
+                filter=Q(payment_date__lt=today)
             )
         )
         uzs = qeryset.filter(currency='uzs').aggregate(
@@ -225,7 +225,7 @@ class PartyStatisticsApiView(generics.GenericAPIView):
             payment_amount_uzs=Sum('party_amount__payment_amount'),
             overdue_payments=Sum(
                 'party_amount__payment_amount',
-                filter=Q(date__lt=today)
+                filter=Q(payment_date__lt=today)
             )
         )
         res = {
