@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
-from django.db.models import Sum, Q
+from django.db.models import Sum, Q, F
+from django.utils.timezone import now
 
 from rest_framework import generics, views
 from rest_framework.response import Response
@@ -204,12 +205,17 @@ class PartyStatisticsApiView(generics.GenericAPIView):
 
     def get(self, request):
         qeryset = self.filter_queryset(self.queryset)
+        today = now().date()
         usd = qeryset.filter(currency='usd').aggregate(
             total_price_usd=Sum('party_amount__total_price'),
             cost_amount_usd=Sum('party_amount__cost_amount'),
             calculated_amount_usd=Sum('party_amount__calculated_amount'),
             paid_amount_usd=Sum('party_amount__paid_amount'),
             payment_amount_usd=Sum('party_amount__payment_amount'),
+            overdue_payments=Sum(
+                'payment_price',
+                filter=Q(date__lt=today)
+            )
         )
         uzs = qeryset.filter(currency='uzs').aggregate(
             total_price_uzs=Sum('party_amount__total_price'),
@@ -217,6 +223,10 @@ class PartyStatisticsApiView(generics.GenericAPIView):
             calculated_amount_uzs=Sum('party_amount__calculated_amount'),
             paid_amount_uzs=Sum('party_amount__paid_amount'),
             payment_amount_uzs=Sum('party_amount__payment_amount'),
+            overdue_payments=Sum(
+                'payment_price',
+                filter=Q(date__lt=today)
+            )
         )
         res = {
             'usd': usd,
