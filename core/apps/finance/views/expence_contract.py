@@ -52,9 +52,10 @@ class ExpenceContractListApiView(generics.GenericAPIView):
     def get(self, request):
         counterparty_id = request.query_params.get('counterparty')
         if counterparty_id:
-            self.queryset = self.queryset.filter(counterparty=counterparty_id)
-
-        page = self.paginate_queryset(self.queryset)
+            queryset = self.queryset.filter(counterparty=counterparty_id)
+        else:
+            queryset = self.queryset
+        page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.serializer_class(page, many=True)
             return self.get_paginated_response(serializer.data)
