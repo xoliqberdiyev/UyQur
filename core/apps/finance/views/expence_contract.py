@@ -7,12 +7,12 @@ from rest_framework import generics, views, filters
 from rest_framework.response import Response
 
 from core.apps.finance.models import ExpenceContract
-from core.apps.finance.serializers.expence_contract import ExpenceContractSerializer
+from core.apps.finance.serializers.expence_contract import ExpenceContractSerializer, ExpenceContractCreateSerializer
 from core.apps.accounts.permissions.permissions import HasRolePermission
 
 
 class ExpenceContractCreateApiView(generics.GenericAPIView):
-    serializer_class = ExpenceContractSerializer
+    serializer_class = ExpenceContractCreateSerializer
     queryset = ExpenceContract.objects.all()
     permission_classes = [HasRolePermission]
 
@@ -52,10 +52,9 @@ class ExpenceContractListApiView(generics.GenericAPIView):
     def get(self, request):
         counterparty_id = request.query_params.get('counterparty')
         if counterparty_id:
-            queryset = self.queryset.filter(counterparty=counterparty_id)
-        else:
-            queryset = self.queryset
-        page = self.paginate_queryset(queryset)
+            self.queryset = self.queryset.filter(counterparty=counterparty_id)
+        
+        page = self.paginate_queryset(self.queryset)
         if page is not None:
             serializer = self.serializer_class(page, many=True)
             return self.get_paginated_response(serializer.data)

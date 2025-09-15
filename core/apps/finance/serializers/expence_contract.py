@@ -54,6 +54,18 @@ class ExpenceContractSerializer(serializers.ModelSerializer):
         } if obj.project_folder else None
 
 
+class ExpenceContractCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExpenceContract
+        fields = [
+            'id', 'project_folder', 'project', 'expence_type', 'counterparty', 'price', 
+            'currency', 'date', 'comment', 'user'
+        ]
+        extra_kwargs = {
+            'id': {'read_only': True},
+            'user': {'read_only': True},
+        }
+
     def create(self, validated_data):
         with transaction.atomic():
             expence_contract = ExpenceContract.objects.create(
