@@ -107,7 +107,7 @@ class ExpenceContractCalculatePriceApiView(generics.GenericAPIView):
     queryset = ExpenceContract.objects.all()
     permission_classes = [HasRolePermission]
 
-    def get(self, request, id):
+    def post(self, request, id):
         expence_contract = get_object_or_404(ExpenceContract, id=id)
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid()

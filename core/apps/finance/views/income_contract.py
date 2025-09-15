@@ -107,7 +107,7 @@ class IncomeContractCalculatePriceApiView(generics.GenericAPIView):
     queryset = IncomeContract.objects.all()
     permission_classes = [HasRolePermission]
 
-    def get(self, request, id):
+    def post(self, request, id):
         income_contract = get_object_or_404(IncomeContract, id=id)
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid()
