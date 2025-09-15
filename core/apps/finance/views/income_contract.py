@@ -41,7 +41,7 @@ class IncomeContractCreateApiView(generics.GenericAPIView):
 class IncomeContractListApiView(generics.GenericAPIView):
     serializer_class = IncomeContractSerializer
     queryset = IncomeContract.objects.select_related(
-        'project_folder', 'project', 'income_type', 'counterparty',
+        'project_folder', 'project', 'income_type', 'counterparty', 'user'
     )
     permission_classes = [HasRolePermission]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]

@@ -9,7 +9,7 @@ from core.apps.counterparty.models import Counterparty
 class ExpenceContract(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='expence_contracts')
     project_folder = models.ForeignKey(
-        'projects.ProjectFolder', on_delete=models.CASCADE, related_name='expence_contracts'
+        'projects.ProjectFolder', on_delete=models.CASCADE, related_name='expence_contracts', null=True, blank=True
     )
     project = models.ForeignKey(
         'projects.Project', on_delete=models.SET_NULL, related_name='expence_contracts', null=True, blank=True

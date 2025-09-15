@@ -15,9 +15,15 @@ class IncomeContractSerializer(serializers.ModelSerializer):
         model = IncomeContract
         fields = [
             'id', 'project_folder', 'project', 'income_type', 'counterparty', 'price', 'currency',
-            'date', 'comment' 
+            'date', 'comment' , 'user'
         ]
         extra_kwargs = {'id': {'read_only': True}}
+
+    def get_user(self, obj):
+        return {
+            'id': obj.user.id,
+            'full_name': obj.user.full_name, 
+        }
     
     def get_counterparty(self, obj):
         return {
