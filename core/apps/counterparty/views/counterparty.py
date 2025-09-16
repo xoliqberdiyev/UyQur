@@ -150,3 +150,15 @@ class CounterpartyDetailApiView(views.APIView):
         obj = get_object_or_404(Counterparty, id=id)
         serializer = serializers.CounterpartyListSerializer(obj)
         return Response(serializer.data, status=200)
+
+
+class UnArchiveCounterpartyApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+
+    def get(self, request, id):
+        obj = get_object_or_404(Counterparty, id=id)
+        obj.is_archived = False
+        obj.save()
+        return Response(
+            {'success': True, 'message': 'Conterparty unarchived'}, status=200
+        )
