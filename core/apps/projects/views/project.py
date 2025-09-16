@@ -25,6 +25,22 @@ class ProjectListApiView(generics.ListAPIView):
         .exclude(folder__isnull=False)
     )
 
+
+class ArchivedProjectListApiView(generics.ListAPIView):
+    serializer_class = serializers.ProjectListSerializer
+    queryset = Project.objects.all()
+    permission_classes = [HasRolePermission]
+    required_permissions = ['project']
+    pagination_class = CustomPageNumberPagination
+
+    def get_queryset(self):
+        return (
+        Project.objects
+        .select_related('location')
+        .exclude(is_archive=False)
+    )
+
+
 class ProjectDetailApiView(generics.RetrieveAPIView):
     serializer_class = serializers.ProjectDetailSerialzier
     queryset = Project.objects.select_related('location', 'folder', 'builder').prefetch_related(

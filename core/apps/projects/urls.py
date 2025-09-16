@@ -17,6 +17,7 @@ urlpatterns = [
             path('change_folder/', project_views.ChangeProjectFolderApiView.as_view()),
             path('archive/<uuid:id>/', project_views.ArchiveProjectApiView.as_view()),
             path('<uuid:id>/un_archive/', project_views.UnArchiveProjectApiView.as_view()),
+            path('archived_list/', project_views.ArchivedProjectListApiView.as_view()),
         ]
     )),
     path('project_folder/', include(
