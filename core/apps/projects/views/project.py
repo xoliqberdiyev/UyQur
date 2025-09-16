@@ -69,6 +69,17 @@ class ArchiveProjectApiView(generics.GenericAPIView):
         return Response({"success": True, "message": "Archived"}, status=200)
 
 
+class UnArchiveProjectApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+    required_permissions = ['project']
+
+    def get(self, request, id):
+        project = get_object_or_404(Project, id=id)
+        project.is_archive = False
+        project.save()
+        return Response({"success": True, "message": "Un Archived"}, status=200)
+
+
 # Project Folder
 class ProjectFolderCreateApiView(generics.CreateAPIView):
     serializer_class = serializers.ProjectFolderCreateSerializer
