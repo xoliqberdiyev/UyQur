@@ -21,6 +21,10 @@ class Command(BaseCommand):
             {'code': 'order', 'name': 'all access to orders'},
             {'code': 'offer', 'name': 'all access to offers'},
             {'code': 'party', 'name': 'all access to partyies'},
+            {'code': '', 'name': 'kataloglar'},
+            {'code': '', 'name': 'kassa'},
+            {'code': '', 'name': 'moliya'},
+            {'code': '', 'name': 'arxiv'},
         ]
 
         for perm in permissions:
