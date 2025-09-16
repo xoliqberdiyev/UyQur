@@ -14,7 +14,6 @@ class ProjectListApiView(generics.ListAPIView):
     serializer_class = serializers.ProjectListSerializer
     queryset = Project.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['project']
     pagination_class = CustomPageNumberPagination
 
     def get_queryset(self):
@@ -30,7 +29,6 @@ class ArchivedProjectListApiView(generics.ListAPIView):
     serializer_class = serializers.ProjectListSerializer
     queryset = Project.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['project']
     pagination_class = CustomPageNumberPagination
 
     def get_queryset(self):
@@ -47,7 +45,6 @@ class ProjectDetailApiView(generics.RetrieveAPIView):
         'boss', 'foreman', 'other_members', 'wherehouse', 'cash_transaction',
     )
     permission_classes = [HasRolePermission]
-    required_permissions = ['project']
     lookup_field = 'id'
 
 
@@ -55,28 +52,24 @@ class ProjectCreateApiView(generics.CreateAPIView):
     serializer_class = serializers.ProjectCreateSerializer
     queryset = Project.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['project']
 
 
 class ProjectUpdateApiView(generics.UpdateAPIView):
     serializer_class = serializers.ProjectUpdateSerialzier
     queryset = Project.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['project']
     lookup_field = 'id'
 
 
 class ProjectDeleteApiView(generics.DestroyAPIView):
     permission_classes = [HasRolePermission]
     lookup_field = 'id'
-    required_permissions = ['project']
     queryset = Project.objects.all()
 
 
 class ArchiveProjectApiView(generics.GenericAPIView):
     serializer_class = None
     permission_classes = [HasRolePermission]
-    required_permissions = ['project']
 
     def get(self, request, id):
         project = get_object_or_404(Project, id=id)
@@ -87,7 +80,6 @@ class ArchiveProjectApiView(generics.GenericAPIView):
 
 class UnArchiveProjectApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['project']
 
     def get(self, request, id):
         project = get_object_or_404(Project, id=id)
@@ -101,14 +93,12 @@ class ProjectFolderCreateApiView(generics.CreateAPIView):
     serializer_class = serializers.ProjectFolderCreateSerializer
     queryset = ProjectFolder.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['project_folder']
 
 
 class ProjectFolderListApiView(generics.ListAPIView):
     serializer_class = serializers.ProjectFolderListSerializer
     queryset = ProjectFolder.objects.prefetch_related('projects')
     permission_classes = [HasRolePermission]
-    required_permissions = ['project_folder']
     pagination_class = CustomPageNumberPagination
 
 
@@ -116,14 +106,12 @@ class ProjectFolderCreateProjectApiView(generics.CreateAPIView):
     serializer_class = serializers.ProjectFolderProjectCreateSerializer
     queryset = Project.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['project_folder']
 
 
 class ProjectFolderUpdateApiView(generics.GenericAPIView):
     serializer_class = serializers.ProjectFolderUpdateSerializer
     queryset = ProjectFolder.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['project_folder']
 
     def put(self, request, id):
         folder = get_object_or_404(ProjectFolder, id=id)
@@ -138,7 +126,6 @@ class ProjectFolderDetailApiView(generics.GenericAPIView):
     serializer_class = serializers.ProjectFolderDetailSerializer
     queryset = ProjectFolder.objects.select_related('projects')
     permission_classes = [HasRolePermission]
-    required_permissions = ['project_folder']
 
     def get(self, request, id):
         folder = (
@@ -154,7 +141,6 @@ class ProjectFolderDetailApiView(generics.GenericAPIView):
 
 class ProjectFolderDeleteApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['project_folder']
 
     def delete(self, request, id):
         folder = get_object_or_404(ProjectFolder, id=id)
@@ -165,7 +151,6 @@ class ProjectFolderDeleteApiView(views.APIView):
 class ChangeProjectFolderApiView(generics.GenericAPIView):
     serializer_class = serializers.ChangeProjectFolderSerializer
     queryset = Project.objects.all()
-    required_permissions = ['project_folder']
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -185,7 +170,6 @@ class ChangeProjectFolderApiView(generics.GenericAPIView):
 
 class ProjectAndFolderApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['project', 'project_folder']
 
     def get(self, request):
         folders = ProjectFolder.objects.prefetch_related('projects')

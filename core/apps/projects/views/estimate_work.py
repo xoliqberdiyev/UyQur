@@ -12,7 +12,6 @@ class EstimateWorkCreateApiView(generics.GenericAPIView):
     serializer_class = serializers.EstimateWorkCreateSerializer
     queryset = EstimateWork.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['project', 'project_folder']
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -26,7 +25,6 @@ class EstimateWorkUpdateApiView(generics.GenericAPIView):
     serializer_class = serializers.EstimateWorkUpdateSerializer
     queryset = EstimateWork.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['project', 'project_folder']
 
     def patch(self, request, id):
         estimate_work = get_object_or_404(EstimateWork, id=id)
@@ -39,7 +37,6 @@ class EstimateWorkUpdateApiView(generics.GenericAPIView):
 
 class EstimateWorkDeleteApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['project']
 
     def delete(self, request, id):
         work = get_object_or_404(EstimateWork, id=id)

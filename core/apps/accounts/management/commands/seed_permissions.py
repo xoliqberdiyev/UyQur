@@ -8,23 +8,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         permissions = [
-            {"code": "project", "name": "project all access"},
-            {
-                "code": "project_folder",
-                "name": "project folder all access"
-            },
-            {'code': 'delete_user', "name": 'can delete user permissions'},
-            {'code': 'user', 'name': 'all user access'},
-            {'code': 'settings', 'name': 'all settings access'},
-            {'code': 'product_folder', 'name': 'all access to product folder'},
-            {'code': 'product', 'name': 'all access to product'},
-            {'code': 'order', 'name': 'all access to orders'},
-            {'code': 'offer', 'name': 'all access to offers'},
-            {'code': 'party', 'name': 'all access to partyies'},
-            {'code': '', 'name': 'kataloglar'},
-            {'code': '', 'name': 'kassa'},
-            {'code': '', 'name': 'moliya'},
-            {'code': '', 'name': 'arxiv'},
+            {'code': 'supply', 'name': "Ta'minot"},
+            {'code': 'counterparty', 'name': "Kontragent"},
+            {'code': 'warehouse', 'name': "Omborxona"},
+            {'code': 'project', 'name': "Loyiha"},
+            {'code': 'cash_transaction', 'name': "Kassa"},
+            {'code': 'directory', 'name': "Katalog"},
+            {'code': 'finance', 'name': "Moliya"},
+            {'code': 'archive', 'name': "Arxiv"},
         ]
 
         for perm in permissions:
@@ -35,4 +26,3 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS(f"Created: {perm['code']}"))
             else:
                 self.stdout.write(self.style.WARNING(f"Already exists: {perm['code']}"))
-                

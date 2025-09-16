@@ -10,5 +10,4 @@ class PermissionListApiView(generics.ListAPIView):
     queryset = Permission.objects.prefetch_related('permission_tab')
     serializer_class = serializers.PermissionListSerializer
     permission_classes = [HasRolePermission]
-    required_permissions = ['settings', 'permissions', 'role']
     pagination_class = None

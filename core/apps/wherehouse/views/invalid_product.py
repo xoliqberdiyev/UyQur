@@ -19,7 +19,6 @@ class InvalidProductCreateApiView(generics.GenericAPIView):
     serializer_class = serializers.InvalidProductCreateSerializer
     queryset = InvalidProduct.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = []
     parser_classes = [parsers.FormParser, parsers.MultiPartParser]
 
     def post(self, request):
@@ -42,7 +41,6 @@ class InvalidProductListApiView(generics.GenericAPIView):
         'inventory', 'project_folder', 'work'
     ).prefetch_related('witnesses')
     permission_classes = [HasRolePermission]
-    required_permissions = []
     filter_backends = [DjangoFilterBackend]
     filterset_class = InvalidProductFilter
 
@@ -60,7 +58,6 @@ class InvalidProductUpdateApiView(generics.GenericAPIView):
     serializer_class = serializers.InvalidProductUpdateSerializer
     queryset = InvalidProduct.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = []
     parser_classes = [parsers.FormParser, parsers.MultiPartParser]
 
     def patch(self, request, id):
@@ -80,7 +77,6 @@ class InvalidProductUpdateApiView(generics.GenericAPIView):
 
 class InvalidProductDeleteApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = []
 
     def delete(self, request, id):
         invalid_product = get_object_or_404(InvalidProduct, id=id)

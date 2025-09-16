@@ -12,14 +12,12 @@ class ProjectEstimateListApiView(generics.ListAPIView):
     serializer_class = serializers.ProjectEstimateListSerializer
     queryset = ProjectEstimate.objects.prefetch_related('estimate_works')
     permission_classes = [HasRolePermission]
-    required_permissions = ['project']
 
 
 class ProjectEstimateCreateApiView(generics.GenericAPIView):
     serializer_class = serializers.ProjectEstimateCreateSerializer
     queryset = ProjectEstimate.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['project']
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -33,7 +31,6 @@ class ProjectEstimateUpdateApiView(generics.GenericAPIView):
     serializer_class = serializers.ProjectEstimateUpdateSerializer
     queryset = ProjectEstimate.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['project']
 
     def patch(self, request, id):
         estimate = get_object_or_404(ProjectEstimate, id=id)
@@ -48,7 +45,6 @@ class ProjectEstimateDeleteApiView(generics.GenericAPIView):
     queryset = ProjectEstimate.objects.all()
     serializer_class = None
     permission_classes = [HasRolePermission]
-    required_permissions = ['project']
 
     def delete(self, request, id):
         estimte = get_object_or_404(ProjectEstimate, id=id)

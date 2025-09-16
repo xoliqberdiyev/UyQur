@@ -18,7 +18,6 @@ class StockMovemendCreateApiView(generics.GenericAPIView):
     serializer_class = serializers.StockMovmendCreateSerializer
     queryset = StockMovemend.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = []
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data, context={'user': request.user})
@@ -39,7 +38,6 @@ class StockMovemendListApiView(generics.GenericAPIView):
         'wherehouse_to', 'wherehouse_from', 'recipient', 'project_folder', 'project'
     ).prefetch_related('movemend_products')
     permission_classes = [HasRolePermission]
-    required_permissions = []
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = StockMovemendFilter
     search_fields = [
@@ -60,7 +58,6 @@ class StockMovemendListApiView(generics.GenericAPIView):
 class StockMovemendDeleteApiView(generics.GenericAPIView):
     serializer_class = None
     permission_classes = [HasRolePermission]
-    required_permissions = []
     queryset = StockMovemend.objects.all()
 
     def delete(self, request, id):
@@ -80,7 +77,6 @@ class StockMovemendDeleteApiView(generics.GenericAPIView):
 
 class StockMovemendProductRemoveApiView(generics.GenericAPIView):
     permission_classes = [HasRolePermission]
-    required_permissions = []
     queryset = StockMovmendProduct.objects.all()
     serializer_class = None
 
@@ -106,7 +102,6 @@ class StockMovemendUpdateApiView(generics.GenericAPIView):
     serializer_class = serializers.StockMovemendUpdateSerializer
     queryset = StockMovemend.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = []
 
     def patch(self, request, id):
         stock_movemend = get_object_or_404(StockMovemend, id=id)

@@ -19,7 +19,6 @@ class PartyCreateApiView(generics.GenericAPIView):
     serializer_class = serializers.PartyCreateSerializer
     queryset = Party.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['party']
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data, context={'user': request.user})
@@ -39,7 +38,6 @@ class PartyListApiView(generics.GenericAPIView):
     serializer_class = serializers.PartyListSerializer
     queryset = Party.objects.select_related('party_amount').exclude(is_deleted=True)
     permission_classes = [HasRolePermission]
-    required_permissions = ['party']
     filter_backends = [DjangoFilterBackend]
     filterset_class = PartyFilter
     
@@ -55,7 +53,6 @@ class PartyListApiView(generics.GenericAPIView):
 
 class PartyDetailApiView(generics.GenericAPIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['party']
     serializer_class = serializers.PartyDetailSerializer
     queryset = Party.objects.select_related('party_amount').prefetch_related('orders')
 
@@ -71,7 +68,6 @@ class PartyDeleteApiView(generics.GenericAPIView):
     serializer_class = serializers.DeletedPartyCreateSerializer
     queryset = Party.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['party']
 
     def post(self, request, party_id):
         serializer = self.serializer_class(data=request.data, context={'party_id': party_id})
@@ -91,7 +87,6 @@ class DeletedPartyListApiView(generics.GenericAPIView):
     serializer_class = serializers.DeletedPartyListSerializer
     queryset = DeletedParty.objects.select_related('party')
     permission_classes = [HasRolePermission]
-    required_permissions = ['party']
 
     def get(self, request):
         deleted_parties = DeletedParty.objects.select_related('party')
@@ -106,7 +101,6 @@ class PartyUpdateApiView(generics.GenericAPIView):
     serializer_class = serializers.PartyUpdateSerializer
     queryset = Party.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['party']
     pagination_class = None
 
     def patch(self, request, id):
@@ -123,7 +117,6 @@ class PartyUpdateApiView(generics.GenericAPIView):
 class OrderDeleteToPartyApiView(generics.GenericAPIView):
     serializer_class = None
     permission_classes = [HasRolePermission]
-    required_permissions = ['party']
     queryset = None
     
 
@@ -145,7 +138,6 @@ class PartyChangeStatusToIsMadeApiView(generics.GenericAPIView):
     serializer_class = None
     queryset = Party.objects.all()
     permission_classes = [HasRolePermission]
-    required_permission = ['party']
     pagination_class = None
 
     def get(self, request, party_id):

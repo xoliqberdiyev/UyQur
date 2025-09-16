@@ -14,7 +14,6 @@ from core.apps.orders.filters.order import OrderFilter
 
 class OffersCreateApiView(generics.GenericAPIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['offer']
     queryset = Offer.objects.all()
     serializer_class = serializers.MultipleOfferCreateSerializer
 
@@ -36,7 +35,6 @@ class OfferListApiView(generics.GenericAPIView):
     queryset = Order.objects.select_related('product', 'unity').prefetch_related('offers').filter(
         offers__isnull=False
     ).distinct()
-    required_permissions = ['offer']
     serializer_class = serializers.OrderListForOfferSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = OrderFilter
@@ -56,7 +54,6 @@ class OfferUpdateApiView(generics.GenericAPIView):
     queryset = Offer.objects.all()
     lookup_field = 'id'
     permission_classes = [HasRolePermission]
-    required_permissions = ['offer']
 
     def put(self, request, id):
         offer = get_object_or_404(Offer, id=id)
@@ -87,7 +84,6 @@ class OfferUpdateApiView(generics.GenericAPIView):
     
 class OfferDeleteApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['offer']
 
     def delete(self, request, id):
         offer = get_object_or_404(Offer, id=id)

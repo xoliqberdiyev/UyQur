@@ -16,7 +16,6 @@ class UserProfileApiView(generics.GenericAPIView):
     serializer_class = serializers.UserProfileSerializer
     queryset = User.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = []
 
     def get(self, request):
         user = request.user
@@ -32,7 +31,6 @@ class UserProfileUpdateApiView(generics.GenericAPIView):
     serializer_class = serializers.UserProfileSerializer
     queryset = User.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = []
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
     def patch(self, request):
@@ -58,7 +56,6 @@ class UserCreateApiView(generics.GenericAPIView):
     serializer_class = serializers.UserCreateSerializer
     queryset = User.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['settings', 'user']
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
     def post(self, request):
@@ -79,7 +76,6 @@ class UserListApiView(generics.ListAPIView):
     serializer_class = serializers.UserListSerializer
     queryset = User.objects.select_related('role')
     permission_classes = [HasRolePermission]
-    required_permissions = ['settings', 'user']
     pagination_class = CustomPageNumberPagination
 
 
@@ -87,7 +83,6 @@ class UserUpdateApiView(generics.GenericAPIView):
     serializer_class = serializers.UserProfileSerializer
     queryset = User.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = []
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
     def patch(self, request, id):

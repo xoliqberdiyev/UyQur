@@ -10,5 +10,4 @@ class RoleListApiView(generics.ListAPIView):
     serializer_class = serializers.RoleListSerializer
     queryset = Role.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['settings', 'user']
 

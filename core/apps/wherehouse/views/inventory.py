@@ -14,7 +14,6 @@ class InventoryListApiView(generics.GenericAPIView):
     serializer_class = serializers.InventoryListSerializer
     queryset = Inventory.objects.select_related('product', 'unity').exclude(is_invalid=True)
     permissions_classes = [HasRolePermission]
-    required_permissions = ['wherehouse']
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = [
         'product__name', 'unity__value'

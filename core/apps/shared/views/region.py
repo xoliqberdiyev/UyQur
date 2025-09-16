@@ -13,13 +13,11 @@ class RegionListApiView(generics.ListAPIView):
     permission_classes = [HasRolePermission]
     queryset = Region.objects.all()
     serializer_class = RegionListSerializer
-    required_permissions = ['project', 'project_folder']
     pagination_class = None
 
 
 class DistrictListApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['project', 'project_folder']
 
     def get(self, request, id):
         region = get_object_or_404(Region, id=id)

@@ -12,7 +12,6 @@ class CounterpartyFolderListApiView(generics.GenericAPIView):
     serializer_class = serializers.CounterpartyFolderListSerializer
     queryset = CounterpartyFolder.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = []
     pagination_class = None
 
     def get(self, request):
@@ -25,7 +24,6 @@ class CounterpartyCreateApiView(generics.GenericAPIView):
     serializer_class = serializers.CounterpartyFolderCreateSerializer
     queryset = CounterpartyFolder.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = []
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -43,7 +41,6 @@ class CounterpartyCreateApiView(generics.GenericAPIView):
 
 class CounterpartyDeleteApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = []
 
     def delete(self, request, id):
         counterparty_folder = get_object_or_404(CounterpartyFolder, id=id)
@@ -59,4 +56,3 @@ class CounterpartyUpdateApiView(generics.UpdateAPIView):
     serializer_class = serializers.CounterpartyFolderListSerializer
     lookup_field = 'id'
     permission_classes = [HasRolePermission]
-    required_permissions = []

@@ -19,7 +19,6 @@ class OrderListApiView(generics.ListAPIView):
         'product', 'unity', 'project', 'project_folder', 'wherehouse'
     )
     permission_classes = [HasRolePermission]
-    required_permissions = ['order']
     pagination_class = CustomPageNumberPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     search_fields = [
@@ -33,7 +32,6 @@ class OrderCreateApiView(generics.CreateAPIView):
     serializer_class = serializers.MultipleOrderCreateSerializer
     queryset = Order.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['order']
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data, context={'user': request.user})
@@ -47,13 +45,11 @@ class OrderUpdateApiView(generics.UpdateAPIView):
     serializer_class = serializers.OrderUpdateSerializer
     queryset = Order.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['order']
     lookup_field = 'id'
 
 
 class OrderDeleteApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['order']
 
     def delete(self, request, id):
         order = get_object_or_404(Order, id=id)
@@ -63,7 +59,6 @@ class OrderDeleteApiView(views.APIView):
 
 class OrderChangeStatusCancelledApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['order']
 
     def get(self, request, order_id):
         order = get_object_or_404(Order, id=order_id)
@@ -77,7 +72,6 @@ class OrderChangeStatusCancelledApiView(views.APIView):
 
 class OrderChangeStatusAcceptedApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['order']
 
     def get(self, request, order_id):
         order = get_object_or_404(Order, id=order_id)
@@ -93,14 +87,12 @@ class OrderAcceptApiView(generics.ListAPIView):
     serializer_class = serializers.OrderListSerializer
     queryset = Order.objects.filter(status='ACCEPTED')
     permission_classes = [HasRolePermission]
-    required_permissions = ['order']
     pagination_class = CustomPageNumberPagination
 
 
 class OrderOfferListApiView(generics.GenericAPIView):
     serializer_class = OffersSerializer
     permission_classes = [HasRolePermission]
-    required_permissions = ['order']
     queryset = Offer.objects.select_related('order')
     pagination_class = None
 

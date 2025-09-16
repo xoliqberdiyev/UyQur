@@ -15,7 +15,6 @@ class ProductListApiView(generics.ListAPIView):
         'id', 'name', 'type', 'unity'
     )
     permission_classes = [HasRolePermission]
-    required_permissions = ['product']
     pagination_class = CustomPageNumberPagination
 
 
@@ -23,7 +22,6 @@ class ProductCreateApiView(generics.GenericAPIView):
     serializer_class = serializers.ProductSerializer
     queryset = Product.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['product']
     
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -47,7 +45,6 @@ class ProductUpdateApiView(generics.GenericAPIView):
     serializer_class = serializers.ProductUpdateSerializer
     queryset = Product.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['product']
 
     def put(self, request, product_id):
         product = get_object_or_404(Product, id=product_id)
@@ -88,7 +85,6 @@ class ProductUpdateApiView(generics.GenericAPIView):
 
 class ProductDeleteApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['product']
 
     def delete(self, request, product_id):
         product = get_object_or_404(Product, id=product_id)

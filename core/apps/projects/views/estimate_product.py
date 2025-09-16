@@ -10,7 +10,6 @@ from core.apps.accounts.permissions.permissions import HasRolePermission
 
 class EstimateProductCreateApiView(generics.GenericAPIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['project']
     serializer_class = serializers.EstimateProductCreateSerializer
     queryset = EstimateProduct.objects.all()
 
@@ -26,7 +25,6 @@ class EstimateProductUpdateApiView(generics.GenericAPIView):
     serializer_class = serializers.EstimateProductUpdateSerializer
     queryset = EstimateProduct.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['project']
 
     def patch(self, request, id):
         estimate_product = get_object_or_404(EstimateProduct, id=id)
@@ -39,7 +37,6 @@ class EstimateProductUpdateApiView(generics.GenericAPIView):
 
 class EstimateProductDeleteApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['project']
 
     def delete(self, request, id):
         estimate_product = get_object_or_404(EstimateProduct, id=id)

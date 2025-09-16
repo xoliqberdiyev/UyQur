@@ -12,14 +12,12 @@ class WhereHouseListApiView(generics.ListAPIView):
     serializer_class = serializers.WhereHouseListSerializer
     queryset = WhereHouse.objects.select_related('branch')
     permission_classes = [HasRolePermission]
-    required_permissions = []
 
 
 class WhereHouseDetailApiView(generics.RetrieveAPIView):
     serializer_class = serializers.WhereHouseDetailSerializer
     queryset = WhereHouse.objects.select_related('branch')
     permission_classes = [HasRolePermission]
-    required_permissions = []
     lookup_field = 'id'
 
 
@@ -27,12 +25,10 @@ class WhereHouseCreateApiView(generics.CreateAPIView):
     serializer_class = serializers.WhereHouseCreateSerializer
     queryset = WhereHouse.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = []
 
 
 class WhereHouseDeleteApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = []
 
     def delete(self, request, id):
         wherehouse = get_object_or_404(WhereHouse, id=id)
@@ -48,4 +44,3 @@ class WhereHouseUpdateApiView(generics.UpdateAPIView):
     queryset = WhereHouse.objects.all()
     lookup_field = 'id'
     permission_classes = [HasRolePermission]
-    required_permissions = []

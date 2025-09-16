@@ -14,14 +14,12 @@ class FolderCreateApiView(generics.CreateAPIView):
     serializer_class = serializers.FolderSerializer
     queryset = Folder.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['product_folder']
 
 
 class FolderDetailApiView(generics.RetrieveAPIView):
     serializer_class = serializers.FolderDetailSerializer
     queryset = Folder.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['product_folder']
     lookup_field = 'id'
 
 
@@ -29,7 +27,6 @@ class FolderListApiView(generics.ListAPIView):
     serializer_class = serializers.FolderSerializer
     queryset = Folder.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['product_folder']
     pagination_class = None
 
 
@@ -37,7 +34,6 @@ class FolderUdateApiView(generics.UpdateAPIView):
     serializer_class = serializers.FolderSerializer
     queryset = Folder.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['product_folder']
     lookup_field = 'id'
 
 
@@ -45,14 +41,12 @@ class FolderDeleteApiView(generics.DestroyAPIView):
     serializer_class = serializers.FolderSerializer
     queryset = Folder.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['product_folder']
     lookup_field = 'id'
 
 
 class FolderProductListApiView(generics.GenericAPIView):
     pagination_class = CustomPageNumberPagination
     permission_classes = [HasRolePermission]
-    required_permissions = ['product', 'product_folder']
     queryset = Product.objects.all()
     serializer_class = ProductListSerializer
     filter_backends = [filters.SearchFilter]
@@ -72,13 +66,11 @@ class SubFolderCreateApiView(generics.CreateAPIView):
     serializer_class = serializers.SubFolderSerializer
     queryset = SubFolder.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['product_folder']
     lookup_field = 'id'
 
 
 class SubFolderListByFolderIdApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['product_folder']
 
     def get(self, request, folder_id):
         folder = get_object_or_404(Folder, id=folder_id)
@@ -92,7 +84,6 @@ class SubFolderUpdateApiView(generics.UpdateAPIView):
     queryset = SubFolder.objects.all()
     lookup_field = 'id'
     permission_classes = [HasRolePermission]
-    required_permissions = ['product_folder']
 
 
 class SubFolderDeleteApiView(generics.DestroyAPIView):
@@ -100,13 +91,11 @@ class SubFolderDeleteApiView(generics.DestroyAPIView):
     queryset = SubFolder.objects.all()
     lookup_field = 'id'
     permission_classes = [HasRolePermission]
-    required_permissions = ['product_folder']
 
 
 class SubFolderProductListApiView(generics.GenericAPIView):
     pagination_class = CustomPageNumberPagination
     permission_classes = [HasRolePermission]
-    required_permissions = ['product', 'product_folder']
     queryset = Product.objects.all()
     serializer_class = ProductListSerializer
 
@@ -122,5 +111,4 @@ class SubFolderDetailApiView(generics.RetrieveAPIView):
     serializer_class = serializers.SubFolderDetailSerializer
     queryset = SubFolder.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = ['product', 'product_folder']
     lookup_field = 'id'

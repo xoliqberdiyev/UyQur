@@ -11,7 +11,6 @@ class CompanyListApiView(generics.ListAPIView):
     serializer_class = serializers.CompanyListSerializer
     queryset = Company.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = []
     pagination_class = CustomPageNumberPagination
 
 
@@ -19,5 +18,4 @@ class CompanyDetailApiView(generics.RetrieveAPIView):
     serializer_class = serializers.CompanyDetailSerializer
     queryset = Company.objects.prefetch_related('branches')
     permission_classes = [HasRolePermission]
-    required_permissions = []
     lookup_field = 'id'

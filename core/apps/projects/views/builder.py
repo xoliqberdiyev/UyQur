@@ -10,7 +10,6 @@ class BuilderListApiView(generics.ListAPIView):
     serializer_class = serializers.BuilderListSerializer
     queryset = Builder.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = []
     pagination_class = CustomPageNumberPagination
 
 

@@ -16,7 +16,6 @@ class CounterpartyListApiView(generics.ListAPIView):
     serializer_class = serializers.CounterpartyListSerializer
     queryset = Counterparty.objects.exclude(is_archived=True).exclude(folder__isnull=False)
     pagination_class = [HasRolePermission]
-    required_permissions = []
     pagination_class = CustomPageNumberPagination
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_class = CounterpartyFilter
@@ -29,7 +28,6 @@ class CounterpartyCreateApiView(generics.GenericAPIView):
     serializer_class = serializers.CounterpartyCreateSerializer
     queryset = Counterparty.objects.all()
     permission_classes = [HasRolePermission]
-    required_permissions = []
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -47,7 +45,6 @@ class CounterpartyCreateApiView(generics.GenericAPIView):
 
 class ArchiveCounterpartyApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = []
 
     def get(self, request, id):
         counterparty = get_object_or_404(Counterparty, id=id)
@@ -63,13 +60,11 @@ class ArchivedCounterpartyListApiView(generics.ListAPIView):
     serializer_class = serializers.CounterpartyListSerializer
     queryset = Counterparty.objects.exclude(is_archived=False)
     pagination_class = [HasRolePermission]
-    required_permissions = []
     pagination_class = CustomPageNumberPagination
 
 
 class CounterpartyDeleteApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = []
 
     def delete(self, request, id):
         counterparty = get_object_or_404(Counterparty, id=id)
@@ -82,7 +77,6 @@ class CounterpartyDeleteApiView(views.APIView):
 
 class CounterpartyUpdateApiView(generics.UpdateAPIView):
     permission_classes = [HasRolePermission]
-    required_permissions = []
     lookup_field = 'id'
     serializer_class = serializers.CounterpartyUpdateSerializer
     queryset = Counterparty.objects.all()
