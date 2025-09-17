@@ -100,3 +100,15 @@ class OrderOfferListApiView(generics.GenericAPIView):
         offers = self.get_queryset().select_related("order").filter(order_id=order_id)
         serializer = self.serializer_class(offers, many=True)
         return Response(serializer.data, status=200)
+
+
+class DeleteMultipleOrderApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+
+    def delete(self, request):
+        ids = request.data.get("order_ids", [])
+        if not ids:
+            return Response({"detail": "order_ids kerak"}, status=status.HTTP_400_BAD_REQUEST)
+
+        deleted_count, _ = Order.objects.filter(id__in=ids).delete()
+        return Response({"deleted": deleted_count}, status=status.HTTP_200_OK)

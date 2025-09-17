@@ -89,3 +89,15 @@ class OfferDeleteApiView(views.APIView):
         offer = get_object_or_404(Offer, id=id)
         offer.delete()
         return Response({'success': True}, status=204)
+
+
+class DeleteMultipleOfferApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+
+    def delete(self, request):
+        ids = request.data.get("offer_ids", [])
+        if not ids:
+            return Response({"detail": "offer_ids kerak"}, status=400)
+
+        deleted_count, _ = Offer.objects.filter(id__in=ids).delete()
+        return Response({"deleted": deleted_count}, status=200)

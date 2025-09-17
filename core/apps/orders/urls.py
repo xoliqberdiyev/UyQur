@@ -15,6 +15,7 @@ urlpatterns = [
             path("<uuid:order_id>/accept/", order_views.OrderChangeStatusAcceptedApiView.as_view()),
             path("accepted/list/", order_views.OrderAcceptApiView.as_view()),
             path('<uuid:order_id>/offers/', order_views.OrderOfferListApiView.as_view()),
+            path('bulk-delete/', order_views.DeleteMultipleOrderApiView.as_view()),
         ]
     )),
     path('offer/', include(
@@ -23,6 +24,7 @@ urlpatterns = [
             path('list/', offer_views.OfferListApiView.as_view()),
             path('<uuid:id>/delete/', offer_views.OfferDeleteApiView.as_view()),
             path('<uuid:id>/update/', offer_views.OfferUpdateApiView.as_view()),
+            path('bulk-delete/', offer_views.DeleteMultipleOfferApiView.as_view()),
         ]
     )),
     path('party/', include(
@@ -39,6 +41,7 @@ urlpatterns = [
             path('<uuid:party_id>/is_made/', party_views.PartyChangeStatusToIsMadeApiView.as_view()),
             path('pay/', party_views.PartyPaymentApiView.as_view()),
             path('statistics/', party_views.PartyStatisticsApiView.as_view()),
+            path('bulk-delete/', party_views.DeleteMultiplePartyApiView.as_view()),
         ]
     )),
 ]

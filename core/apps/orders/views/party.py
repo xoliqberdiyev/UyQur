@@ -225,3 +225,15 @@ class PartyStatisticsApiView(generics.GenericAPIView):
             'uzs': uzs
         }
         return Response(res, status=200)
+    
+
+class DeleteMultiplePartyApiView(views.APIView):
+    permission_classes = [HasRolePermission]
+
+    def delete(self, request):
+        ids = request.data.get("party_ids", [])
+        if not ids:
+            return Response({"detail": "party_ids kerak"}, status=400)
+
+        deleted_count, _ = Party.objects.filter(id__in=ids).delete()
+        return Response({"deleted": deleted_count}, status=200)
