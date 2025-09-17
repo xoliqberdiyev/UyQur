@@ -21,6 +21,7 @@ urlpatterns = [
             path('list/', user_views.UserListApiView.as_view()),
             path('<uuid:id>/', user_views.UserUpdateApiView.as_view()),
             path('permissions/', user_views.UserPermissionListApiView.as_view()),
+            path('update_password/', user_views.UpdateUserPasswordApiView.as_view()),
         ]
     )),
     path('role/', include(

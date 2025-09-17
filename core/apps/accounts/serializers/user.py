@@ -81,3 +81,17 @@ class UserListSerializer(serializers.ModelSerializer):
                 'role': obj.role.name,
             }
         return None
+    
+
+class UserUpdatePasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField()
+    new_password = serializers.CharField()
+    confirm_new_password = serializers.CharField()
+
+    def validate(self, data):
+        user = self.context.get('user')
+        if not user.check_password(data['current_password']):
+            raise serializers.ValidationError("Password incorrect")
+        if data['new_password'] != data['confirm_new_password']:
+            raise serializers.ValidationError("Ikkita parol bir xil bolishi kerak")
+        return data

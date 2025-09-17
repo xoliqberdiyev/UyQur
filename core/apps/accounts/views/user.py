@@ -110,3 +110,23 @@ class UserPermissionListApiView(generics.GenericAPIView):
             {'success': True, 'permissions': serializer.data},
             status=200
         )
+
+
+class UpdateUserPasswordApiView(generics.GenericAPIView):
+    serializer_class = serializers.UserUpdatePasswordSerializer
+    queryset = User.objects.all()
+    permission_classes = [HasRolePermission]
+
+    def patch(self, request):
+        user = request.user
+        serializer = self.serializer_class(data=request.data, context={'user': user})
+        if serializer.is_valid():
+            new_password = serializer.validated_data.get('new_password')
+            user.set_password(new_password)
+            user.save()
+            return Response({
+                'success': True, 'message': 'Foydalanuvchi paroli ozgartirildi',
+            }, status=200)
+        return Response({
+            'success': False, 'error': serializer.errors
+        }, status=400)
