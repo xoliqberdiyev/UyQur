@@ -8,7 +8,7 @@ from core.apps.accounts.serializers import user as serializers
 from core.apps.accounts.permissions.permissions import HasRolePermission
 from core.apps.accounts.utils.permission import get_permissions_with_tabs
 from core.apps.shared.paginations.custom import CustomPageNumberPagination
-from core.apps.accounts.serializers.permission import PermissionListSerializer
+from core.apps.accounts.serializers.permission import PermissionListSerializer, PermissionToTabListSerializer, PermissionToActionListSerializer
 from core.apps.accounts.models.permission import Permission
 
 
@@ -106,8 +106,15 @@ class UserPermissionListApiView(generics.GenericAPIView):
             return Response({'success': False, 'message': 'User has no role assigned'}, status=400)
 
         serializer = self.serializer_class(user.role.permissions, many=True)
+        tab_permissions = PermissionToTabListSerializer(user.role.permission_to_tabs, many=True)
+        action_permissions = PermissionToActionListSerializer(user.role.permission_to_actions, many=True)
         return Response(
-            {'success': True, 'permissions': serializer.data},
+            {
+                'success': True,
+                'permissions': serializer.data,
+                'tab_permissions': tab_permissions.data,
+                'action_permissions': action_permissions.data
+            },
             status=200
         )
 
