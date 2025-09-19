@@ -44,7 +44,6 @@ class UserProfileUpdateApiView(generics.GenericAPIView):
 
 class UserDeleteApiView(views.APIView):
     permission_classes = [HasRolePermission]
-    required_permissions = ['settings', 'user']
 
     def delete(self, request, id):
         user = get_object_or_404(User, id=id)
