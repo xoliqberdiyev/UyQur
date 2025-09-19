@@ -36,7 +36,7 @@ class UserCreateSerializer(serializers.Serializer):
     full_name = serializers.CharField()
     username = serializers.CharField()
     phone_number = serializers.CharField()
-    profile_image = serializers.ImageField()
+    profile_image = serializers.ImageField(required=False)
     role_id = serializers.UUIDField()
     is_blocked = serializers.BooleanField()
     password = serializers.CharField(write_only=True)
@@ -73,7 +73,7 @@ class UserListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'full_name', 'profile_image', 'phone_number', 'role', 'username', 'is_blocked'
         ]
-    
+
     def get_role(self, obj):
         if obj.role:
             return {
