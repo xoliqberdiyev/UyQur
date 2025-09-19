@@ -8,8 +8,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://uyqur.felixits.uz",
     'http://localhost:8001',
     'http://127.0.0.1:8001',
-    'https://test-uyqur.felixits.uz'
+    'https://test-uyqur.felixits.uz',
+    "https://ibapp.uz",
 ]
