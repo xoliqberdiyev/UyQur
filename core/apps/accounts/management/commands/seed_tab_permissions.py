@@ -18,6 +18,8 @@ class Command(BaseCommand):
             {'code': 'expence', 'name': "Chiqim"},
             {'code': 'income_contract', 'name': 'Kirim shartnoma'},
             {'code': 'expence_contract', 'name': 'Chiqim shartnoma'},
+            {'code': 'user', 'name': 'Foydalanuvchilar'},
+            {'code': 'role', 'name': 'Rol'},
         ]
 
         for perm in permissions:

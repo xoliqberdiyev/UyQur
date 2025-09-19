@@ -70,6 +70,12 @@ class Command(BaseCommand):
             {'code': 'create_expence_type', 'name': "Xarajat turi qo'shish"},
             {'code': 'update_expence_type', 'name': "Xarajat turini tahrirlash"},
             {'code': 'delete_expence_type', 'name': "Xarajat turini o'chirish"},
+            {'code ': 'create_user', 'name': "Foydalanuvchi qo'shish"},
+            {'code ': 'delete_user', 'name': "Foydalanuvchilarni o'chirish"},
+            {'code ': 'update_user', 'name': "Foydalanuvchilarni tahrirlash"},
+            {'code': 'create_role', 'name': 'Rol qoshish'},
+            {'code': 'delete_role', 'name': 'Rol ochirish'},
+            {'code': 'update_role', 'name': 'Rol tahrirlash'},
         ]
 
         for perm in permissions:
