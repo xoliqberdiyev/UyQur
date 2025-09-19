@@ -27,6 +27,9 @@ urlpatterns = [
     path('role/', include(
         [
             path('list/', role_views.RoleListApiView.as_view()),
+            path('create/', role_views.RoleCreateApiView.as_view()),
+            path('<uuid:id>/update/', role_views.RoleUpdateApiView.as_view()),
+            path('<uuid:id>/delete/', role_views.RoleDeleteApiView.as_view()),
         ]
     )),
     path('permission/', include(
